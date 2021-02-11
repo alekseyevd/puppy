@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
     await user.save()
     res.json(`User ${user.name} has been added`)
   } catch (error) {
-    res.json(error.message)
+    res.json({msg: error.message})
   }
 })
 
