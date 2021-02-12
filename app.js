@@ -11,6 +11,7 @@ app.use(express.json({ extended: true }))
 const { PORT, MONGO_URI } = config
 
 app.use('/api/users', require('./routes/api/users'))
+app.use('/api/auth', require('./routes/api/auth'))
 
 async function startServer() {
   try {
