@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require('mongoose')
+const { v4: uuid } = require('uuid');
 
 const schema = new Schema({
   login: {

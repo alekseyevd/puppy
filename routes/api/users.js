@@ -1,9 +1,10 @@
 const { Router } = require('express')
 const User = require('../../models/User')
+const authorize = require('../../middleware/authorize')
 
 const router = Router()
 
-router.get('/', async (req, res) => {
+router.get('/', authorize, async (req, res) => {
   try {
     const users = await User.find()
     res.json(users)

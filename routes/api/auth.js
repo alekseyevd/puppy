@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const User = require('../../models/User')
 const { compareSync, hashSync } = require('bcryptjs')
-const { issueTokens } = require('../../services/auth')
+const AuthServise = require('../../services/authService')
 
 const router = Router()
 
@@ -14,6 +14,8 @@ const router = Router()
 router.post('/login', async (req, res) => {
   const { login, password } = req.body
 
+  // to-do validate fields
+
   try {
     const user = await User.findOne({ login })
 
@@ -23,7 +25,7 @@ router.post('/login', async (req, res) => {
       throw error;
     }
 
-    const tokens = await issueTokens(user.id)
+    const tokens = await AuthServise.issueTokens({ id: user._id })
     res.json(tokens)
 
   } catch (error) {
@@ -53,6 +55,40 @@ router.post('/register', async (req, res) => {
 
     res.json({ result: true })
 
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+router.post('/refresh', async (req, res) => {
+  try {
+    const auth_headers = req.headers.authorization
+    if (!auth_headers) throw Error('not authenticated')
+
+    const token = auth_headers.split(' ')[1]
+    if (!token) throw Error('not authenticated')
+
+    const { refreshToken } = req.body
+    if (!refreshToken) throw Error()
+
+    const tokens = await AuthServise.refreshToken(refreshToken, token)
+    if (!tokens) throw Error()
+    res.json(tokens)
+
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+router.post('/logout', async (req, res) => {
+  try {
+    const { refreshToken } = req.body
+    if (!refreshToken) throw Error()
+
+    const result = await AuthServise.removeToken(refreshToken)
+    if (!result) throw Error()
+
+    res.json({ result: true })
   } catch (error) {
     res.json(error)
   }
