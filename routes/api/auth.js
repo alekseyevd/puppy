@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
       throw error;
     }
 
-    const tokens = await AuthServise.issueTokens({ id: user._id })
+    const tokens = await AuthServise.issueTokens({ user: user.uuid })
     res.json(tokens)
 
   } catch (error) {
