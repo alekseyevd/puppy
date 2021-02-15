@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
       throw error;
     }
 
-    const tokens = await AuthServise.issueTokens({ user: user.uuid })
+    const tokens = await AuthServise.issueTokens({ user: user.id })
     res.json(tokens)
 
   } catch (error) {
@@ -65,13 +65,13 @@ router.post('/refresh', async (req, res) => {
     const auth_headers = req.headers.authorization
     if (!auth_headers) throw Error('not authenticated')
 
-    const token = auth_headers.split(' ')[1]
-    if (!token) throw Error('not authenticated')
+    const jwtoken = auth_headers.split(' ')[1]
+    if (!jwtoken) throw Error('not authenticated')
 
     const { refreshToken } = req.body
     if (!refreshToken) throw Error()
 
-    const tokens = await AuthServise.refreshToken(refreshToken, token)
+    const tokens = await AuthServise.refreshToken(refreshToken, jwtoken)
     if (!tokens) throw Error()
     res.json(tokens)
 

@@ -1,17 +1,6 @@
-const express = require('express')
-const cors = require('cors')
-const config = require('./config')
+const app = require('./app')
 const mongoose = require('mongoose')
-
-const app = express()
-
-app.use(cors())
-app.use(express.json({ extended: true }))
-
-const { PORT, MONGO_URI } = config
-
-app.use('/api/users', require('./routes/api/users'))
-app.use('/api/auth', require('./routes/api/auth'))
+const { PORT, MONGO_URI } = require('./config')
 
 async function startServer() {
   try {

@@ -2,9 +2,9 @@ const { Schema, model, Types } = require('mongoose')
 const { v4: uuid } = require('uuid');
 
 const schema = new Schema({
-  uuid: {type: String, default: uuid},
-  expired: {type: Number},
-  token: {type: String}
+  id: {type: String, default: uuid},
+  expiredAt: {type: Number},
+  jwtoken: {type: String}
 })
 
 module.exports = model('Token', schema)
