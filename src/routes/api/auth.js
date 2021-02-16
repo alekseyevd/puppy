@@ -2,6 +2,7 @@ const { Router } = require('express')
 const User = require('../../models/User')
 const { compareSync, hashSync } = require('bcryptjs')
 const AuthServise = require('../../services/authService')
+const createError = require('http-errors')
 
 const router = Router()
 
@@ -11,37 +12,34 @@ const router = Router()
  * @access  Public
  */
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   const { login, password } = req.body
 
   // to-do validate fields
-
   try {
     const user = await User.findOne({ login })
 
     if (!user || !compareSync(password, user.password)) {
-      const error = new Error('Invalid login or password')
-      error.status = 403
-      throw error;
+      return next(createError(403, 'Invalid login or password'))
     }
 
     const tokens = await AuthServise.issueTokens({ user: user.id })
-    res.json(tokens)
-
+    res.json({
+      result: true,
+      ...tokens
+    })
   } catch (error) {
-    //to-do error resolver
-    res.json(error.message)
+    return next(createError(500, error.message))
   }
-
 })
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   const { login, password } = req.body
 
+  // to-do validate fields
   try {
-    // to-do validate fields
-    // const user = await User.findOne({ login })
-    // if (user) throw Error('User alredy exist')
+  const user = await User.findOne({ login })
+  if (user) return next(createError(409, 'User alredy exist'))
 
     const hashedPassword = hashSync(password, 10)
 
@@ -49,14 +47,12 @@ router.post('/register', async (req, res) => {
       login,
       password: hashedPassword
     })
-
-    const saved = await newUser.save()
-    if (!saved) throw Error('Smth wrong on saving user')
-
+  
+    await newUser.save()
+  
     res.json({ result: true })
-
   } catch (error) {
-    res.json(error)
+    return next(createError(500, error.message))
   }
 })
 
@@ -69,14 +65,17 @@ router.post('/refresh', async (req, res) => {
     if (!jwtoken) throw Error('not authenticated')
 
     const { refreshToken } = req.body
-    if (!refreshToken) throw Error()
+    if (!refreshToken) throw Error('not body')
 
     const tokens = await AuthServise.refreshToken(refreshToken, jwtoken)
-    if (!tokens) throw Error()
+    if (!tokens) throw Error('no refresh')
     res.json(tokens)
 
   } catch (error) {
-    res.json(error)
+    res.json({
+      result: false,
+      message: error.message
+    })
   }
 })
 

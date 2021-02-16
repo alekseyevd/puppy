@@ -3,7 +3,9 @@ const { JWT_SECRET, JWT_ACC_EXPIRED, JWT_REF_EXPIRED } = require('../config')
 const Token = require('../models/Token')
 
 async function issueTokens(data) {
-  const jwtoken = jwt.sign(data, JWT_SECRET, { expiresIn: JWT_ACC_EXPIRED})
+  //const jwtoken = jwt.sign(data, JWT_SECRET, { expiresIn: JWT_ACC_EXPIRED})
+  data.exp = JWT_ACC_EXPIRED
+  const jwtoken = jwt.sign(data, JWT_SECRET)
 
   const token = new Token({
     expiredAt: Date.now() + JWT_REF_EXPIRED,
