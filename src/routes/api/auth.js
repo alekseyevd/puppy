@@ -56,40 +56,37 @@ router.post('/register', async (req, res, next) => {
   }
 })
 
-router.post('/refresh', async (req, res) => {
+router.post('/refresh', async (req, res, next) => {
   try {
     const auth_headers = req.headers.authorization
-    if (!auth_headers) throw Error('not authenticated')
+    if (!auth_headers) return next(createError(401, 'not authorized'))
 
     const jwtoken = auth_headers.split(' ')[1]
-    if (!jwtoken) throw Error('not authenticated')
+    if (!jwtoken) return next(createError(401, 'not authorized'))
 
     const { refreshToken } = req.body
-    if (!refreshToken) throw Error('not body')
+    if (!refreshToken) return next(createError(401, 'not authorized'))
 
     const tokens = await AuthServise.refreshToken(refreshToken, jwtoken)
-    if (!tokens) throw Error('no refresh')
+    if (!tokens) return next(createError(400, 'Token is not valid'))
     res.json(tokens)
 
   } catch (error) {
-    res.json({
-      result: false,
-      message: error.message
-    })
+    return next(createError(500, error.message))
   }
 })
 
-router.post('/logout', async (req, res) => {
+router.post('/logout', async (req, res, next) => {
   try {
     const { refreshToken } = req.body
-    if (!refreshToken) throw Error()
+    if (!refreshToken) return next(createError(401, 'not authorized'))
 
     const result = await AuthServise.removeToken(refreshToken)
-    if (!result) throw Error()
+    if (!result) return next(createError(400, 'Token is not valid'))
 
     res.json({ result: true })
   } catch (error) {
-    res.json(error)
+    return next(createError(500, error.message))
   }
 })
 
