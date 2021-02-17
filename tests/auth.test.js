@@ -1,4 +1,4 @@
-const request = require("supertest");
+const request = require("supertest")
 const app = require('../src/app')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -12,12 +12,11 @@ beforeEach(async() => {
     useCreateIndex: true
   })
 
-  //toDo issue long token and save to db
 });
 
 afterEach(() => {
   mongoose.disconnect()
-});
+})
 
 describe('Post to /api/auth/login', () => {
 

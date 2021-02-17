@@ -4,7 +4,7 @@ const authorize = require('../../middleware/authorize')
 
 const router = Router()
 
-router.get('/', authorize, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const users = await User.find().select('-password')
     res.json(users)

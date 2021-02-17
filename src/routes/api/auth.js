@@ -7,7 +7,7 @@ const createError = require('http-errors')
 const router = Router()
 
 /**
- * @route   POST api/auth
+ * @route   POST api/auth/login
  * @desc    User login
  * @access  Public
  */
@@ -33,6 +33,13 @@ router.post('/login', async (req, res, next) => {
   }
 })
 
+/**
+ * @route   POST api/auth/register
+ * @desc    User registe
+ * @access  Private
+ */
+
+ // to-do
 router.post('/register', async (req, res, next) => {
   const { login, password } = req.body
 
@@ -56,6 +63,12 @@ router.post('/register', async (req, res, next) => {
   }
 })
 
+/**
+ * @route   POST api/auth/refresh
+ * @desc    User refresh tokens
+ * @access  Private
+ */
+
 router.post('/refresh', async (req, res, next) => {
   try {
     const auth_headers = req.headers.authorization
@@ -77,6 +90,12 @@ router.post('/refresh', async (req, res, next) => {
     return next(createError(500, error.message))
   }
 })
+
+/**
+ * @route   POST api/auth/logout
+ * @desc    User logout
+ * @access  Private
+ */
 
 router.post('/logout', async (req, res, next) => {
   try {
