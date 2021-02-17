@@ -68,8 +68,10 @@ router.post('/refresh', async (req, res, next) => {
     if (!refreshToken) return next(createError(401, 'not authorized'))
 
     const tokens = await AuthServise.refreshToken(refreshToken, jwtoken)
-    if (!tokens) return next(createError(400, 'Token is not valid'))
-    res.json(tokens)
+    if (!tokens) return next(createError(401, 'Token is not valid'))
+    res.json({
+      result: true,
+      ...tokens})
 
   } catch (error) {
     return next(createError(500, error.message))

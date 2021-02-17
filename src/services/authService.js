@@ -22,8 +22,9 @@ async function issueTokens(data) {
 }
 
 async function refreshToken(id, jwtoken) {
-  const token = Token.findOne({ id, jwtoken })
-  if (!token || token.expiredAt > Date.now()) return false // to-do - throw error
+  const token = await Token.findOne({ id, jwtoken })
+  
+  if (!token || token.expiredAt < Date.now()) return false // to-do - throw error
 
   await Token.deleteOne({ id })
 
