@@ -4,7 +4,10 @@ module.exports = {
       create: {
         fields: []
       },
-      read: {
+      find: {
+        own: true,
+      },
+      findeOne: {
         own: true,
         fields: []
       },
@@ -15,7 +18,8 @@ module.exports = {
       delete: {
         own: true,
         fields: []
-      }
+      },
+      count: true
     }
   }
 }

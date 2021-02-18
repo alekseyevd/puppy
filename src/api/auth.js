@@ -1,7 +1,7 @@
 const { Router } = require('express')
-const User = require('../../models/User')
+const User = require('../models/User')
 const { compareSync, hashSync } = require('bcryptjs')
-const AuthServise = require('../../services/authService')
+const AuthServise = require('../services/authService')
 const createError = require('http-errors')
 
 const router = Router()
@@ -23,7 +23,7 @@ router.post('/login', async (req, res, next) => {
       return next(createError(403, 'Invalid login or password'))
     }
 
-    const tokens = await AuthServise.issueTokens({ user: user.id })
+    const tokens = await AuthServise.issueTokens({ user: user.id, role: user.role })
     res.json({
       result: true,
       ...tokens

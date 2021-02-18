@@ -25,6 +25,11 @@ const schema = new Schema({
   person: {
     type: Types.ObjectId,
     ref: 'Person',
+  }, 
+  role: {
+    type: String,
+    required: true,
+    default: 'admin'
   }
 })
 
