@@ -1,33 +1,12 @@
 const { Router } = require('express')
-const User = require('../../models/User')
+const User = require('../../models/Users')
 const authorize = require('../../middleware/authorize')
 const checkPermissions = require('../../middleware/checkPermissions')
+const controller = require('./controllers/users')
 
 const router = Router()
 
-router.get('/', authorize, checkPermissions('users.find'), async (req, res) => {
-
-  const filter = JSON.parse(req.query.filter)
-  console.log(filter);
-
-  try {
-    // to-do add query params to filter
-    if (req.permissions && req.permissions.own) {
-      filter.owner =  req.user.id
-    }
-
-    let selection = []
-    if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
-      selection = req.permissions.fields
-    }
-
-    let users = await User.find(filter).select(selection)
-    res.json(users)
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ msg: error.message})
-  }
-})
+router.get('/', authorize, checkPermissions('users.find'), controller.find)
 
 router.post('/', async (req, res) => {
   try {
