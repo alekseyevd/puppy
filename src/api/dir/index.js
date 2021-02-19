@@ -1,17 +1,28 @@
 const { Router } = require('express')
 const checkAccess = require('../../middleware/checkAccess')
 const authorize = require('../../middleware/authorize')
+const createError = require('http-errors')
 const router = Router()
+//const model = require('../../models/Model')
 
-router.get('/:dir', authorize, checkAccess('find'), async (req, res) => {
-  const filter = JSON.parse(req.query.filter)
-  console.log(filter);
-
+function isJsonValid(str) {
   try {
+    JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}
 
-    const Model = require(`../../models/${req.params.dir}`)
-    
-    // to-do add query params to filter
+router.get('/:dir', authorize, checkAccess('find'), async (req, res, next) => {
+  try {
+    if (req.query.filter && !isJsonValid(req.query.filter))
+      throw createError(400, 'query param \'filter\' is not valid json string.')
+
+    const filter = req.query.filter
+        ? JSON.parse(req.query.filter)
+        : {}
+
     if (req.permissions && req.permissions.own) {
       filter.owner =  req.user.id
     }
@@ -21,11 +32,24 @@ router.get('/:dir', authorize, checkAccess('find'), async (req, res) => {
       selection = req.permissions.fields
     }
 
-    let users = await Model.find(filter).select(selection)
-    res.json(users)
+    //to-do paginanion
+
+    const Model = req.model
+    const count = await Model.countDocuments()
+    const entities = await Model.find(filter)
+      .select(selection)
+      .skip(0)
+      .limit(20)
+    res.header({
+      'Pagination-Count': count,
+    })
+    res.json({
+      result: true,
+      [req.params.dir]: entities,
+      count
+    })
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ msg: error.message})
+    return next(error)
   }
 })
 

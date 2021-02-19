@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const User = require('../models/Users')
+const User = require('../models/User')
 const { compareSync, hashSync } = require('bcryptjs')
 const AuthServise = require('../services/authService')
 const createError = require('http-errors')
