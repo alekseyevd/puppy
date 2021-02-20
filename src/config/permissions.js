@@ -4,12 +4,9 @@ module.exports = {
       create: {
         fields: []
       },
-      find: {
-        own: true,
-      },
-      findeOne: {
-        own: true,
-        fields: []
+      find: true,
+      findOne: {
+        fields: ['-password']
       },
       update: {
         own: true,

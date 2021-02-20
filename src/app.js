@@ -9,7 +9,7 @@ app.use(express.json({ extended: true }))
 
 app.use('/api/users', require('./api/users'))
 app.use('/api/auth', require('./api/auth'))
-app.use('/api/dir', require('./api/dir'))
+app.use('/api/dir', require('./api/dir/router'))
 app.use(errorHandler)
 
 module.exports = app
