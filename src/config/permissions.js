@@ -1,9 +1,7 @@
 module.exports = {
   admin: {
     users: {
-      create: {
-        fields: []
-      },
+      create: true,
       find: true,
       findOne: {
         fields: ['-password']
