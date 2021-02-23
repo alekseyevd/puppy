@@ -13,6 +13,9 @@ function isJsonValid(str) {
 module.exports = async function find(req, res, next) {
   //todo beforeFind
   try {
+    const enitity = req.params.dir
+    const Model = require('../Model')(enitity)
+    if (!Model) throw createError(404, 'not found')
 
     if (req.query.filter && !isJsonValid(req.query.filter))
       throw createError(400, 'query param \'filter\' is not valid json string.')
@@ -29,10 +32,6 @@ module.exports = async function find(req, res, next) {
     if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
       selection = req.permissions.fields
     }
-
-    const enitity = req.params.dir
-    const Model = require('../Model')(enitity)
-    if (!Model) throw createError(404, 'not found')
 
     const count = await Model.countDocuments(filter)
     const limit = Math.abs(Number.parseInt(req.query.limit) || PAGINATION_LIMIT)
