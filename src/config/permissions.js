@@ -6,14 +6,9 @@ module.exports = {
       findOne: {
         fields: ['-password']
       },
-      update: {
-        own: true,
-      },
-      delete: {
-        own: true,
-        fields: []
-      },
-      count: true
+      update: true,
+      delete: true,
+      copy: true
     }
   }
 }

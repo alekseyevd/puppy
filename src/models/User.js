@@ -30,6 +30,10 @@ const schema = new Schema({
     type: String,
     required: true,
     default: 'admin'
+  }, 
+  status: {
+    type: Number,
+    default: 1
   }
 })
 
