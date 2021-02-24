@@ -7,5 +7,6 @@ const Controller = require('./controller')
 router.get('/:dir', checkAccess('find'), Controller.find)
 router.get('/:dir/:id', checkAccess('findOne'), Controller.findOne)
 router.post('/:dir', checkAccess('create'), Controller.create)
+router.post('/:dir/:id', checkAccess('update'), Controller.update)
 
 module.exports = router

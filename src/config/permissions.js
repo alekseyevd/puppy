@@ -8,7 +8,6 @@ module.exports = {
       },
       update: {
         own: true,
-        fields: []
       },
       delete: {
         own: true,
