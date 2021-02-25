@@ -14,7 +14,7 @@ module.exports = async function find(req, res, next) {
   //todo beforeFind
   try {
     const enitity = req.params.dir
-    const Model = require('../Model')(enitity)
+    const Model = this.model
     if (!Model) throw createError(404, 'not found')
 
     if (req.query.filter && !isJsonValid(req.query.filter))
