@@ -25,7 +25,7 @@ module.exports = async function find(req, res, next) {
         : {}
 
     if (req.permissions && req.permissions.own) {
-      filter.owner =  req.user.user
+      filter.user_id =  req.user.user_id
     }
 
     let selection = []

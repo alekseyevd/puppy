@@ -1,5 +1,4 @@
 const models = {
-  users: require('../../models/User'),
   persons: require('../../models/Person')
 }
 

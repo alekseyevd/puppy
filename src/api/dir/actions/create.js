@@ -6,7 +6,7 @@ module.exports = async function create(req, res, next) {
     const Model = require('../Model')(enitity)
     if (!Model) throw createError(404, 'not found')
   
-    // to do validate fields and create new entity
+    // to do validate fields
     if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
       const selection = req.permissions.fields
       const postFields = Object.keys(req.body)
@@ -15,9 +15,11 @@ module.exports = async function create(req, res, next) {
         throw createError(403, `Fields '${disallowed.join(', ')}' are forbidden to be added for current role.`)
     }
 
-    // to-do add owner ?
+    // to-do add owner
+    const user_id = req.user.user_id
+    const body = { ...req.body, user_id }
 
-    const entity = new Model(req.body)
+    const entity = new Model(body)
     await entity.save()
 
     res.status(201).json({

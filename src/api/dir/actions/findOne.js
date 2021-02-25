@@ -8,7 +8,7 @@ module.exports = async function findOne(req, res, next) {
 
     const filter = { id: req.params.id } 
     if (req.permissions && req.permissions.own) {
-      filter.owner = req.user.user
+      filter.user_id =  req.user.user_id
     }
 
     let selection = []

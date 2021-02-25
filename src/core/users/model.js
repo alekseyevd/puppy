@@ -7,6 +7,10 @@ const schema = new Schema({
     default: uuid,
     unique: true
   }, 
+  status: {
+    type: Number,
+    default: 1
+  },
   login: {
     type: String,
     required: true,
@@ -31,10 +35,9 @@ const schema = new Schema({
     required: true,
     default: 'admin'
   }, 
-  status: {
-    type: Number,
-    default: 1
-  }
+},
+{
+  timestamps: true
 })
 
 module.exports = model('User', schema)

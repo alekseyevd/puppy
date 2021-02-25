@@ -18,7 +18,7 @@ module.exports = async function update(req, res, next) {
     }
 
     if (req.permissions && req.permissions.own) {
-      filter.owner =  req.user.user
+      filter.user_id =  req.user.user_id
     }
 
     const result = await Model.updateOne(filter, req.body)
