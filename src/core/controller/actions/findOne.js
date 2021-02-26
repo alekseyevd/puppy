@@ -2,8 +2,7 @@ const createError = require('http-errors')
 
 module.exports = async function findOne(req, res, next) {
   try {
-    const enitity = req.params.dir
-    const Model = this.model
+    const Model = req.model
     if (!Model) throw createError(404, 'not found')
 
     const filter = { id: req.params.id } 

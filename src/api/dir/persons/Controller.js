@@ -1,9 +1,14 @@
-const Controller = require("../../../core/Controller/Controller");
+const { find } = require("../../../models/Token");
 
-class PersonsController extends Controller {
-  constructor(params) {
-    super(params)
-  }
-}
+module.exports = {
+  // find(req, res, next) {
+  //   console.log(this.model);
+  //   res.json({
+  //     result: 888
+  //   })
+  // }
+  beforeFind() {
+    console.log('beforeFind');
+  },
 
-module.exports = PersonsController
+ }

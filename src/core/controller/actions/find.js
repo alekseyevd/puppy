@@ -10,11 +10,13 @@ function isJsonValid(str) {
   return true;
 }
 
-module.exports = async function find(req, res, next) {
+module.exports = async function (req, res, next) {
   //todo beforeFind
+  if (this.beforeFind) this.beforeFind()
+  
   try {
     const enitity = req.params.dir
-    const Model = this.model
+    const Model = req.model
     if (!Model) throw createError(404, 'not found')
 
     if (req.query.filter && !isJsonValid(req.query.filter))
