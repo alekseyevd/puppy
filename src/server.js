@@ -1,4 +1,4 @@
-const app = require('./app')
+const app = require('./core/app')
 const mongoose = require('mongoose')
 const { PORT, MONGO_URI } = require('./config')
 //const insertTestUsers = require('../tests/helpers/insertUsers')

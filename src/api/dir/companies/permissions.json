@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "create": true,
+    "find": true,
+    "findOne": true,
+    "update": true,
+    "deleteOne": true
+  }
+}
