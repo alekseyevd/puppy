@@ -3,9 +3,7 @@ const cors = require('cors')
 const errorHandler = require('../middleware/errorHandler')
 const isAuthenticated = require('../middleware/authenticate')
 const isAdmin = require('../middleware/isAdmin')
-const handleRoutes = require('./core/handleRoutes')
-
-
+const handleRoutes = require('./functions/handleRoutes')
 
 const app = express()
 
@@ -19,9 +17,5 @@ handleRoutes(app)
 
 app.use('/api/users', isAdmin, require('./api/users/router'))
 app.use(errorHandler)
-
-
-
-
 
 module.exports = app

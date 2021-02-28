@@ -1,0 +1,12 @@
+{
+  "admin": {
+    "create": true,
+    "find": {
+      "own": true,
+      "fields": ["-name"]
+    },
+    "findOne": true,
+    "update": true,
+    "deleteOne": true
+  }
+}

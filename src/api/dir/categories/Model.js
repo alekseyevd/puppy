@@ -14,17 +14,9 @@ const schema = new Schema({
   user_id: {
     type: Types.ObjectId,
     ref: 'User'
-  },
-  fullname: {type: String},
-  name: {type: String},
-  surname: {type: String},
-  patronymic: {type: String},
-  gender: {type: String},
-  birthdate: {type: Date},
-  emails: [String],
-  phones: [String]
+  }
 }, {
   timestamps: true
 })
 
-module.exports = model('Person', schema)
+module.exports = model('Category', schema)

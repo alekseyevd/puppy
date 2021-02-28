@@ -1,0 +1,27 @@
+[
+  {
+    "method": "get",
+    "path": "/",
+    "action": "find"
+  },
+  {
+    "method": "get",
+    "path": "/:id",
+    "action": "findOne"
+  },
+  {
+    "method": "post",
+    "path": "/",
+    "action": "create"
+  },
+  {
+    "method": "post",
+    "path": "/:id",
+    "action": "update"
+  },
+  {
+    "method": "delete",
+    "path": "/:id",
+    "action": "deleteOne"
+  }
+]
