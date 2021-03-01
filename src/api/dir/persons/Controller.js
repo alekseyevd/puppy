@@ -1,5 +1,3 @@
-const { find } = require("../../../models/Token");
-
 module.exports = {
   // find(req, res, next) {
   //   console.log(this.model);
@@ -10,5 +8,4 @@ module.exports = {
   beforeFind() {
     console.log('beforeFind');
   },
-
  }

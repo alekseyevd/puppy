@@ -25,8 +25,21 @@ module.exports = (app) => {
     buffer = fs.readFileSync(path.resolve(__dirname, `../../api/dir/${dir}/routes.json`))
     const routes = JSON.parse(buffer)
 
+    buffer = fs.readFileSync(path.resolve(__dirname, `../../api/dir/${dir}/templates/templates.json`))
+    let templates = JSON.parse(buffer)
+
+    templates = templates.reduce((acc, template) => {
+      template.fileName = path.resolve(__dirname, `../../api/dir/${dir}/templates/${template.fileName}`)
+      acc[template.id] = template
+      return acc
+    }, {})
+
     routes.forEach(r => {
-      router[r.method](r.path, isAllowed(r.action), injectModel(model), controller[r.action].bind(controller))
+      if (r.action === 'print') {
+        router[r.method](r.path, /*isAllowed('print'),*/ injectModel(model), controller.print(templates))
+      } else {
+        router[r.method](r.path, isAllowed(r.action), injectModel(model), controller[r.action].bind(controller))
+      }
     })
 
     app.use(`/api/${dir}`, router)

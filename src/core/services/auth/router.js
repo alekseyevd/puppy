@@ -1,7 +1,7 @@
 const { Router } = require('express')
-const User = require('../users/model')
+const User = require('../users/Model')
 const { compareSync, hashSync } = require('bcryptjs')
-const AuthServise = require('../../../services/authService')
+const AuthServise = require('./authService')
 const createError = require('http-errors')
 
 const router = Router()
@@ -39,7 +39,7 @@ router.post('/login', async (req, res, next) => {
  * @access  Private
  */
 
- // to-do
+ // to-do make private
 router.post('/register', async (req, res, next) => {
   const { login, password } = req.body
 

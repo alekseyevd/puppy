@@ -23,5 +23,15 @@
     "method": "delete",
     "path": "/:id",
     "action": "deleteOne"
+  },
+  {
+    "method": "get",
+    "path": "/:id/print",
+    "action": "print"
+  },
+  {
+    "method": "post",
+    "path": "/:id/email",
+    "action": "email"
   }
 ]

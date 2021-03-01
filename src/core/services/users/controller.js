@@ -1,10 +1,10 @@
 const createHttpError = require("http-errors")
-const Model = require('./model')
+const User = require('./Model')
 
 module.exports = {
   async find (req, res, next) {
     try {
-      const data = await Model.find().select('-password')
+      const data = await User.find().select('-password')
       res.json({
         result: true,
         data
@@ -17,7 +17,7 @@ module.exports = {
   async findOne (req, res, next) {
     try {
       const id = req.params.id
-      const data = await Model.findOne({ id }).select('-password')
+      const data = await User.findOne({ id }).select('-password')
 
       if (!data) throw createHttpError(404, 'not found')
   
@@ -34,7 +34,7 @@ module.exports = {
   async update (req, res, next) {
     try {
       const id = req.params.id
-      const result = await Model.updateOne({ id }, req.body)
+      const result = await User.updateOne({ id }, req.body)
 
       if (result.n === 0) throw createHttpError(404, 'not found')
   
@@ -52,7 +52,7 @@ module.exports = {
       // to-do root user is not allowed to be deleted
 
       const id = req.params.id
-      const result = await Model.updateOne({ id }, { status: 3 })
+      const result = await User.updateOne({ id }, { status: 3 })
 
       if (result.n === 0) throw createHttpError(404, 'not found')
   

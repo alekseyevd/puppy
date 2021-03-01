@@ -15,7 +15,6 @@ module.exports = async function (req, res, next) {
   if (this.beforeFind) this.beforeFind()
   
   try {
-    const enitity = req.params.dir
     const Model = req.model
     if (!Model) throw createError(404, 'not found')
 
@@ -43,7 +42,6 @@ module.exports = async function (req, res, next) {
     if (skip >= count) {
       page = Math.floor(count / (limit + 1))
       skip = page * limit
-      console.log(page);
     }
   
     const entities = await Model.find(filter)
@@ -55,7 +53,7 @@ module.exports = async function (req, res, next) {
       'Pagination-Count': count,
       'Pagination-Limit': limit,
       'Pagination-Page': page,
-      'Content-Range': `${enitity} ${skip}-${skip + count - 1}/${count}`
+      'Content-Range': `${skip}-${skip + count - 1}/${count}`
     })
     
     res.json({

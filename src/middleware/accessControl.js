@@ -12,6 +12,9 @@ module.exports = (permissions) => {
 
         if (typeof permissions[role][action] === 'object') {
           req.permissions = permissions[role][action]
+
+          if (action === 'print' && !permissions[role][action].templates.include(req.query.template_id))
+            throw createHttpError(403, 'forbidden')
         }
       
         next()

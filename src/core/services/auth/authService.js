@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
-const { JWT_SECRET, JWT_ACC_EXPIRED, JWT_REF_EXPIRED } = require('../config')
-const Token = require('../models/Token')
+const { JWT_SECRET, JWT_ACC_EXPIRED, JWT_REF_EXPIRED } = require('../../../config')
+const Token = require('./Model')
 
 function now() {
   return Math.floor(Date.now() / 1000)

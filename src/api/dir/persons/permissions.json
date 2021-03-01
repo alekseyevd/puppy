@@ -7,6 +7,9 @@
     },
     "findOne": true,
     "update": true,
-    "deleteOne": true
+    "deleteOne": true,
+    "print": {
+      "templates": [1]
+    }
   }
 }
