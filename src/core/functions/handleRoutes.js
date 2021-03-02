@@ -27,11 +27,11 @@ module.exports = (app) => {
     buffer = fs.readFileSync(path.resolve(__dirname, `../../api/dir/${dir}/routes.json`))
     const routes = JSON.parse(buffer)
 
-    buffer = fs.readFileSync(path.resolve(__dirname, `../../api/dir/${dir}/templates/templates.json`))
+    buffer = fs.readFileSync(path.resolve(__dirname, `../../api/dir/${dir}/templates/pdf/templates.json`))
     let templates = JSON.parse(buffer)
 
     templates = templates.reduce((acc, template) => {
-      template.fileName = path.resolve(__dirname, `../../api/dir/${dir}/templates/${template.fileName}`)
+      template.fileName = path.resolve(__dirname, `../../api/dir/${dir}/templates/pdf/${template.fileName}`)
       acc[template.id] = template
       return acc
     }, {})
