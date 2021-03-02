@@ -9,7 +9,9 @@ module.exports = (app) => {
 
   const accessControl = require('../../middleware/accessControl')
   const injectModel = require('../../middleware/injectModel')
+  const injectTemplates = require('../../middleware/injectTemplates')
   const Controller = require('../controller/Controller')
+
 
   dirs.forEach(dir => {
     const router = Router()
@@ -35,8 +37,8 @@ module.exports = (app) => {
     }, {})
 
     routes.forEach(r => {
-      if (r.action === 'print') {
-        router[r.method](r.path, /*isAllowed('print'),*/ injectModel(model), controller.print(templates))
+      if (r.action === 'print' || r.action === 'email') {
+        router[r.method](r.path, /*isAllowed(r.action),*/ injectModel(model), injectTemplates(templates), controller[r.action].bind(controller))
       } else {
         router[r.method](r.path, isAllowed(r.action), injectModel(model), controller[r.action].bind(controller))
       }

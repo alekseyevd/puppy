@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.json({ extended: true }))
 
 app.use('/api/auth', require('./services/auth/router'))
-//app.use(isAuthenticated)
+// app.use(isAuthenticated)
 
 handleRoutes(app)
 

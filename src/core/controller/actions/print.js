@@ -1,9 +1,10 @@
 const createError = require('http-errors')
 const Handlebars = require("handlebars")
 const fs = require('fs')
-var pdf = require('html-pdf');
+//var pdf = require('html-pdf');
+const createPdf = require('../../services/pdf/Pdf')
 
-module.exports = (templates) => async (req, res, next) => {
+module.exports = async (req, res, next) => {
   try {
     const Model = req.model
     if (!Model) throw createError(404, 'not found')
@@ -11,6 +12,7 @@ module.exports = (templates) => async (req, res, next) => {
     const id = req.query.template_id
     if (!id) throw createError(400, 'bad request')
 
+    const templates = req.templates
     if (!templates[id]) throw createError(404, 'template not found')
 
     const { documentName, fileName } = templates[id]
@@ -18,18 +20,15 @@ module.exports = (templates) => async (req, res, next) => {
     const data = await Model.findOne({id: req.params.id})
     if (!data) throw createError(404, 'not found')
 
-    const html = fs.readFileSync(fileName, 'utf-8')
+    const template = fs.readFileSync(fileName, 'utf-8')
 
-    const compileTemplate = Handlebars.compile(html)
     const compileDocumentName = Handlebars.compile(documentName)
 
-    pdf.create(compileTemplate(data.toObject()), {}).toBuffer( (err, buffer) => {
-        if(err) throw err
-
-        res.setHeader('content-type', 'application/pdf');
-        res.setHeader('Content-disposition', `filename="${encodeURI(compileDocumentName(data.toObject()))}.pdf`)
-        res.send(Buffer.from(buffer));
-    })
+    const buffer = await createPdf(template, data.toObject())
+    
+    res.setHeader('content-type', 'application/pdf');
+    res.setHeader('Content-disposition', `filename="${encodeURI(compileDocumentName(data.toObject()))}.pdf`)
+    res.send(Buffer.from(buffer));
 
   } catch (error) {
     next(error)

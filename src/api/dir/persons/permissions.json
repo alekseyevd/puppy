@@ -10,6 +10,7 @@
     "deleteOne": true,
     "print": {
       "templates": [1]
-    }
+    },
+    "email": true
   }
 }

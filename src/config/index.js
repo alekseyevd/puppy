@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+const { parseWithoutProcessing } = require('handlebars')
 
 dotenv.config()
 
@@ -8,5 +9,8 @@ module.exports = {
   JWT_SECRET: 'super secret code',
   JWT_ACC_EXPIRED: 60 * 15,
   JWT_REF_EXPIRED: 60 * 30,
-  PAGINATION_LIMIT: 30
+  PAGINATION_LIMIT: 30,
+  EMAIL_SERVER: process.env.EMAIL_SERVER,
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
 }

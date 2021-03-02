@@ -15,10 +15,11 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "handlebars": "^4.7.7",
-    "html-pdf": "^2.2.0",
     "http-errors": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
+    "nodemailer": "^6.5.0",
+    "puppeteer": "^8.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
