@@ -1,8 +1,7 @@
-[
-  {
-    "id": 1,
-    "name": "Печать 1",
-    "documentName": "Имя документа {{ name }}",
-    "fileName": "template.tpl"
-  }
-]
+[{
+  "id": 1,
+  "name": "Печать 1",
+  "documentName": "Имя документа {{ name }}",
+  "fileName": "template.html"
+}]
+

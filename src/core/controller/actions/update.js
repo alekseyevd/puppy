@@ -3,7 +3,6 @@ const createError = require('http-errors')
 module.exports = async function update(req, res, next) {
   try {
     const Model = req.model
-    if (!Model) throw createError(404, 'not found')
 
     const filter = { id: req.params.id }
   

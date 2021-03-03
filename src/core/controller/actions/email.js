@@ -8,30 +8,36 @@ const createPdf = require('../../services/pdf/Pdf')
 
 module.exports = async function (req, res, next) {
   try {
+    const { pdf_ids, template_id, to } = req.body
+    const { pdf, email } = req.templates
+
+    // to-do validate fields
+    if (!to) throw createError(400, 'bad request')
+    if (!template_id) throw createError(400, 'bad request')
+    if (!email[template_id]) createError(400, 'bad request')
+
     const Model = req.model
-    if (!Model) throw createError(404, 'not found')
 
     const entity = await Model.findOne({id: req.params.id})
     if (!entity) throw createError(404, 'not found')
 
-    const templates_ids = req.body.templates
-    const templates = req.templates
+
     let attachments = []
 
-    if (templates_ids && Array.isArray(templates_ids)) {
-      attachments = await Promise.all(templates_ids.filter(template_id => templates[template_id] !== undefined)
-        .map(template_id => {
+    if (pdf_ids && Array.isArray(pdf_ids)) {
+      attachments = await Promise.all(pdf_ids.filter(id => pdf[id] !== undefined)
+        .map(id => {
           return new Promise((resolve, reject) => {
-            const { documentName, fileName } = templates[template_id]
+            const { documentName, fileName } = pdf[id]
             fs.readFile(fileName, 'utf-8', async (error, content) => {
               if (error) reject(error)
 
               //to-do create pdf buffer
               const buffer = await createPdf(content, entity.toObject())
-              const compileDocumentName = Handlebars.compile(`${documentName}.pdf`)
+              const compileDocumentName = Handlebars.compile(documentName)
 
               resolve({
-                filename: compileDocumentName(entity.toObject()),
+                filename: `${compileDocumentName(entity.toObject())}.pdf`,
                 content: Buffer.from(buffer),
               })
             })
@@ -39,6 +45,11 @@ module.exports = async function (req, res, next) {
         }
       ))
     }
+
+    const { fileName, subject } = email[template_id]
+    const buffer = fs.readFileSync(fileName, 'utf-8')
+    const html = Handlebars.compile(buffer)(entity.toObject())
+
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -54,10 +65,10 @@ module.exports = async function (req, res, next) {
 
     // send mail with defined transport object
     let data = await transporter.sendMail({
-      from: `"Fred Foo 👻" <${EMAIL_USER}>`, // sender address
-      to: "alekseyev.d@gmail.com", // list of receivers
-      subject: "Hello ✔", // Subject line
-      html: "<b>Hello world?</b>", // html body
+      from: `"Fred Foo 👻" <mail@eurosteel-spb.ru>`, // sender address
+      to, // list of receivers
+      subject: Handlebars.compile(subject)(entity.toObject()),
+      html,
       attachments
     });
 

@@ -11,6 +11,8 @@
     "print": {
       "templates": [1]
     },
-    "email": true
+    "email": {
+      "templates": [1]
+    }
   }
 }

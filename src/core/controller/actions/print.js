@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
     const id = req.query.template_id
     if (!id) throw createError(400, 'bad request')
 
-    const templates = req.templates
+    const templates = req.templates.pdf
     if (!templates[id]) throw createError(404, 'template not found')
 
     const { documentName, fileName } = templates[id]

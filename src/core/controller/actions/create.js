@@ -3,7 +3,6 @@ const createError = require('http-errors')
 module.exports = async function create(req, res, next) {
   try {
     const Model = req.model
-    if (!Model) throw createError(404, 'not found')
   
     // to do validate fields
     if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
