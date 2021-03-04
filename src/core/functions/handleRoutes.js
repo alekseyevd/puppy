@@ -15,8 +15,6 @@ module.exports = (app) => {
       })
 
   const accessControl = require('../../middleware/accessControl')
-  const injectModel = require('../../middleware/injectModel')
-  const injectTemplates = require('../../middleware/injectTemplates')
   const Controller = require('../controller/Controller')
   const createDirModel = require('./createDirModel')
 
@@ -25,25 +23,14 @@ module.exports = (app) => {
     const { path, name } = dir 
     const router = Router()
     const localController = require(`${path}/Controller`)
-    //const model = require(`${path}/Model`)
 
     const schema = require(`${path}/schema`)
     const model = createDirModel(name, schema)
-
-    //to-do register model in Puppy.models[name] = model
-    //to do Object.defineProperty
-    Puppy.models[name] = model
 
     let buffer = fs.readFileSync(`${path}/permissions.json`)
     const permissions = JSON.parse(buffer)
 
     const { isAllowed } = accessControl(permissions)
-
-    //const controller = Object.assign(Controller, localController) 
-    const controller = new Controller(name, localController)
-    //todo controller.model = Model
-
-    controller.model = model //to do delete
 
     buffer = fs.readFileSync(`${path}/routes.json`)
     const routes = JSON.parse(buffer)
@@ -66,12 +53,15 @@ module.exports = (app) => {
       return acc
     }, {})
 
+    //to-do register model in Puppy.models[name] = model
+    //to do Object.defineProperty
+    Puppy.models[name] = model
+    Puppy.templates[name] = { pdf, email }
+    const controller = new Controller(name, localController)
+
+    //to-do add validators
     routes.forEach(r => {
-      if (r.action === 'print' || r.action === 'email') {
-        router[r.method](r.path, isAllowed(r.action), injectModel(model), injectTemplates({ pdf, email }), controller[r.action].bind(controller))
-      } else {
-        router[r.method](r.path, isAllowed(r.action), injectModel(model), controller[r.action].bind(controller))
-      }
+      router[r.method](r.path, isAllowed(r.action), controller[r.action])
     })
 
     app.use(`/api/${name}`, router)

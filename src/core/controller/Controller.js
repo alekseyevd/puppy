@@ -5,6 +5,7 @@ const update = require('./actions/update')
 const deleteOne = require('./actions/delete')
 const print = require('./actions/print')
 const email = require('./actions/email')
+const Puppy = require('../Puppy')
 
 // module.exports = {
 //   find,
@@ -19,6 +20,7 @@ const email = require('./actions/email')
 class Controller {
   constructor(entity, params = {}) {
     this.model = Puppy.models[entity]
+    this.templates = Puppy.templates[entity]
 
     this.find = find.bind(this)
     this.findOne = findOne.bind(this)

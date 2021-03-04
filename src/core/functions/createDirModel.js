@@ -12,10 +12,11 @@ module.exports = function (name, params) {
       type: Number,
       default: 1
     },
-    user_id: {
+    addedBy: {
       type: Types.ObjectId,
       ref: 'User'
-    }
+    },
+    folder: { type: String }
   }
 
   const props = Object.assign(params, initial)

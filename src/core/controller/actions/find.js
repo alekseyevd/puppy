@@ -15,7 +15,7 @@ module.exports = async function (req, res, next) {
   if (this.beforeFind) this.beforeFind()
   
   try {
-    const Model = req.model
+    const Model = this.model
 
     if (req.query.filter && !isJsonValid(req.query.filter))
       throw createError(400, 'query param \'filter\' is not valid json string.')

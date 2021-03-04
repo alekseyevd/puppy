@@ -2,7 +2,7 @@ const createError = require('http-errors')
 
 module.exports = async function deleteOne(req, res, next) {
   try {
-    const Model = req.model
+    const Model = this.model
 
     const filter = { id: req.params.id }
 

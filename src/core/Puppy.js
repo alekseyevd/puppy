@@ -1,3 +1,5 @@
 module.exports = {
-  models: {}
+  models: {},
+  templates: {},
+  
 }

@@ -4,15 +4,14 @@ const fs = require('fs')
 //var pdf = require('html-pdf');
 const createPdf = require('../../services/pdf/Pdf')
 
-module.exports = async (req, res, next) => {
+module.exports = async function (req, res, next) {
   try {
-    const Model = req.model
-    if (!Model) throw createError(404, 'not found')
+    const Model = this.model
 
     const id = req.query.template_id
     if (!id) throw createError(400, 'bad request')
 
-    const templates = req.templates.pdf
+    const templates = this.templates.pdf
     if (!templates[id]) throw createError(404, 'template not found')
 
     const { documentName, fileName } = templates[id]

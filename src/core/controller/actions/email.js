@@ -9,14 +9,14 @@ const createPdf = require('../../services/pdf/Pdf')
 module.exports = async function (req, res, next) {
   try {
     const { pdf_ids, template_id, to } = req.body
-    const { pdf, email } = req.templates
+    const { pdf, email } = this.templates
 
     // to-do validate fields
     if (!to) throw createError(400, 'bad request')
     if (!template_id) throw createError(400, 'bad request')
     if (!email[template_id]) createError(400, 'bad request')
 
-    const Model = req.model
+    const Model = this.model
 
     const entity = await Model.findOne({id: req.params.id})
     if (!entity) throw createError(404, 'not found')
