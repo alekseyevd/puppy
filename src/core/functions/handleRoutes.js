@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path')
 const { Router } = require('express')
+const Puppy = require('../Puppy');
 
 module.exports = (app) => {
   const apiPath = path.resolve(__dirname, '../../api/dir')
@@ -17,19 +18,32 @@ module.exports = (app) => {
   const injectModel = require('../../middleware/injectModel')
   const injectTemplates = require('../../middleware/injectTemplates')
   const Controller = require('../controller/Controller')
+  const createDirModel = require('./createDirModel')
 
 
   dirs.forEach(dir => {
     const { path, name } = dir 
     const router = Router()
     const localController = require(`${path}/Controller`)
-    const model = require(`${path}/Model`)
+    //const model = require(`${path}/Model`)
+
+    const schema = require(`${path}/schema`)
+    const model = createDirModel(name, schema)
+
+    //to-do register model in Puppy.models[name] = model
+    //to do Object.defineProperty
+    Puppy.models[name] = model
+
     let buffer = fs.readFileSync(`${path}/permissions.json`)
     const permissions = JSON.parse(buffer)
 
     const { isAllowed } = accessControl(permissions)
 
-    controller = Object.assign(Controller, localController)
+    //const controller = Object.assign(Controller, localController) 
+    const controller = new Controller(name, localController)
+    //todo controller.model = Model
+
+    controller.model = model //to do delete
 
     buffer = fs.readFileSync(`${path}/routes.json`)
     const routes = JSON.parse(buffer)

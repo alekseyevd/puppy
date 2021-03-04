@@ -13,7 +13,7 @@ app.use(express.json({ extended: true }))
 app.use('/api/auth', require('./services/auth/router'))
 app.use(isAuthenticated)
 
-handleRoutes(app)
+handleRoutes(app, 'dir')
 
 app.use('/api/users', isAdmin, require('./services/users/router'))
 app.use(errorHandler)
