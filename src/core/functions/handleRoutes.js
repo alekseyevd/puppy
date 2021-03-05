@@ -3,8 +3,8 @@ const path = require('path')
 const { Router } = require('express')
 const Puppy = require('../Puppy');
 
-module.exports = (app) => {
-  const apiPath = path.resolve(__dirname, '../../api/dir')
+module.exports = (app, type) => {
+  const apiPath = path.resolve(__dirname, `../../api/${type}`)
   const dirs = fs.readdirSync(apiPath, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => {
@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   const accessControl = require('../../middleware/accessControl')
   const Controller = require('../controller/Controller')
-  const createDirModel = require('./createDirModel')
+  const createModel = require('./createModel')
 
 
   dirs.forEach(dir => {
@@ -25,7 +25,7 @@ module.exports = (app) => {
     const localController = require(`${path}/Controller`)
 
     const schema = require(`${path}/schema`)
-    const model = createDirModel(name, schema)
+    const model = createModel(type, name, schema)
 
     let buffer = fs.readFileSync(`${path}/permissions.json`)
     const permissions = JSON.parse(buffer)

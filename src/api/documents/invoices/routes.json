@@ -1,0 +1,37 @@
+[
+  {
+    "method": "get",
+    "path": "/",
+    "action": "find"
+  },
+  {
+    "method": "get",
+    "path": "/:id",
+    "action": "findOne"
+  },
+  {
+    "method": "post",
+    "path": "/",
+    "action": "create"
+  },
+  {
+    "method": "post",
+    "path": "/:id",
+    "action": "update"
+  },
+  {
+    "method": "delete",
+    "path": "/:id",
+    "action": "deleteOne"
+  },
+  {
+    "method": "get",
+    "path": "/:id/print",
+    "action": "print"
+  },
+  {
+    "method": "post",
+    "path": "/:id/email",
+    "action": "email"
+  }
+]

@@ -1,7 +1,7 @@
 const { Schema, model, Types } = require('mongoose')
 const { v4: uuid } = require('uuid')
 
-module.exports = function (name, params) {
+module.exports = function (type, name, params) {
   const initial = {
     id: {
       type: String,
@@ -17,6 +17,20 @@ module.exports = function (name, params) {
       ref: 'User'
     },
     folder: { type: String }
+  }
+
+  if (type === 'directories') {
+    initial.folder = { type: String }
+  }
+
+  if (type === 'documents') {
+    initial.owner = {
+      type: Types.ObjectId,
+      ref: 'owners'
+    }
+
+    initial.date = { type: Date }
+    initial.number = { type: String }
   }
 
   const props = Object.assign(params, initial)

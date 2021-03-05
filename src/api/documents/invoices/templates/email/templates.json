@@ -1,0 +1,8 @@
+[
+  {
+    "id": 1,
+    "name": "Шаблон имейл 1",
+    "subject": "Имя документа {{ name }}",
+    "fileName": "email.html"
+  }
+]
