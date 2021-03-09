@@ -1,5 +1,4 @@
 const dotenv = require('dotenv')
-const { parseWithoutProcessing } = require('handlebars')
 
 dotenv.config()
 

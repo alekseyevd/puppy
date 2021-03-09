@@ -1,7 +1,8 @@
-const fs = require('fs');
+const fs = require('fs')
 const path = require('path')
 const { Router } = require('express')
-const Puppy = require('../Puppy');
+const Puppy = require('../Puppy')
+const isAuthenticated = require('../../middleware/authenticate')
 
 module.exports = (app, type) => {
   const apiPath = path.resolve(__dirname, `../../api/${type}`)
@@ -20,12 +21,10 @@ module.exports = (app, type) => {
 
 
   dirs.forEach(dir => {
+    // to do check uf json files exist
     const { path, name } = dir 
     const router = Router()
     const localController = require(`${path}/Controller`)
-
-    const schema = require(`${path}/schema`)
-    const model = createModel(type, name, schema)
 
     let buffer = fs.readFileSync(`${path}/permissions.json`)
     const permissions = JSON.parse(buffer)
@@ -35,35 +34,42 @@ module.exports = (app, type) => {
     buffer = fs.readFileSync(`${path}/routes.json`)
     const routes = JSON.parse(buffer)
 
-    buffer = fs.readFileSync(`${path}/templates/pdf/templates.json`)
-    let pdfTemplates = JSON.parse(buffer)
+    if (type !== 'custom') {
+      const schema = require(`${path}/schema`)
+      const model = createModel(type, name, schema)
+  
+      buffer = fs.readFileSync(`${path}/templates/pdf/templates.json`)
+      let pdfTemplates = JSON.parse(buffer)
+  
+      const pdf = pdfTemplates.reduce((acc, template) => {
+        template.fileName = `${path}/templates/pdf/${template.fileName}`
+        acc[template.id] = template
+        return acc
+      }, {})
+  
+      buffer = fs.readFileSync(`${path}/templates/email/templates.json`)
+      let emailTemplates = JSON.parse(buffer)
+  
+      const email = emailTemplates.reduce((acc, template) => {
+        template.fileName = `${path}/templates/email/${template.fileName}`
+        acc[template.id] = template
+        return acc
+      }, {})
+  
+      //to-do register model in Puppy.models[name] = model
+      //to do Object.defineProperty
+      Puppy.models[name] = model
+      Puppy.templates[name] = { pdf, email }
+    }
 
-    const pdf = pdfTemplates.reduce((acc, template) => {
-      template.fileName = `${path}/templates/pdf/${template.fileName}`
-      acc[template.id] = template
-      return acc
-    }, {})
 
-    buffer = fs.readFileSync(`${path}/templates/email/templates.json`)
-    let emailTemplates = JSON.parse(buffer)
-
-    const email = emailTemplates.reduce((acc, template) => {
-      template.fileName = `${path}/templates/email/${template.fileName}`
-      acc[template.id] = template
-      return acc
-    }, {})
-
-    //to-do register model in Puppy.models[name] = model
-    //to do Object.defineProperty
-    Puppy.models[name] = model
-    Puppy.templates[name] = { pdf, email }
-    const controller = new Controller(name, localController)
+    const controller = new Controller(localController, type !== 'custom' ? name : null)
 
     //to-do add validators
     routes.forEach(r => {
-      router[r.method](r.path, isAllowed(r.action), controller[r.action])
+      router[r.method](r.path, isAuthenticated, isAllowed(r.action), controller[r.action])
     })
 
-    app.use(`/api/${name}`, router)
+    app.use(`/api/${type !== 'custom' ? name : 'custom/'+name }`, router)
   })
 }
