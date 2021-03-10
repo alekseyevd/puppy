@@ -1,7 +1,7 @@
 const path = require('path')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
-const CopyPlugin = require('copy-webpack-plugin')
+// const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
@@ -19,23 +19,23 @@ const jsLoaders = () => {
       options: {
         presets: [
           ['@babel/preset-react', {
-            "runtime": "automatic"
+            'runtime': 'automatic'
           }]
         ],
-       // plugins: ['@babel/plugin-proposal-class-properties']
+        // plugins: ['@babel/plugin-proposal-class-properties']
       }
     }
   ]
 
-  // if (isDev) {
-  //   loaders.push('eslint-loader')
-  // }
+  if (isDev) {
+    loaders.push('eslint-loader')
+  }
 
   return loaders
 }
 
 const optimization = () => {
-  config = {
+  const config = {
     splitChunks: {
       chunks: 'all'
     }
@@ -65,7 +65,8 @@ module.exports = {
     hot: true,
     proxy: {
       '/api': 'http://localhost:5000'
-    }
+    },
+    historyApiFallback: true,
   },
   target: isDev ? 'web' : 'browserslist',
   optimization: optimization(),
@@ -74,13 +75,13 @@ module.exports = {
       {
         test: /\.css$/i,
         use: [
-         // MiniCssExtractPlugin.loader,
+          // MiniCssExtractPlugin.loader,
           (isDev ? 'style-loader' : MiniCssExtractPlugin.loader),
           {
             loader: 'css-loader',
             options: {
               modules: {
-                localIdentName: "[name]__[local]___[hash:base64:5]",
+                localIdentName: '[name]__[local]___[hash:base64:5]',
               },
               sourceMap: isDev
             }
@@ -104,7 +105,7 @@ module.exports = {
     ]
   },
   plugins: [
-    //new webpack.ProgressPlugin(),
+    // new webpack.ProgressPlugin(),
     new CleanWebpackPlugin({
       dry: isDev,
     }),

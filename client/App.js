@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useAuth } from './services/auth'
 import { useEffect } from 'react'
 import styles from './app.css'

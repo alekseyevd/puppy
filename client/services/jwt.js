@@ -1,10 +1,9 @@
 export function decode(token) {
   try {
-    if (token.split('.').length !== 3 || typeof token !== 'string')
-      throw new Error() 
+    if (token.split('.').length !== 3 || typeof token !== 'string') throw new Error()
 
     const payload = token.split('.')[1]
-    const base64 = payload.replace("-", "+").replace("_", "/")
+    const base64 = payload.replace('-', '+').replace('_', '/')
     const decoded = JSON.parse(atob(base64))
     return decoded
   } catch (error) {
