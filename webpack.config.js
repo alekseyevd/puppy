@@ -3,12 +3,14 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 const webpack = require('webpack')
 
 const isProd = process.env.NODE_ENV === 'production'
 const isDev = !isProd
 
-const filename = ext => isDev ? `bundle.${ext}` : `bundle.[contenthash].${ext}`
+const filename = ext => isDev ? `bundle.[contenthash].${ext}` : `[name].[contenthash].${ext}`
 
 const jsLoaders = () => {
   const loaders = [
@@ -32,22 +34,41 @@ const jsLoaders = () => {
   return loaders
 }
 
+const optimization = () => {
+  config = {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
+  if (isProd) {
+    config.minimizer = [
+      new OptimizeCssAssetWebpackPlugin(),
+      new TerserWebpackPlugin()
+    ]
+  }
+  return config
+}
+
 module.exports = {
-  context: path.resolve(__dirname, 'src/client'),
+  context: path.resolve(__dirname, './client'),
   mode: 'development',
   entry: ['@babel/polyfill', './index.js'],
   output: {
     filename: filename('js'),
-    path: path.resolve(__dirname, './src/client/dist')
+    path: path.resolve(__dirname, './src/public')
   },
   devtool: isDev ? 'eval': false,
   devServer: {
-    //contentBase: path.join(__dirname, './src/public'),
+    contentBase: path.join(__dirname, './client/public'),
     port: 3000,
     open: isDev,
     hot: true,
+    proxy: {
+      '/api': 'http://localhost:5000'
+    }
   },
   target: isDev ? 'web' : 'browserslist',
+  optimization: optimization(),
   module: {
     rules: [
       {
@@ -83,7 +104,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    //new webpack.ProgressPlugin(),
+    new CleanWebpackPlugin({
+      dry: isDev,
+    }),
     new HTMLWebpackPlugin({
       template: 'index.html',
       minify: {
@@ -91,14 +115,14 @@ module.exports = {
         collapseWhitespace: isProd
       }
     }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve(__dirname, 'src/client/dist'),
-          to: path.resolve(__dirname, 'src/public')
-        },
-      ]
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     {
+    //       from: path.resolve(__dirname, 'src/client/dist'),
+    //       to: path.resolve(__dirname, 'src/public')
+    //     },
+    //   ]
+    // }),
     new MiniCssExtractPlugin({
       filename: filename('css')
     }),

@@ -1,0 +1,8 @@
+.container {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: azure;
+}
