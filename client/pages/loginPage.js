@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { validate, validateForm } from '../services/formValidate'
 import styles from './login.module.css'
 import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import { Context } from '../core/context'
 
 export default function() {
+  const authcontext = useContext(Context)
+
   const [state, setState] = useState({
     isFormValid: false,
     formControls: {
@@ -54,6 +57,7 @@ export default function() {
   const submitHandler = (e) => {
     e.preventDefault()
     console.log(state)
+    // to-do axios.post /api/auth/login
   }
 
   return (

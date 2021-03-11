@@ -4,21 +4,24 @@ import { useEffect } from 'react'
 import styles from './app.css'
 import './styles.css'
 import LoginPage from './pages/loginPage'
+import { Context } from './core/context'
 
 const App = () => {
   const {token, login, logout, user, ready} = useAuth()
-  console.log('user', user);
+  // console.log('user', user);
 
-  if (!user) {
-    return (
-      <LoginPage/>
-    )
-  }
+  if (!ready) return <div>looading...</div>
 
   return (
-    <div className={styles.root}>
-      Hello World
-    </div>
+    <Context.Provider value={{ token, user, login, logout }}>
+      { user
+        ? <div className={styles.root}>
+              Hello World
+        </div>
+        : <LoginPage />
+      }
+    </Context.Provider>
+
   )
 }
 

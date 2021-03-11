@@ -1,4 +1,6 @@
+import axios from 'axios'
 import { useState, useCallback, useEffect } from 'react'
+import { useHttp } from './http'
 import { decode, isExpired } from './jwt'
 
 const LOCAL_STORAGE_KEY = 'JWT'
@@ -27,7 +29,7 @@ export const useAuth = () => {
 
   useEffect( () => {
     const jwtoken = localStorage.getItem(LOCAL_STORAGE_KEY)
-
+    console.log('ad');
     const data = decode(jwtoken)
     const expired = isExpired(jwtoken)
 
@@ -36,7 +38,7 @@ export const useAuth = () => {
     }
 
     setReady(true)
-  }, [])
+  }, [login])
 
   return { login, logout, token, user, ready }
 }
