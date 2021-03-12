@@ -5,6 +5,7 @@ import styles from './app.css'
 import './styles.css'
 import LoginPage from './pages/loginPage'
 import { Context } from './core/context'
+import Button from '@material-ui/core/Button'
 
 const App = () => {
   const {token, login, logout, user, ready} = useAuth()
@@ -16,7 +17,15 @@ const App = () => {
     <Context.Provider value={{ token, user, login, logout }}>
       { user
         ? <div className={styles.root}>
-              Hello World
+          <div>
+            {JSON.stringify(user)}
+            <Button
+              onClick={logout}
+              variant="contained"
+              color="primary"
+              size="large">Exit
+            </Button>
+          </div>
         </div>
         : <LoginPage />
       }

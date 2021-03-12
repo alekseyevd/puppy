@@ -4,7 +4,7 @@ const { compareSync, hashSync } = require('bcryptjs')
 const AuthServise = require('./authService')
 const createError = require('http-errors')
 
-const router = Router()
+const router = new Router()
 
 /**
  * @route   POST api/auth/login
@@ -39,14 +39,14 @@ router.post('/login', async (req, res, next) => {
  * @access  Private
  */
 
- // to-do make private
+// to-do make private
 router.post('/register', async (req, res, next) => {
   const { login, password } = req.body
 
   // to-do validate fields
   try {
-  const user = await User.findOne({ login })
-  if (user) return next(createError(409, 'User alredy exist'))
+    const user = await User.findOne({ login })
+    if (user) return next(createError(409, 'User alredy exist'))
 
     const hashedPassword = hashSync(password, 10)
 
@@ -54,9 +54,9 @@ router.post('/register', async (req, res, next) => {
       login,
       password: hashedPassword
     })
-  
+
     await newUser.save()
-  
+
     res.json({ result: true })
   } catch (error) {
     return next(createError(500, error.message))
@@ -85,7 +85,6 @@ router.post('/refresh', async (req, res, next) => {
     res.json({
       result: true,
       ...tokens})
-
   } catch (error) {
     return next(createError(500, error.message))
   }

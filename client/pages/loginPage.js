@@ -5,11 +5,10 @@ import styles from './login.module.css'
 import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import { useHttp } from '../services/http'
 import { Context } from '../core/context'
 
 export default function() {
-  const authcontext = useContext(Context)
-
   const [state, setState] = useState({
     isFormValid: false,
     formControls: {
@@ -38,6 +37,9 @@ export default function() {
     }
   })
 
+  const { request } = useHttp()
+  const { login } = useContext(Context)
+
   const changeHandler = event => {
     // setState({ ...state, [event.target.name]: event.target.value })
     const formControls = {...state.formControls}
@@ -54,10 +56,25 @@ export default function() {
     })
   }
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault()
-    console.log(state)
-    // to-do axios.post /api/auth/login
+    const data = Object.keys(state.formControls)
+        .reduce((acc, key) => {
+          acc[key] = state.formControls[key].value
+          return acc
+        }, {})
+    try {
+      const response = await request({
+        url: '/api/auth/login',
+        method: 'POST',
+        data
+      })
+      // console.log(data)
+      console.log(response.data)
+      login(response.data)
+    } catch (error) {
+      console.log('login page', error.response);
+    }
   }
 
   return (

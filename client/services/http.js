@@ -1,39 +1,49 @@
 import { useState, useCallback, useContext } from 'react'
 import { isExpired } from './jwt'
-import { context } from '../core/context'
+import { Context } from '../core/context'
 import axios from 'axios'
 // import axios from 'axios'
 
 export const useHttp = () => {
   const [isLoading, setLoading] = useState(false)
 
-  const { token, login, refreshToken } = useContext(context)
+  const { token, login, logout, refreshToken } = useContext(Context)
 
   const request = useCallback(async (config) => {
-    setLoading(true)
+    try {
+      setLoading(true)
 
-    const instance = axios.create({
-      headers: { Authorization: `Bearer ${token}` }
-    })
+      let jwtoken = token
+      if (jwtoken && isExpired(jwtoken)) {
+        axios({
+          method: 'post',
+          url: '/api/auth/refresh',
+          data: { refreshToken },
+          headers: { Authorization: `Bearer ${jwtoken}`}
+        }).then(response => {
+          jwtoken = response.data.jwtoken
+          login(response.data)
+        }).catch(error => {
+          if (error.response.status !== 500) {
+            logout()
+          }
+          throw error
+        })
+      }
 
-    instance.post('/api/auth/login')
+      const instance = jwtoken
+        ? axios.create({
+          headers: { Authorization: `Bearer ${jwtoken}` }
+        })
+        : axios
 
-
-    // to-do check if token not expired
-    // if expired try to update
-    // const response = await axios(config)
-    // if (isExpired(token)) {
-    //   const response = await axios({
-    //     method: 'post',
-    //     url: '/api/auth/refresh',
-    //     data: { refreshToken },
-    //     headers: { Authorization: `Bearer ${token}`}
-    //   });
-    // }
-
-
-
-    setLoading(false)
+      const response = await instance(config)
+      setLoading(false)
+      return response
+    } catch (error) {
+      setLoading(false)
+      throw error
+    }
   }, [])
   return { request, isLoading }
 }

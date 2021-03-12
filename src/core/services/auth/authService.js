@@ -19,15 +19,15 @@ async function issueTokens(data) {
   const id = result.id
 
   return {
-    id,
+    refreshToken: id,
     jwtoken
   }
 }
 
 async function refreshToken(id, jwtoken) {
   const token = await Token.findOne({ id, jwtoken })
-  
-  if (!token || token.expiredAt < now()) return false // to-do - throw error
+
+  if (!token || token.expiredAt < now()) return false // to-do - throw error ?
 
   await Token.deleteOne({ id })
 
@@ -38,7 +38,7 @@ async function refreshToken(id, jwtoken) {
 
 async function removeToken(id) {
   const result = await Token.deleteOne({ id })
-  if (!result.deletedCount) return false //to-do throw error
+  if (!result.deletedCount) return false // to-do throw error ?
 
   // to-do add token to blacklist in redis
   return true
