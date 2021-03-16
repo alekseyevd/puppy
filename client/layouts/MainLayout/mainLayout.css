@@ -1,0 +1,23 @@
+.root {
+  display: flex;
+}
+.topBar {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+.drawer {
+  width: 240px;
+  flex-shrink: 0;
+  z-index: 120;
+}
+.drawerPaper {
+  width: 240px;
+}
+.drawerContainer {
+  overflow: auto;
+}
+.main {
+  flex-grow: 1;
+  padding: 20px;
+}

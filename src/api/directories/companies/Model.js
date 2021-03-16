@@ -6,7 +6,7 @@ const schema = new Schema({
     type: String,
     default: uuid,
     unique: true
-  }, 
+  },
   status: {
     type: Number,
     default: 1

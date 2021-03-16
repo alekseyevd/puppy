@@ -1,24 +1,24 @@
 /* eslint-disable no-unused-vars */
 import { useAuth } from './services/auth'
-import { useEffect } from 'react'
 import styles from './app.css'
 import './styles.css'
-import LoginPage from './pages/loginPage'
+import LoginPage from './pages/Login'
 import { Context } from './core/context'
-import Button from '@material-ui/core/Button'
-import AppBar from '@material-ui/core/AppBar'
-import { Toolbar, IconButton } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu';
+import useRoutes from './routes'
 
 const App = () => {
   const {token, login, logout, user, ready} = useAuth()
   // console.log('user', user);
+  const isAuthenticated = !!user
 
   if (!ready) return <div>looading...</div>
 
+  const routing = useRoutes(isAuthenticated, logout)
+
   return (
     <Context.Provider value={{ token, user, login, logout }}>
-      { user
+      {routing}
+      {/* { user
         ? <div className={styles.root}>
           <AppBar position="relative">
             <Toolbar>
@@ -44,7 +44,7 @@ const App = () => {
           </div>
         </div>
         : <LoginPage />
-      }
+      } */}
     </Context.Provider>
 
   )

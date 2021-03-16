@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useContext, useState } from 'react'
-import { validate, validateForm } from '../services/formValidate'
+import { validate, validateForm } from '../../services/formValidate'
 import styles from './login.module.css'
 import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { useHttp } from '../services/http'
-import { Context } from '../core/context'
+import { useHttp } from '../../services/http'
+import { Context } from '../../core/context'
+import { useHistory } from 'react-router-dom'
 
 export default function() {
   const [state, setState] = useState({
@@ -39,6 +40,7 @@ export default function() {
 
   const { request } = useHttp()
   const { login } = useContext(Context)
+  const history = useHistory()
 
   const changeHandler = event => {
     // setState({ ...state, [event.target.name]: event.target.value })
@@ -72,6 +74,7 @@ export default function() {
       // console.log(data)
       console.log(response.data)
       login(response.data)
+      history.push('/')
     } catch (error) {
       console.log('login page', error.response);
     }
