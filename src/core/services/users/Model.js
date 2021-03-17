@@ -6,7 +6,7 @@ const schema = new Schema({
     type: String,
     default: uuid,
     unique: true
-  }, 
+  },
   status: {
     type: Number,
     default: 1
@@ -28,13 +28,13 @@ const schema = new Schema({
   },
   person: {
     type: Types.ObjectId,
-    ref: 'Person',
-  }, 
+    ref: 'People',
+  },
   role: {
     type: String,
     required: true,
     default: 'admin'
-  }, 
+  },
 },
 {
   timestamps: true

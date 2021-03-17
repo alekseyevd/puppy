@@ -34,36 +34,6 @@ router.post('/login', async (req, res, next) => {
 })
 
 /**
- * @route   POST api/auth/register
- * @desc    User register
- * @access  Private
- */
-
-// to-do make private
-router.post('/register', async (req, res, next) => {
-  const { login, password } = req.body
-
-  // to-do validate fields
-  try {
-    const user = await User.findOne({ login })
-    if (user) return next(createError(409, 'User alredy exist'))
-
-    const hashedPassword = hashSync(password, 10)
-
-    const newUser = new User({
-      login,
-      password: hashedPassword
-    })
-
-    await newUser.save()
-
-    res.json({ result: true })
-  } catch (error) {
-    return next(createError(500, error.message))
-  }
-})
-
-/**
  * @route   POST api/auth/refresh
  * @desc    User refresh tokens
  * @access  Private

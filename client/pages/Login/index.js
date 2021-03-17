@@ -17,7 +17,7 @@ export default function() {
         value: '',
         type: 'text',
         label: 'Email',
-        errorMessage: 'Введите ллогин',
+        errorMessage: 'Введите логин',
         valid: false,
         touched: false,
         validation: {
@@ -77,6 +77,7 @@ export default function() {
       history.push('/')
     } catch (error) {
       console.log('login page', error.response);
+      // to-do show error message
     }
   }
 
