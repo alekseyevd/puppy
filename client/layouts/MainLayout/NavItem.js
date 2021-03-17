@@ -24,7 +24,7 @@ const NavItem = (props) => {
     <ListItem disableGutters className={styles.item}>
       <Button
         component={NavLink}
-        to={props.to}
+        to={`/${props.to}`}
         className={styles.link}
         activeClassName={styles.active}
       >

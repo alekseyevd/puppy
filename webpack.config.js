@@ -55,6 +55,7 @@ module.exports = {
   entry: ['@babel/polyfill', './index.js'],
   output: {
     filename: filename('js'),
+    publicPath: '/',
     path: path.resolve(__dirname, './src/public')
   },
   devtool: isDev ? 'eval': false,
@@ -66,7 +67,7 @@ module.exports = {
     proxy: {
       '/api': 'http://localhost:5000'
     },
-    historyApiFallback: true,
+    historyApiFallback: true
   },
   target: isDev ? 'web' : 'browserslist',
   optimization: optimization(),
