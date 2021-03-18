@@ -42,7 +42,7 @@ module.exports = {
       const hashedPassword = hashSync(password, 10)
 
       const newUser = new User({
-        login,
+        ...req.body,
         password: hashedPassword
       })
 

@@ -1,27 +1,38 @@
 /* eslint-disable no-unused-vars */
-import { Container, makeStyles, TextField, FormControl, InputLabel, Select } from '@material-ui/core'
+import {
+  Container,
+  makeStyles,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  Button,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import data from '../Table/data'
 import { validate, validateForm } from '../../services/formValidate'
+import { useHttp } from '../../services/http';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
       marginTop: '10px',
-      width: '25ch',
     },
     '& .MuiFormControl-root': {
       marginTop: '10px',
-      width: '25ch',
+      width: '100%'
     }
   },
 }));
 
-const Item = () => {
+const Item = ({close, addUserToState}) => {
   const styles = useStyles()
+  const { request, isLoading } = useHttp()
   const { id } = useParams()
-  const user = data.find(item => item.id === +id)
 
   const [state, setState] = useState({
     isFormValid: false,
@@ -57,23 +68,30 @@ const Item = () => {
         validation: {
           required: true
         }
-      },
-      email: {
-        value: '',
-        type: 'text',
-        label: 'Email',
-        valid: true,
-        touched: false,
-      },
-      phone: {
-        value: '',
-        type: 'text',
-        label: 'Телефон',
-        valid: true,
-        touched: false,
-      },
+      }
     }
   })
+
+  const addUser = async () => {
+    const data = Object.keys(state.formControls)
+        .reduce((acc, key) => {
+          acc[key] = state.formControls[key].value
+          return acc
+        }, {})
+    try {
+      const res = await request({
+        url: '/api/users',
+        method: 'POST',
+        data
+      })
+      console.log(res);
+      const user = res.data.data
+      addUserToState(user)
+      close()
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const changeHandler = event => {
     // setState({ ...state, [event.target.name]: event.target.value })
@@ -94,74 +112,71 @@ const Item = () => {
   // to-do post request to api/users
 
   return (
-    <Container maxWidth={false} className={styles.root}>
-      <div>
-        <TextField
-          required
-          id="login"
-          name="login"
-          label="Логин"
-          variant="outlined"
-          value={state.formControls.login.value}
-          onChange={changeHandler}
-        />
-      </div>
-      <div>
-        <TextField
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          variant="outlined"
-          value={state.formControls.password.value}
-          onChange={changeHandler}
-        />
-      </div>
-      <div>
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-age-native-simple">Роль</InputLabel>
-          <Select
-            native
-            value={state.formControls.role.value}
+    <>
+      <DialogTitle id="form-dialog-title">Новый пользователь</DialogTitle>
+      <DialogContent className={styles.root}>
+        <DialogContentText>
+          To subscribe to this website, please enter your email address here. We will send updates
+          occasionally.
+        </DialogContentText>
+        <div>
+          <TextField
+            required
+            fullWidth
+            id="login"
+            name="login"
+            label="Логин"
+            variant="outlined"
+            error={state.formControls.login.touched && !state.formControls.login.valid}
+            value={state.formControls.login.value}
             onChange={changeHandler}
-            label="Роль"
-            inputProps={{
-              name: 'role',
-              id: 'outlined-age-native-simple',
-            }}
-          >
-            <option aria-label="None" value="" />
-            <option value={'admin'}>Администратор</option>
-            <option value={'user'}>Пользователь</option>
-          </Select>
-        </FormControl>
-      </div>
-      <div>
-        <TextField
-          id="email"
-          name="email"
-          label="email"
-          variant="outlined"
-          value={state.formControls.email.value}
-          onChange={changeHandler}
-        />
-      </div>
-      <div>
-        <TextField
-          id="phone"
-          name="phone"
-          label="phone"
-          variant="outlined"
-          value={state.formControls.phone.value}
-          onChange={changeHandler}
-        />
-      </div>
-      <div>
-        <TextField id="outlined-search" label="Физическое лицо" type="search" variant="outlined" />
-      </div>
-      <button onClick={()=>console.log(state)}>state</button>
-    </Container>
+          />
+        </div>
+        <div>
+          <TextField
+            required
+            fullWidth
+            id="password"
+            name="password"
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            variant="outlined"
+            error={state.formControls.password.touched && !state.formControls.password.valid}
+            value={state.formControls.password.value}
+            onChange={changeHandler}
+          />
+        </div>
+        <div>
+          <FormControl variant="outlined">
+            <InputLabel htmlFor="outlined-age-native-simple">Роль</InputLabel>
+            <Select
+              native
+              error={state.formControls.role.touched && !state.formControls.role.valid}
+              value={state.formControls.role.value}
+              onChange={changeHandler}
+              label="Роль"
+              inputProps={{
+                name: 'role',
+                id: 'outlined-age-native-simple',
+              }}
+            >
+              <option aria-label="None" value="" />
+              <option value={'admin'}>Администратор</option>
+              <option value={'user'}>Пользователь</option>
+            </Select>
+          </FormControl>
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => confirm('Вы уверены?') ? close() : null} variant="contained">
+          Отменить
+        </Button>
+        <Button onClick={addUser} color="primary" variant="contained" disabled={!state.isFormValid}>
+          Сохранить
+        </Button>
+      </DialogActions>
+    </>
   )
 }
 
