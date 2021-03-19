@@ -10,7 +10,7 @@ module.exports = async () => {
       role: 'registered'
     })
   }
-  
+
   await User.insertMany(users)
 }
 

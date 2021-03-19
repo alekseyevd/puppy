@@ -5,7 +5,7 @@ const { hashSync } = require('bcryptjs')
 module.exports = {
   async find(req, res, next) {
     try {
-      const data = await User.find().select('-password')
+      const data = await User.find({ status: 1 }).select('-password')
       res.json({
         result: true,
         data
@@ -56,10 +56,17 @@ module.exports = {
       return next(createHttpError(500, error.message))
     }
   },
+
   async update(req, res, next) {
     try {
       const id = req.params.id
-      const result = await User.updateOne({ id }, req.body)
+
+      const data = req.body
+      if (data.password) {
+        req.body.password = hashSync(data.password, 10)
+      } else delete data.password
+
+      const result = await User.updateOne({ id }, data)
 
       if (result.n === 0) throw createHttpError(404, 'not found')
 
@@ -75,9 +82,10 @@ module.exports = {
   async deleteOne(req, res, next) {
     try {
       // to-do root user is not allowed to be deleted
+      // to-do check if user id exists in others documents
 
       const id = req.params.id
-      const result = await User.updateOne({ id }, { status: 3 })
+      const result = await User.updateOne({ id }, { status: 3 }, { timestamps: false })
 
       if (result.n === 0) throw createHttpError(404, 'not found')
 

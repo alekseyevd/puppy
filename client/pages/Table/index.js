@@ -20,7 +20,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { useHistory } from 'react-router-dom'
 import { useHttp } from '../../services/http'
 import { useEffect, useState } from 'react'
-import Item from '../Item'
+import Item from '../AddItem'
 
 
 export default function DataTable() {
@@ -73,9 +73,32 @@ export default function DataTable() {
   };
 
   const addUserToState = (user) => {
-    const cloneUusers = JSON.parse(JSON.stringify(users))
-    cloneUusers.unshift(user)
-    setUsers(cloneUusers)
+    const cloneUsers = JSON.parse(JSON.stringify(users))
+    cloneUsers.unshift(user)
+    setUsers(cloneUsers)
+  }
+
+  const moveTo = async (e, id, to) => {
+    e.stopPropagation()
+    try {
+      const data = {
+        status: to === 'trash' ? 3 : 2
+      }
+      const response = await request({
+        url: `/api/users/${id}`,
+        method: 'POST',
+        data
+      })
+      console.log(response)
+      const newUsers = JSON.parse(JSON.stringify(users))
+          .filter(user => user.id !== id)
+      const newSelectedUserIds = JSON.parse(JSON.stringify(selectedUserIds))
+          .filter(selectedId => selectedId !== id)
+      setUsers(newUsers)
+      setSelectedUserIds(newSelectedUserIds)
+    } catch (error) {
+      console.log(error.response);
+    }
   }
 
   useEffect(async () => {
@@ -85,7 +108,7 @@ export default function DataTable() {
     } catch (error) {
       console.log(error.response)
     }
-  }, [request])
+  }, [])
 
   if (isLoading) return <div>loading...</div>
 
@@ -112,6 +135,10 @@ export default function DataTable() {
                   <Checkbox
                     color="primary"
                     onChange={handleSelectAll}
+                    indeterminate={
+                      selectedUserIds.length > 0
+                      && selectedUserIds.length < users.length
+                    }
                   />
                 </TableCell>
                 <TableCell align="left">
@@ -120,8 +147,7 @@ export default function DataTable() {
                 <TableCell>
                   Роль
                 </TableCell>
-                <TableCell>
-                </TableCell>
+                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -135,6 +161,7 @@ export default function DataTable() {
                   <TableCell padding="checkbox">
                     <Checkbox
                       value="true"
+                      color="primary"
                       onClick={e => handleSelectOne(e, user.id)}
                       checked={selectedUserIds.indexOf(user.id) !== -1}
                     />
@@ -151,7 +178,10 @@ export default function DataTable() {
                     {user.role}
                   </TableCell>
                   <TableCell style={{textAlign: 'right'}}>
-                    <IconButton size="small" onClick={e=> e.stopPropagation()}>
+                    <IconButton size="small" onClick={(e) => moveTo(e, user.id, 'archive')}>
+                      <Icon fontSize="small">archive</Icon>
+                    </IconButton>
+                    <IconButton size="small" onClick={(e) => moveTo(e, user.id, 'trash')}>
                       <Icon fontSize="small">delete</Icon>
                     </IconButton>
                   </TableCell>

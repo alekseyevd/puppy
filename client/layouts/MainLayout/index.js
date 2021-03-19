@@ -5,6 +5,7 @@ import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import MenuIcon from '@material-ui/icons/Menu'
 import InputIcon from '@material-ui/icons/Input'
+import GroupIcon from '@material-ui/icons/Group';
 import styles from './mainLayout.css'
 import { useContext } from 'react'
 import { Context } from '../../core/context'
@@ -49,9 +50,11 @@ const MainLayout = ({children}) => {
           </List>
           <Divider />
           <List>
-            {['mail', 'Trash', 'Spam'].map((text, index) => (
-              <NavItem text={text} to={text} key={text} />
-            ))}
+            <NavItem text={'Пользователи'} to={'users'}>
+              <ListItemIcon>
+                <GroupIcon />
+              </ListItemIcon>
+            </NavItem>
           </List>
         </div>
       </Drawer>

@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Button, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core'
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import { Button, ListItem, ListItemText, makeStyles } from '@material-ui/core'
 import { NavLink } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
@@ -28,9 +27,7 @@ const NavItem = (props) => {
         className={styles.link}
         activeClassName={styles.active}
       >
-        <ListItemIcon>
-          <InboxIcon />
-        </ListItemIcon>
+        {props.children}
         <ListItemText primary={props.text} />
       </Button>
     </ListItem>
