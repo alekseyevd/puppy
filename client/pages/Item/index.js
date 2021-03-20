@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router';
-import { validate, validateForm } from '../../services/formValidate'
+import validate from '../../services/validation'
+import {validateForm} from '../../services/formValidate'
 import {
   makeStyles,
   TextField,
@@ -56,6 +57,16 @@ const Item = () => {
         valid: true,
         touched: true,
       },
+      email: {
+        value: '',
+        label: 'Email',
+        valid: true,
+        touched: true,
+        validation: {
+          mayBeEmpty: true,
+          email: true
+        }
+      },
     }
   })
   const [isReady, setReady] = useState(false)
@@ -75,7 +86,7 @@ const Item = () => {
     })
   }
 
-  const updateUser = async () => {
+  const updateUser = async (shouldClose) => {
     const data = Object.keys(state.formControls)
         .reduce((acc, key) => {
           acc[key] = state.formControls[key].value
@@ -87,7 +98,8 @@ const Item = () => {
         method: 'POST',
         data
       })
-      console.log(res);
+      console.log(res)
+      if (shouldClose) close()
     } catch (error) {
       console.log(error);
     }
@@ -118,7 +130,7 @@ const Item = () => {
     <div>
       <Toolbar>
         <Button variant="contained" color="primary" disabled={!state.isFormValid} onClick={updateUser}>Сохранить</Button>
-        <Button variant="contained" disabled={!state.isFormValid}>Сохранить и закрыть</Button>
+        <Button variant="contained" disabled={!state.isFormValid} onClick={updateUser.bind(null, true)}>Сохранить и закрыть</Button>
         <Button variant="contained" onClick={close}>Закрыть</Button>
       </Toolbar>
       <div>
@@ -175,6 +187,17 @@ const Item = () => {
           variant="outlined"
           // error={state.formControls.password.touched && !state.formControls.password.valid}
           value={state.formControls.phone.value}
+          onChange={changeHandler}
+        />
+      </div>
+      <div>
+        <TextField
+          id="email"
+          name="email"
+          label="Email"
+          variant="outlined"
+          error={state.formControls.email.touched && !state.formControls.email.valid}
+          value={state.formControls.email.value}
           onChange={changeHandler}
         />
       </div>

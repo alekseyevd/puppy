@@ -13,7 +13,7 @@ const App = () => {
 
   if (!ready) return <div>looading...</div>
 
-  const routing = useRoutes(isAuthenticated, logout)
+  const routing = useRoutes(isAuthenticated)
 
   return (
     <Context.Provider value={{ token, user, login, logout }}>

@@ -7,7 +7,7 @@ import DataTable from './pages/Table'
 import AddItem from './pages/AddItem'
 import Item from './pages/Item'
 
-export default function(isAuthenticated = false, logout) {
+export default function(isAuthenticated = false) {
   if (!isAuthenticated) {
     return (
       <Switch>
