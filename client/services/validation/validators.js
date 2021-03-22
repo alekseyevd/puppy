@@ -3,9 +3,19 @@ const validators = {
     return value.trim() !== ''
   },
 
+  empty(value) {
+    return value.trim() === ''
+  },
+
   email(value) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(value).toLowerCase())
+  },
+
+  match(value, regex) {
+    const r = new RegExp(regex)
+    const match = value.match(r);
+    return match && value === match[0];
   }
 }
 

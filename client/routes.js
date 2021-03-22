@@ -2,10 +2,9 @@
 import { Redirect, Navigate, Route, Switch } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import loginPage from './pages/Login'
-import Button from '@material-ui/core/Button'
 import DataTable from './pages/Table'
-import AddItem from './pages/AddItem'
 import Item from './pages/Item'
+import People from './pages/People'
 
 export default function(isAuthenticated = false) {
   if (!isAuthenticated) {
@@ -30,6 +29,12 @@ export default function(isAuthenticated = false) {
         <Route path="/users/:id" exact>
           <Item></Item>
         </Route>
+        <Route path="/people" exact>
+          <People />
+        </Route>
+        {/* <Route path="/people/:id" exact>
+          <Item></Item>
+        </Route> */}
       </Switch>
     </MainLayout>
   )

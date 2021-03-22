@@ -5,13 +5,13 @@ export default function validate(value, options = null) {
 
   let isValid = true
 
-  if (options.mayBeEmpty && value.trim === '') return true
+  if (!options.required && validators.empty(value)) return true
 
   Object.keys(options).forEach(key => {
-    if (key === 'mayBeEmpty') {
-      continue
-    }
-    isValid = validators[key](value) && isValid
+    // if (key !== 'mayBeEmpty') {
+    //   console.log(options[key])
+    isValid = validators[key](value, options[key]) && isValid
+    // }
   })
 
   return isValid

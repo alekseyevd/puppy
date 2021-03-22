@@ -9,4 +9,4 @@ module.exports = {
   beforeFind() {
     console.log('beforeFind');
   },
- }
+}

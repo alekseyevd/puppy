@@ -3,7 +3,7 @@ const createError = require('http-errors')
 module.exports = async function create(req, res, next) {
   try {
     const Model = this.model
-  
+
     // to do validate fields
     if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
       const selection = req.permissions.fields

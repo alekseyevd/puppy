@@ -1,13 +1,13 @@
 const { Schema, model, Types } = require('mongoose')
 const { v4: uuid } = require('uuid')
 
-module.exports = function (type, name, params) {
+module.exports = function(type, name, params) {
   const initial = {
     id: {
       type: String,
       default: uuid,
       unique: true
-    }, 
+    },
     status: {
       type: Number,
       default: 1
@@ -15,8 +15,7 @@ module.exports = function (type, name, params) {
     addedBy: {
       type: Types.ObjectId,
       ref: 'User'
-    },
-    folder: { type: String }
+    }
   }
 
   if (type === 'directories') {

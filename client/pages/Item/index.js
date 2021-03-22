@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router';
 import validate from '../../services/validation'
+import format from '../../services/validation/formatting'
 import {validateForm} from '../../services/formValidate'
 import {
   makeStyles,
@@ -56,6 +57,10 @@ const Item = () => {
         label: 'Телефон',
         valid: true,
         touched: true,
+        format: 'phone',
+        validation: {
+          match: '[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}'
+        }
       },
       email: {
         value: '',
@@ -63,7 +68,6 @@ const Item = () => {
         valid: true,
         touched: true,
         validation: {
-          mayBeEmpty: true,
           email: true
         }
       },
@@ -76,7 +80,10 @@ const Item = () => {
     const control = { ...formControls[event.target.name]}
 
     control.touched = true
-    control.value = event.target.value
+    // control.value = event.target.value
+    control.value = control.format
+        ? format[control.format](event.target.value)
+        : event.target.value
     control.valid = validate(control.value, control.validation)
 
     formControls[event.target.name] = control
@@ -86,7 +93,7 @@ const Item = () => {
     })
   }
 
-  const updateUser = async (shouldClose) => {
+  const updateUser = async (_, shouldClose = false) => {
     const data = Object.keys(state.formControls)
         .reduce((acc, key) => {
           acc[key] = state.formControls[key].value
@@ -185,7 +192,7 @@ const Item = () => {
           name="phone"
           label="Телефон"
           variant="outlined"
-          // error={state.formControls.password.touched && !state.formControls.password.valid}
+          error={state.formControls.phone.touched && !state.formControls.phone.valid}
           value={state.formControls.phone.value}
           onChange={changeHandler}
         />

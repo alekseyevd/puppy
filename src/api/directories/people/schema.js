@@ -1,7 +1,6 @@
 const { Types } = require('mongoose')
 
 module.exports = {
-  fullname: {type: String},
   name: {type: String},
   surname: {type: String},
   patronymic: {type: String},

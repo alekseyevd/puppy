@@ -55,6 +55,11 @@ const MainLayout = ({children}) => {
                 <GroupIcon />
               </ListItemIcon>
             </NavItem>
+            <NavItem text={'Физлица'} to={'people'}>
+              <ListItemIcon>
+                <GroupIcon />
+              </ListItemIcon>
+            </NavItem>
           </List>
         </div>
       </Drawer>
