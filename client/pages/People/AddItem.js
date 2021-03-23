@@ -3,8 +3,10 @@ import {
   makeStyles,
   TextField,
   FormControl,
-  InputLabel,
-  Select,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
   Button,
   DialogTitle,
   DialogContent,
@@ -14,13 +16,14 @@ import {
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { useState } from 'react'
-import { validate, validateForm } from '../../services/formValidate'
-import { useHttp } from '../../services/http';
-import e from 'cors';
+import { validateForm } from '../../services/formValidate'
+import validate from '../../services/validation'
+import format from '../../services/validation/formatting'
+import { useHttp } from '../../services/http'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +42,7 @@ const AddItem = ({close, addUserToState}) => {
   const { request, isLoading } = useHttp()
 
   const [state, setState] = useState({
-    isFormValid: false,
+    valid: false,
     formControls: {
       name: {
         value: '',
@@ -62,25 +65,30 @@ const AddItem = ({close, addUserToState}) => {
       patronymic: {
         value: '',
         label: 'Отчество',
-        valid: false,
+        valid: true,
         touched: false
       },
       gender: {
         value: '',
         label: 'Пол',
-        valid: false,
+        valid: true,
         touched: false
       },
       birthdate: {
-        value: '',
+        value: null,
+        type: 'date',
         label: 'Дата рождения',
-        valid: true
+        valid: true,
+        touched: false,
+        validation: {
+          date: true
+        }
       },
       phones: {
         type: 'text',
         label: 'Телефон',
         multi: true,
-        mask: 'phone',
+        format: 'phone',
         value: [''],
         valid: [true],
         touched: [false],
@@ -100,17 +108,26 @@ const AddItem = ({close, addUserToState}) => {
         }
       },
       passport: {
-        controls: {
+        type: 'group',
+        formControls: {
           number: {
-            value: ''
+            value: '',
+            valid: false,
+            format: 'phone',
+            validation: {
+              required: true
+            }
           },
           issuedDate: {
-            value: ''
+            value: null,
+            valid: true,
           },
           issuedBy: {
-            value: ''
+            value: '',
+            valid: true,
           },
-        }
+        },
+        valid: true
       }
     }
   })
@@ -136,23 +153,43 @@ const AddItem = ({close, addUserToState}) => {
     }
   }
 
-  const changeHandler = event => {
-    console.log(event);
-    const formControls = {...state.formControls}
-    const control = { ...formControls[event.target.name]}
+  const nestedtChangeHandler = (obj, name, value, index = null) => {
+    const formControls = obj.formControls
+    const field = name.split('.')
+    const key = field[0]
+    if (field.length > 1) {
+      field.shift()
+      formControls[key] = nestedtChangeHandler(formControls[key], field.join('.'), value)
+    } else {
+      if (index === null) {
+        formControls[key].touched = true
+        formControls[key].value = formControls[key].format
+          ? format[formControls[key].format](value)
+          : value
+        formControls[key].valid = validate(formControls[key].value, formControls[key].validation)
+      } else {
+        formControls[key].touched[index] = true
+        formControls[key].value[index] = formControls[key].format
+          ? format[formControls[key].format](value)
+          : value
+        formControls[key].valid[index] = validate(formControls[key].value[index], formControls[key].validation)
+      }
+    }
 
-    control.touched = true
-    control.value = event.target.value
-    control.valid = validate(control.value, control.validation)
-
-    formControls[event.target.name] = control
-    setState({
-      formControls,
-      isFormValid: validateForm(formControls)
-    })
+    obj.valid = validateForm(formControls)
+    return obj
   }
 
-  // to-do post request to api/users
+  const handler = (name, value, index = null) => {
+    let obj = JSON.parse(JSON.stringify(state))
+    obj = nestedtChangeHandler(obj, name, value, index)
+    setState(obj)
+  }
+
+  const addValue = (name) => {
+    const obj = [...state.formControls[name].value]
+    handler(name, '')
+  }
 
   return (
     <>
@@ -171,7 +208,7 @@ const AddItem = ({close, addUserToState}) => {
             variant="outlined"
             error={state.formControls.name.touched && !state.formControls.name.valid}
             value={state.formControls.name.value}
-            onChange={changeHandler}
+            onChange={e => handler('name', e.target.value)}
           />
         </div>
         <div>
@@ -179,11 +216,11 @@ const AddItem = ({close, addUserToState}) => {
             required
             fullWidth
             name="surname"
-            label="surname"
+            label="Фамилия"
             variant="outlined"
             error={state.formControls.surname.touched && !state.formControls.surname.valid}
             value={state.formControls.surname.value}
-            onChange={changeHandler}
+            onChange={e => handler('surname', e.target.value)}
           />
         </div>
         <div>
@@ -191,60 +228,100 @@ const AddItem = ({close, addUserToState}) => {
             required
             fullWidth
             name="patronymic"
-            label="patronymic"
+            label="Отчество"
             variant="outlined"
             error={state.formControls.patronymic.touched && !state.formControls.patronymic.valid}
             value={state.formControls.patronymic.value}
-            onChange={changeHandler}
+            onChange={e => handler('patronymic', e.target.value)}
           />
         </div>
         <div>
-          <TextField
-            required
-            fullWidth
-            name="gender"
-            label="gender"
-            variant="outlined"
-            error={state.formControls.gender.touched && !state.formControls.gender.valid}
-            value={state.formControls.gender.value}
-            onChange={changeHandler}
-          />
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Пол</FormLabel>
+            <RadioGroup aria-label="gender" name="gender1" value={state.formControls.gender.value} onChange={e => handler('gender', e.target.value)}>
+              <FormControlLabel value="female" control={<Radio color="primary"/>} label="Женщина" />
+              <FormControlLabel value="male" control={<Radio color="primary"/>} label="Мужчина" />
+            </RadioGroup>
+          </FormControl>
         </div>
         <div>
-          {/* <TextField
-            fullWidth
-            type="datetime-local"
-            defaultValue=""
-            name="birthdate"
-            label="birthdate"
-            variant="outlined"
-            error={state.formControls.birthdate.touched && !state.formControls.birthdate.valid}
-            value={state.formControls.birthdate.value}
-            onChange={changeHandler}
-          /> */}
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
+              inputVariant="outlined"
+              format="dd.MM.yyyy"
               margin="normal"
               id="date-picker-inline"
-              label="Date picker inline"
+              label="Дата рождения"
               name="birthdate"
+              maxDate={new Date('3000-12-12')}
+              minDate={new Date(-1, 0)}
               value={state.formControls.birthdate.value}
-              // onChange={(value) => changeHandler(e, value)}
+              onChange={value => handler('birthdate', value)}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
             />
           </MuiPickersUtilsProvider>
         </div>
+        <div>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Паспорт</FormLabel>
+            <TextField
+              name="passportno"
+              label="Номер"
+              variant="outlined"
+              error={state.formControls.passport.formControls.number.touched && !state.formControls.passport.formControls.number.valid}
+              value={state.formControls.passport.formControls.number.value}
+              onChange={e => handler('passport.number', e.target.value)}
+            />
+            <TextField
+              name="issuedby"
+              label="Кем выдан"
+              variant="outlined"
+              error={state.formControls.passport.formControls.issuedBy.touched && !state.formControls.passport.formControls.issuedBy.valid}
+              value={state.formControls.passport.formControls.issuedBy.value}
+              onChange={e => handler('passport.issuedBy', e.target.value)}
+            />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                disableToolbar
+                inputVariant="outlined"
+                format="dd.MM.yyyy"
+                margin="normal"
+                label="Дата выдачи"
+                name="issued"
+                maxDate={new Date('3000-12-12')}
+                minDate={new Date(-1, 0)}
+                value={state.formControls.passport.formControls.issuedDate.value}
+                onChange={value => handler('passport.issuedDate', value)}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </FormControl>
+        </div>
+        <div>
+          {state.formControls.phones.value.map((el, i) => {
+            return <TextField
+              key={`phone_${i}`}
+              name={`phone_${i}`}
+              label={`Телефон`}
+              variant="outlined"
+              error={state.formControls.phones.touched[i] && !state.formControls.phones.valid[i]}
+              value={state.formControls.phones.value[i]}
+              onChange={e => handler('phones', e.target.value, i)}
+            />
+          })}
+          <Button onClick={_ => handler('phones', '', state.formControls.phones.value.length)}>добавить</Button>
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => confirm('Вы уверены?') ? close() : null} variant="contained">
           Отменить
         </Button>
-        <Button onClick={addUser} color="primary" variant="contained" disabled={!state.isFormValid}>
+        <Button onClick={addUser} color="primary" variant="contained" disabled={!state.valid}>
           Сохранить
         </Button>
       </DialogActions>

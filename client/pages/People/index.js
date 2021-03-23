@@ -102,7 +102,7 @@ export default function PeopleTablePage() {
     try {
       const response = await request('/api/people')
       console.log(response.data);
-      // setData(response.data.data)
+      setData(response.data.data)
     } catch (error) {
       console.log(error)
     }

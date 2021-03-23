@@ -12,16 +12,21 @@ export function validate(value, validation = null) {
   return isValid
 }
 
-export function validateForm(formControls) {
+export function validateForm(controls) {
   let isFormValid = true
 
-  // for (let control in formControls) {
-  //   if (formControls.hasOwnProperty(control)) {
-  //     isFormValid = formControls[control].valid && isFormValid
-  //   }
-  // }
-  Object.keys(formControls).forEach(key => {
-    isFormValid = formControls[key].valid && isFormValid
+  // Object.keys(formControls).forEach(key => {
+  //   isFormValid = formControls[key].valid && isFormValid
+  // })
+
+  Object.keys(controls).forEach(name => {
+    if (Array.isArray(controls[name].valid)) {
+      controls[name].valid.forEach(el => {
+        isFormValid = el && isFormValid
+      })
+    } else {
+      isFormValid = controls[name].valid && isFormValid
+    }
   })
 
   return isFormValid

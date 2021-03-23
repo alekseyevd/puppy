@@ -4,7 +4,9 @@ const validators = {
   },
 
   empty(value) {
-    return value.trim() === ''
+    if (value === null) return true
+
+    if (typeof (value) === 'string') return value.trim() === ''
   },
 
   email(value) {
@@ -16,6 +18,11 @@ const validators = {
     const r = new RegExp(regex)
     const match = value.match(r);
     return match && value === match[0];
+  },
+
+  // to-do min and max date
+  date(value, options) {
+    return value instanceof Date && !isNaN(value)
   }
 }
 
