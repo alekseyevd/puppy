@@ -12,7 +12,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -37,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddItem = ({close, addUserToState}) => {
+const AddItem = ({close, addItemToState}) => {
   const styles = useStyles()
   const { request, isLoading } = useHttp()
 
@@ -108,36 +111,44 @@ const AddItem = ({close, addUserToState}) => {
         }
       },
       passport: {
-        type: 'group',
+        valid: true,
         formControls: {
           number: {
             value: '',
-            valid: false,
-            format: 'phone',
-            validation: {
-              required: true
-            }
+            valid: true,
+            touched: false
           },
           issuedDate: {
             value: null,
             valid: true,
+            touched: false,
+            validation: {
+              date: true
+            }
           },
           issuedBy: {
             value: '',
             valid: true,
+            touched: false
           },
         },
-        valid: true
       }
     }
   })
 
-  const addUser = async () => {
-    const data = Object.keys(state.formControls)
+  const toResponseData = (obj) => {
+    const data = Object.keys(obj)
         .reduce((acc, key) => {
-          acc[key] = state.formControls[key].value
+          acc[key] = obj[key].formControls
+            ? toResponseData(obj[key].formControls)
+            : obj[key].value
           return acc
         }, {})
+    return data
+  }
+
+  const saveHandler = async () => {
+    const data = toResponseData(state.formControls)
     try {
       const res = await request({
         url: '/api/people',
@@ -145,8 +156,7 @@ const AddItem = ({close, addUserToState}) => {
         data
       })
       console.log(res);
-      const user = res.data.data
-      addUserToState(user)
+      addItemToState(res.data.data)
       close()
     } catch (error) {
       console.log(error);
@@ -186,19 +196,29 @@ const AddItem = ({close, addUserToState}) => {
     setState(obj)
   }
 
-  const addValue = (name) => {
-    const obj = [...state.formControls[name].value]
-    handler(name, '')
+  const remove = (name, index) => {
+    const obj = JSON.parse(JSON.stringify(state))
+    obj.formControls[name].value.splice(index, 1)
+    obj.formControls[name].valid.splice(index, 1)
+    obj.formControls[name].touched.splice(index, 1)
+    if (obj.formControls[name].value.length === 0) {
+      obj.formControls[name].value[0] = ''
+      obj.formControls[name].valid[0] = validate(obj.formControls[name].value, obj.formControls[name].validation)
+      obj.formControls[name].touched[0] = true
+    }
+
+    obj.valid = validateForm(obj.formControls)
+    setState(obj)
   }
 
   return (
     <>
       <DialogTitle id="form-dialog-title">Новый физ лицо</DialogTitle>
       <DialogContent className={styles.root}>
-        <DialogContentText>
+        {/* <DialogContentText>
           To subscribe to this website, please enter your email address here. We will send updates
           occasionally.
-        </DialogContentText>
+        </DialogContentText> */}
         <div>
           <TextField
             required
@@ -303,25 +323,61 @@ const AddItem = ({close, addUserToState}) => {
           </FormControl>
         </div>
         <div>
-          {state.formControls.phones.value.map((el, i) => {
-            return <TextField
-              key={`phone_${i}`}
-              name={`phone_${i}`}
-              label={`Телефон`}
-              variant="outlined"
-              error={state.formControls.phones.touched[i] && !state.formControls.phones.valid[i]}
-              value={state.formControls.phones.value[i]}
-              onChange={e => handler('phones', e.target.value, i)}
-            />
+          {state.formControls.phones.value.map((_, i) => {
+            return (
+              <TextField
+                key={`phone_${i}`}
+                name={`phone_${i}`}
+                label={`Телефон`}
+                variant="outlined"
+                error={state.formControls.phones.touched[i] && !state.formControls.phones.valid[i]}
+                value={state.formControls.phones.value[i]}
+                onChange={e => handler('phones', e.target.value, i)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment onClick={_ => remove('phones', i)}>
+                      <IconButton>
+                        <HighlightOffIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            )
           })}
-          <Button onClick={_ => handler('phones', '', state.formControls.phones.value.length)}>добавить</Button>
+          <Button onClick={_ => handler('phones', '', state.formControls.phones.value.length)}>добавить еще</Button>
+        </div>
+        <div>
+          {state.formControls.emails.value.map((_, i) => {
+            return (
+              <TextField
+                key={`emails${i}`}
+                name={`emails${i}`}
+                label={`Email`}
+                variant="outlined"
+                error={state.formControls.emails.touched[i] && !state.formControls.emails.valid[i]}
+                value={state.formControls.emails.value[i]}
+                onChange={e => handler('emails', e.target.value, i)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment onClick={_ => remove('emails', i)}>
+                      <IconButton>
+                        <HighlightOffIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            )
+          })}
+          <Button onClick={_ => handler('emails', '', state.formControls.emails.value.length)}>добавить еще</Button>
         </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => confirm('Вы уверены?') ? close() : null} variant="contained">
           Отменить
         </Button>
-        <Button onClick={addUser} color="primary" variant="contained" disabled={!state.valid}>
+        <Button onClick={saveHandler} color="primary" variant="contained" disabled={!state.valid}>
           Сохранить
         </Button>
       </DialogActions>

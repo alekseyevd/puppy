@@ -5,6 +5,7 @@ import loginPage from './pages/Login'
 import DataTable from './pages/Table'
 import Item from './pages/Item'
 import People from './pages/People'
+import PersonItem from './pages/People/Item'
 
 export default function(isAuthenticated = false) {
   if (!isAuthenticated) {
@@ -32,9 +33,9 @@ export default function(isAuthenticated = false) {
         <Route path="/people" exact>
           <People />
         </Route>
-        {/* <Route path="/people/:id" exact>
-          <Item></Item>
-        </Route> */}
+        <Route path="/people/:id" exact>
+          <PersonItem></PersonItem>
+        </Route>
       </Switch>
     </MainLayout>
   )

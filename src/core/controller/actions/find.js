@@ -5,15 +5,15 @@ function isJsonValid(str) {
   try {
     JSON.parse(str);
   } catch (e) {
-      return false;
+    return false;
   }
   return true;
 }
 
 module.exports = async function (req, res, next) {
-  //todo beforeFind
+  // todo beforeFind
   if (this.beforeFind) this.beforeFind()
-  
+
   try {
     const Model = this.model
 
@@ -25,7 +25,7 @@ module.exports = async function (req, res, next) {
         : {}
 
     if (req.permissions && req.permissions.own) {
-      filter.user_id =  req.user.user_id
+      filter.user_id = req.user.user_id
     }
 
     let selection = []
@@ -42,11 +42,12 @@ module.exports = async function (req, res, next) {
       page = Math.floor(count / (limit + 1))
       skip = page * limit
     }
-  
+
     const entities = await Model.find(filter)
-      .select(selection)
-      .skip(skip)
-      .limit(limit)
+        .populate('addedBy')
+        .select(selection)
+        .skip(skip)
+        .limit(limit)
 
     count && res.header({
       'Pagination-Count': count,
@@ -54,7 +55,7 @@ module.exports = async function (req, res, next) {
       'Pagination-Page': page,
       'Content-Range': `${skip}-${skip + count - 1}/${count}`
     })
-    
+
     res.json({
       result: true,
       data: entities,
@@ -63,5 +64,5 @@ module.exports = async function (req, res, next) {
   } catch (error) {
     return next(error)
   }
-  //to-do afterfind()
+  // to-do afterfind()
 }

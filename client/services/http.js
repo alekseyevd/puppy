@@ -31,6 +31,7 @@ export const useHttp = () => {
         })
       }
 
+      // to-do move to callback, becouse it will be executed right await after request to refresh
       const instance = jwtoken
         ? axios.create({
           headers: { Authorization: `Bearer ${jwtoken}` }

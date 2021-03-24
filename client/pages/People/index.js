@@ -28,7 +28,7 @@ export default function PeopleTablePage() {
 
   const [data, setData] = useState([])
   const [selectedUserIds, setSelectedUserIds] = useState([]);
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -101,7 +101,7 @@ export default function PeopleTablePage() {
   useEffect(async () => {
     try {
       const response = await request('/api/people')
-      console.log(response.data);
+      console.log(response);
       setData(response.data.data)
     } catch (error) {
       console.log(error)

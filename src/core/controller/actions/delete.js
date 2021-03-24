@@ -7,7 +7,7 @@ module.exports = async function deleteOne(req, res, next) {
     const filter = { id: req.params.id }
 
     if (req.permissions && req.permissions.own) {
-      filter.user_id =  req.user.user_id
+      filter.user_id = req.user.user_id
     }
 
     const result = await Model.updateOne(filter, { status: 3 })

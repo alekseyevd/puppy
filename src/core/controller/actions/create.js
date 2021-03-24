@@ -15,7 +15,7 @@ module.exports = async function create(req, res, next) {
 
     // to-do add owner
     const user_id = req.user.user_id
-    const body = { ...req.body, user_id }
+    const body = { ...req.body, addedBy: user_id }
 
     const entity = new Model(body)
     await entity.save()
