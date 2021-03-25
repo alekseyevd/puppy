@@ -17,15 +17,26 @@ module.exports = async function (req, res, next) {
   try {
     const Model = this.model
 
-    if (req.query.filter && !isJsonValid(req.query.filter))
-      throw createError(400, 'query param \'filter\' is not valid json string.')
+    // if (req.query.filter && !isJsonValid(req.query.filter))
+    //   throw createError(400, 'query param \'filter\' is not valid json string.')
 
-    const filter = req.query.filter
-        ? JSON.parse(req.query.filter)
-        : {}
+    const search = { ...req.query }
+
+    delete search.limit
+    delete search.page
+
+    Object.keys(search).forEach(key => {
+      search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
+    })
+
+    // return res.json(req.query)
+
+    // const filter = req.query.filter
+    //     ? JSON.parse(req.query.filter)
+    //     : {}
 
     if (req.permissions && req.permissions.own) {
-      filter.user_id = req.user.user_id
+      search.user_id = req.user.user_id
     }
 
     let selection = []
@@ -33,7 +44,7 @@ module.exports = async function (req, res, next) {
       selection = req.permissions.fields
     }
 
-    const count = await Model.countDocuments(filter)
+    const count = await Model.countDocuments(search)
     const limit = Math.abs(Number.parseInt(req.query.limit) || PAGINATION_LIMIT)
     let page = Math.abs(Number.parseInt(req.query.page) || 0)
 
@@ -43,8 +54,7 @@ module.exports = async function (req, res, next) {
       skip = page * limit
     }
 
-    const entities = await Model.find(filter)
-        .populate('addedBy')
+    const entities = await Model.find(search)
         .select(selection)
         .skip(skip)
         .limit(limit)

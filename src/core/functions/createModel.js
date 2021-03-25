@@ -37,5 +37,20 @@ module.exports = function(type, name, params) {
     timestamps: true
   })
 
+  const populate = () => {
+    const refs = Object.keys(props)
+        .filter(key => {
+          return props[key].ref !== undefined
+        })
+    return function(next) {
+      refs.forEach(ref => {
+        this.populate(ref, '-password')
+      })
+      next()
+    }
+  }
+
+  schema.pre('find', populate())
+
   return model(name, schema)
 }

@@ -40,4 +40,9 @@ const schema = new Schema({
   timestamps: true
 })
 
+// schema.pre('find', function(next) {
+//   this.select('-passport')
+//   next()
+// })
+
 module.exports = model('User', schema)

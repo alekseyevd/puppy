@@ -120,6 +120,11 @@ const Item = () => {
           },
         },
       },
+      user: {
+        value: '',
+        touched: false,
+        valid: true
+      }
     }
   })
 
@@ -228,10 +233,11 @@ const Item = () => {
       const response = await request(`/api/people/${id}`)
       console.log(response);
       let newState = JSON.parse(JSON.stringify(state))
-      // Object.keys(newState.formControls).forEach(key => {
-      //   newState.formControls[key].value = response.data.data[key] || ''
-      // })
       newState = toStateData(response.data.data, newState)
+      // temp
+      newState.formControls.user.value = '605b3cbc11276d24fc993a2a'
+      newState.formControls.user.visible = 'ivanko'
+
       setReady(true)
       setState(newState)
     } catch (error) {
@@ -401,7 +407,10 @@ const Item = () => {
         <Button onClick={_ => handler('emails', '', state.formControls.emails.value.length)}>добавить еще</Button>
       </div>
       <div>
-        <Asynchronous />
+        <Asynchronous
+          selectHandler={(value) => handler('user', value)}
+          visible={state.formControls.user.visible}
+        />
       </div>
     </div>
   )

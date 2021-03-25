@@ -6,14 +6,14 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHttp } from '../../services/http'
 
-export default function Asynchronous() {
+export default function Asynchronous({selectHandler, user}) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
-  const { request } = useHttp()
+  const [value, setValue] = React.useState('');
+  const { request, isLoading } = useHttp()
+  const loading = open && isLoading;
 
-  const search = useCallback((data = {}) => {
-    console.log(data);
+  const search = useCallback(() => {
     let active = true;
 
     // if (!loading) {
@@ -21,27 +21,28 @@ export default function Asynchronous() {
     // }
 
     request({
-      url: `/api/people?&filter=${JSON.stringify(data)}`,
+      url: `/api/people?&name=${value}`,
       method: 'GET',
     }).then(response => {
       console.log(response);
-      if (active) {
-        setOptions(response.data.data);
-      }
+      // if (active) {
+      setOptions(response.data.data);
+      // }
     });
 
     return () => {
       active = false;
     };
-  }, [loading])
+  }, [loading, value])
 
   React.useEffect(() => {
     search()
-  }, [search]);
+  }, [value]);
 
   React.useEffect(() => {
     if (!open) {
-      setOptions([]);
+      // setOptions([]);
+      setValue('')
     }
   }, [open]);
 
@@ -60,12 +61,18 @@ export default function Asynchronous() {
       getOptionLabel={(option) => option.name}
       options={options}
       loading={loading}
+      value={user}
+      onChange={(e, v, r) => {
+        if (v) {
+          selectHandler(v._id)
+        } else selectHandler('')
+      } }
       renderInput={(params) => (
         <TextField
           {...params}
           label="Asynchronous"
           variant="outlined"
-          onChange={e => search({ name: e.target.value })}
+          onChange={e => setValue(e.target.value)}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
