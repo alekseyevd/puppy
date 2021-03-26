@@ -5,7 +5,19 @@ const { hashSync } = require('bcryptjs')
 module.exports = {
   async find(req, res, next) {
     try {
-      const data = await User.find({ status: 1 }).select('-password')
+      const search = { ...req.query }
+
+      delete search.limit
+      delete search.page
+
+      Object.keys(search).forEach(key => {
+        search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
+      })
+
+      const data = await User
+          .find({ status: 1, ...search })
+          .select('-password')
+
       res.json({
         result: true,
         data

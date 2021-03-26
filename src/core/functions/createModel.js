@@ -50,7 +50,7 @@ module.exports = function(type, name, params) {
     }
   }
 
-  schema.pre('find', populate())
+  schema.pre(/^find/, populate())
 
   return model(name, schema)
 }

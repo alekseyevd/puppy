@@ -120,8 +120,9 @@ const Item = () => {
           },
         },
       },
-      user: {
+      addedBy: {
         value: '',
+        type: 'ref',
         touched: false,
         valid: true
       }
@@ -134,7 +135,7 @@ const Item = () => {
         .reduce((acc, key) => {
           acc[key] = obj[key].formControls
             ? toResponseData(obj[key].formControls)
-            : obj[key].value
+            : obj[key].value._id || obj[key].value
           return acc
         }, {})
     return data
@@ -148,7 +149,6 @@ const Item = () => {
         method: 'POST',
         data
       })
-      console.log(res)
       if (close) close()
     } catch (error) {
       console.log(error)
@@ -165,15 +165,11 @@ const Item = () => {
     } else {
       if (index === null) {
         formControls[key].touched = true
-        formControls[key].value = formControls[key].format
-          ? format[formControls[key].format](value)
-          : value
+        formControls[key].value = format(value, formControls[key].format)
         formControls[key].valid = validate(formControls[key].value, formControls[key].validation)
       } else {
         formControls[key].touched[index] = true
-        formControls[key].value[index] = formControls[key].format
-          ? format[formControls[key].format](value)
-          : value
+        formControls[key].value[index] = format(value, formControls[key].format)
         formControls[key].valid[index] = validate(formControls[key].value[index], formControls[key].validation)
       }
     }
@@ -208,38 +204,58 @@ const Item = () => {
   }
 
   const toStateData = (obj, stateData) => {
-    const data = Object.keys(obj)
-        .reduce((acc, key) => {
-          if (acc.formControls[key] && typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-            acc.formControls[key] = toStateData(obj[key], acc.formControls[key])
-          } else if (acc.formControls[key] && Array.isArray(obj[key])) {
-            acc.formControls[key].value = obj[key]
-            acc.formControls[key].touched = obj[key].map(_ => true)
-            acc.formControls[key].valid = obj[key].map(val => validate(val, acc.formControls[key].validation))
-          } else if (acc.formControls[key]) {
-            acc.formControls[key].value = obj[key]
-            acc.formControls[key].valid = validate(obj[key], acc.formControls[key].validation)
-            acc.formControls[key].touched = true
-          }
-          return acc
-        }, stateData)
+    // const data = Object.keys(obj)
+    //     .reduce((acc, key) => {
+    //       if (acc.formControls[key] && typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+    //         acc.formControls[key] = toStateData(obj[key], acc.formControls[key])
+    //       } else if (acc.formControls[key] && Array.isArray(obj[key])) {
+    //         acc.formControls[key].value = obj[key]
+    //         acc.formControls[key].touched = obj[key].map(_ => true)
+    //         acc.formControls[key].valid = obj[key].map(val => validate(val, acc.formControls[key].validation))
+    //       } else if (acc.formControls[key]) {
+    //         acc.formControls[key].value = obj[key]
+    //         acc.formControls[key].valid = validate(obj[key], acc.formControls[key].validation)
+    //         acc.formControls[key].touched = true
+    //       }
+    //       return acc
+    //     }, stateData)
 
-    data.valid = validateForm(data.formControls)
-    return data
+    // data.valid = validateForm(data.formControls)
+    // return data
+    Object.keys(stateData.formControls).forEach(key => {
+      if (stateData.formControls[key].formControls && obj[key]) {
+        stateData.formControls[key] = toStateData(obj[key], stateData.formControls[key])
+      } else if (stateData.formControls[key].type !== 'ref' && obj[key]) {
+        const isArray = Array.isArray(stateData.formControls[key].value)
+        stateData.formControls[key].value = isArray
+          ? [...obj[key]]
+          : obj[key]
+        stateData.formControls[key].valid = isArray
+          ? obj[key].map(val => validate(val, stateData.formControls[key].validation))
+          : obj[key]
+        stateData.formControls[key].touched = isArray
+          ? obj[key].map(_ => true)
+          : true
+      } else if (stateData.formControls[key].type === 'ref' && obj[key]) {
+        stateData.formControls[key].value = obj[key]
+        // stateData.formControls[key].refData = obj[key]
+      }
+    })
+    return stateData
   }
 
   useEffect(async () => {
     try {
       const response = await request(`/api/people/${id}`)
-      console.log(response);
+
       let newState = JSON.parse(JSON.stringify(state))
       newState = toStateData(response.data.data, newState)
       // temp
-      newState.formControls.user.value = '605b3cbc11276d24fc993a2a'
-      newState.formControls.user.visible = 'ivanko'
+      // newState.formControls.user.value = '605b3cbc11276d24fc993a2a'
+      // newState.formControls.user.visible = 'ivanko'
 
-      setReady(true)
       setState(newState)
+      setReady(true)
     } catch (error) {
       console.log(error);
     }
@@ -408,8 +424,8 @@ const Item = () => {
       </div>
       <div>
         <Asynchronous
-          selectHandler={(value) => handler('user', value)}
-          visible={state.formControls.user.visible}
+          selectHandler={(value) => handler('addedBy', value)}
+          value={state.formControls.addedBy.value}
         />
       </div>
     </div>

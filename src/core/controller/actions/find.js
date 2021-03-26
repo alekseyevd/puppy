@@ -69,7 +69,6 @@ module.exports = async function (req, res, next) {
     res.json({
       result: true,
       data: entities,
-      count
     })
   } catch (error) {
     return next(error)
