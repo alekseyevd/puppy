@@ -20,12 +20,16 @@ export function validateForm(controls) {
   // })
 
   Object.keys(controls).forEach(name => {
-    if (Array.isArray(controls[name].valid)) {
-      controls[name].valid.forEach(el => {
-        isFormValid = el && isFormValid
-      })
+    if (controls[name].formControls) {
+      isFormValid = validateForm(controls[name].formControls)
     } else {
-      isFormValid = controls[name].valid && isFormValid
+      if (Array.isArray(controls[name].valid)) {
+        controls[name].valid.forEach(el => {
+          isFormValid = el && isFormValid
+        })
+      } else {
+        isFormValid = controls[name].valid && isFormValid
+      }
     }
   })
 

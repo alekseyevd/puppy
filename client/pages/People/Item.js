@@ -98,7 +98,6 @@ const Item = () => {
         }
       },
       passport: {
-        valid: false,
         formControls: {
           number: {
             value: '',
@@ -191,7 +190,7 @@ const Item = () => {
     obj.formControls[name].touched.splice(index, 1)
     if (obj.formControls[name].value.length === 0) {
       obj.formControls[name].value[0] = ''
-      obj.formControls[name].valid[0] = validate(obj.formControls[name].value, obj.formControls[name].validation)
+      obj.formControls[name].valid[0] = true
       obj.formControls[name].touched[0] = true
     }
 
@@ -204,24 +203,6 @@ const Item = () => {
   }
 
   const toStateData = (obj, stateData) => {
-    // const data = Object.keys(obj)
-    //     .reduce((acc, key) => {
-    //       if (acc.formControls[key] && typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-    //         acc.formControls[key] = toStateData(obj[key], acc.formControls[key])
-    //       } else if (acc.formControls[key] && Array.isArray(obj[key])) {
-    //         acc.formControls[key].value = obj[key]
-    //         acc.formControls[key].touched = obj[key].map(_ => true)
-    //         acc.formControls[key].valid = obj[key].map(val => validate(val, acc.formControls[key].validation))
-    //       } else if (acc.formControls[key]) {
-    //         acc.formControls[key].value = obj[key]
-    //         acc.formControls[key].valid = validate(obj[key], acc.formControls[key].validation)
-    //         acc.formControls[key].touched = true
-    //       }
-    //       return acc
-    //     }, stateData)
-
-    // data.valid = validateForm(data.formControls)
-    // return data
     Object.keys(stateData.formControls).forEach(key => {
       if (stateData.formControls[key].formControls && obj[key]) {
         stateData.formControls[key] = toStateData(obj[key], stateData.formControls[key])
@@ -232,7 +213,7 @@ const Item = () => {
           : obj[key]
         stateData.formControls[key].valid = isArray
           ? obj[key].map(val => validate(val, stateData.formControls[key].validation))
-          : obj[key]
+          : validate(obj[key], stateData.formControls[key].validation)
         stateData.formControls[key].touched = isArray
           ? obj[key].map(_ => true)
           : true
@@ -247,12 +228,10 @@ const Item = () => {
   useEffect(async () => {
     try {
       const response = await request(`/api/people/${id}`)
+      console.log(response);
 
       let newState = JSON.parse(JSON.stringify(state))
       newState = toStateData(response.data.data, newState)
-      // temp
-      // newState.formControls.user.value = '605b3cbc11276d24fc993a2a'
-      // newState.formControls.user.visible = 'ivanko'
 
       setState(newState)
       setReady(true)
