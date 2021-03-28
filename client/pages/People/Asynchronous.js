@@ -1,13 +1,11 @@
 /* eslint-disable no-unused-vars */
-// import fetch from 'cross-fetch';
 import React, { useCallback } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHttp } from '../../services/http'
 import { useEffect } from 'react';
 
-export default function Asynchronous({selectHandler, value}) {
+export default function SelectRef({onSelect, value}) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [filter, setFilter] = React.useState('');
@@ -49,9 +47,9 @@ export default function Asynchronous({selectHandler, value}) {
       // onInputChange={search}
       onChange={(e, v, r) => {
         if (v) {
-          selectHandler(v)
+          onSelect(v)
         } else {
-          selectHandler(null)
+          onSelect(null)
           setFilter('')
           // setOptions()
         }

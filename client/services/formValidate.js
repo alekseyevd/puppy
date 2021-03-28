@@ -15,13 +15,9 @@ export function validate(value, validation = null) {
 export function validateForm(controls) {
   let isFormValid = true
 
-  // Object.keys(formControls).forEach(key => {
-  //   isFormValid = formControls[key].valid && isFormValid
-  // })
-
   Object.keys(controls).forEach(name => {
-    if (controls[name].formControls) {
-      isFormValid = validateForm(controls[name].formControls)
+    if (!Object.prototype.hasOwnProperty.call(controls[name], 'value')) {
+      isFormValid = validateForm(controls[name])
     } else {
       if (Array.isArray(controls[name].valid)) {
         controls[name].valid.forEach(el => {
