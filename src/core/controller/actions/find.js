@@ -1,15 +1,6 @@
 const createError = require('http-errors')
 const { PAGINATION_LIMIT } = require('../../../config')
 
-function isJsonValid(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
 module.exports = async function (req, res, next) {
   // todo beforeFind
   if (this.beforeFind) this.beforeFind()

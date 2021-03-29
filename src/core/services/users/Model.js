@@ -22,6 +22,7 @@ const schema = new Schema({
   },
   email: {
     type: String,
+    index: true
   },
   phone: {
     type: String,
@@ -40,9 +41,22 @@ const schema = new Schema({
   timestamps: true
 })
 
-// schema.pre('find', function(next) {
-//   this.select('-passport')
-//   next()
-// })
+schema.index({
+  login: 'text',
+  email: 'text'
+})
+
+schema.static('search', function(q) {
+  // to-do q.split(' ')
+  if (q.search) {
+    q.$or = [
+      { login: new RegExp(q.search, 'i') },
+      { email: new RegExp(q.search, 'i')}
+    ]
+    delete q.search
+  }
+
+  return this.find(q)
+});
 
 module.exports = model('User', schema)

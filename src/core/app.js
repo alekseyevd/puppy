@@ -26,7 +26,8 @@ handleRoutes(app, 'directories')
 handleRoutes(app, 'documents')
 handleRoutes(app, 'custom')
 
-app.use('/api/users', isAuthenticated, isAdmin, require('./services/users/router'))
+// app.use('/api/users', isAuthenticated, isAdmin, require('./services/users/router'))
+app.use('/api/users', require('./services/users/router'))
 
 app.use(function(req, res) {
   res.status(404).send('Sorry cant find that!');

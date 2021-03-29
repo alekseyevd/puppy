@@ -5,9 +5,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHttp } from '../../services/http'
 import { useEffect } from 'react';
 
-export default function SelectRef({onSelect, value}) {
+export default function SelectRef({onSelect, value, options}) {
   const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
+  const [list, setList] = React.useState([]);
   const [filter, setFilter] = React.useState('');
   const { request, isLoading } = useHttp()
   const loading = open && isLoading;
@@ -15,16 +15,16 @@ export default function SelectRef({onSelect, value}) {
   const search = (val) => {
     setFilter(val)
     request({
-      url: `/api/users?&login=${val}`,
+      url: `/api/${options.ref}?search=${val}`,
       method: 'GET',
     }).then(response => {
       console.log(response);
-      setOptions(response.data.data);
+      setList(response.data.data);
     });
   }
 
   useEffect(() => {
-    if (value) setOptions([value])
+    if (value) setList([value])
   }, [])
 
   return (
@@ -40,7 +40,7 @@ export default function SelectRef({onSelect, value}) {
       }}
       getOptionSelected={(option, value) => option.login === value.login}
       getOptionLabel={(option) => option.login}
-      options={options}
+      options={list}
       loading={loading}
       // inputValue={filter}
       value={value}

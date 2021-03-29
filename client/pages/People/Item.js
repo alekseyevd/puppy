@@ -13,7 +13,7 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core'
-import SelectRef from './Asynchronous'
+import SelectRef from './SelectRef'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -121,7 +121,11 @@ const Item = () => {
         value: null,
         type: 'ref',
         touched: false,
-        valid: true
+        valid: true,
+        options: {
+          ref: 'users',
+          inputValue: 'login'
+        }
       }
     }
   })
@@ -408,6 +412,8 @@ const Item = () => {
         <SelectRef
           onSelect={(value) => handler('addedBy', value)}
           value={state.controls.addedBy.value}
+          options={state.controls.addedBy.options}
+          label="addedBy"
         />
       </div>
     </div>
