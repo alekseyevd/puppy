@@ -23,6 +23,10 @@ const validators = {
   // to-do min and max date
   date(value, options) {
     return (value instanceof Date && !isNaN(value)) || new Date(value) instanceof Date
+  },
+
+  hasProperty(value, options) {
+    return Object.prototype.hasOwnProperty.call(value, options)
   }
 }
 

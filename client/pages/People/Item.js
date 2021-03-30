@@ -25,6 +25,7 @@ import { validateForm } from '../../services/formValidate'
 import validate from '../../services/validation'
 import format from '../../services/validation/formatting'
 import { useHttp } from '../../services/http'
+import Form from './Form';
 
 const Item = () => {
   const { request, isLoading } = useHttp()
@@ -35,6 +36,7 @@ const Item = () => {
     valid: false,
     controls: {
       name: {
+        type: 'text',
         value: '',
         label: 'Имя',
         valid: false,
@@ -44,6 +46,7 @@ const Item = () => {
         }
       },
       surname: {
+        type: 'text',
         value: '',
         label: 'Фамилия',
         valid: false,
@@ -53,13 +56,16 @@ const Item = () => {
         }
       },
       patronymic: {
+        type: 'text',
         value: '',
         label: 'Отчество',
         valid: true,
         touched: false
       },
       gender: {
-        value: '',
+        type: 'radio',
+        radio: ['Женcкий', 'Мужской'],
+        value: null,
         label: 'Пол',
         valid: true,
         touched: false
@@ -75,7 +81,7 @@ const Item = () => {
         }
       },
       phones: {
-        type: 'text',
+        type: '[text]',
         label: 'Телефон',
         multi: true,
         format: 'phone',
@@ -87,7 +93,7 @@ const Item = () => {
         }
       },
       emails: {
-        type: 'text',
+        type: '[text]',
         label: 'Email',
         multi: true,
         value: [''],
@@ -124,8 +130,12 @@ const Item = () => {
         valid: true,
         options: {
           ref: 'users',
-          inputValue: 'login'
+          inputValue: 'login',
+        },
+        validation: {
+          hasProperty: '_id'
         }
+        // inputValue: () => (this.value !== null ? this.value.login : '' ),
       }
     }
   })
@@ -235,7 +245,6 @@ const Item = () => {
   useEffect(async () => {
     try {
       const response = await request(`/api/people/${id}`)
-      console.log(response);
 
       let controls = JSON.parse(JSON.stringify(state.controls))
       controls = toStateData(response.data.data, controls)
@@ -250,18 +259,20 @@ const Item = () => {
   if (isLoading || !isReady) return <div>Loading...</div>
 
   return (
-    <div>
-      <Toolbar>
+    <>
+      <Toolbar disableGutters>
         <Button variant="contained" color="primary" disabled={!state.valid} onClick={saveHandler}>Сохранить</Button>
         <Button variant="contained" disabled={!state.valid} onClick={saveHandler.bind(null, true)}>Сохранить и закрыть</Button>
         <Button variant="contained" onClick={close}>Закрыть</Button>
       </Toolbar>
-      <div>
+      <Form form={state.controls} changeHandler={handler} />
+      {/* <div>
         <TextField
           required
           name="name"
           label="Имя"
           variant="outlined"
+          margin="normal"
           error={state.controls.name.touched && !state.controls.name.valid}
           value={state.controls.name.value}
           onChange={e => handler('name', e.target.value)}
@@ -273,6 +284,7 @@ const Item = () => {
           name="surname"
           label="Фамилия"
           variant="outlined"
+          margin="normal"
           error={state.controls.surname.touched && !state.controls.surname.valid}
           value={state.controls.surname.value}
           onChange={e => handler('surname', e.target.value)}
@@ -284,13 +296,14 @@ const Item = () => {
           name="patronymic"
           label="Отчество"
           variant="outlined"
+          margin="normal"
           error={state.controls.patronymic.touched && !state.controls.patronymic.valid}
           value={state.controls.patronymic.value}
           onChange={e => handler('patronymic', e.target.value)}
         />
       </div>
       <div>
-        <FormControl component="fieldset">
+        <FormControl component="fieldset" margin="normal">
           <FormLabel component="legend">Пол</FormLabel>
           <RadioGroup aria-label="gender" name="gender1" value={state.controls.gender.value} onChange={e => handler('gender', e.target.value)}>
             <FormControlLabel value="female" control={<Radio color="primary"/>} label="Женщина" />
@@ -320,12 +333,13 @@ const Item = () => {
         </MuiPickersUtilsProvider>
       </div>
       <div>
-        <FormControl component="fieldset">
+        <FormControl component="fieldset" margin="normal">
           <FormLabel component="legend">Паспорт</FormLabel>
           <TextField
             name="passportno"
             label="Номер"
             variant="outlined"
+            margin="normal"
             error={state.controls.passport.number.touched && !state.controls.passport.number.valid}
             value={state.controls.passport.number.value}
             onChange={e => handler('passport.number', e.target.value)}
@@ -334,6 +348,7 @@ const Item = () => {
             name="issuedby"
             label="Кем выдан"
             variant="outlined"
+            margin="normal"
             error={state.controls.passport.issuedBy.touched && !state.controls.passport.issuedBy.valid}
             value={state.controls.passport.issuedBy.value}
             onChange={e => handler('passport.issuedBy', e.target.value)}
@@ -358,7 +373,7 @@ const Item = () => {
           </MuiPickersUtilsProvider>
         </FormControl>
       </div>
-      <div>
+      <div style={{display: 'flex', alignItems: 'center'}}>
         {state.controls.phones.value.map((_, i) => {
           return (
             <TextField
@@ -366,6 +381,7 @@ const Item = () => {
               name={`phone_${i}`}
               label={`Телефон`}
               variant="outlined"
+              margin="normal"
               error={state.controls.phones.touched[i] && !state.controls.phones.valid[i]}
               value={state.controls.phones.value[i]}
               onChange={e => handler('phones', e.target.value, i)}
@@ -383,7 +399,7 @@ const Item = () => {
         })}
         <Button onClick={_ => handler('phones', '', state.controls.phones.value.length)}>добавить еще</Button>
       </div>
-      <div>
+      <div style={{display: 'flex', alignItems: 'center'}}>
         {state.controls.emails.value.map((_, i) => {
           return (
             <TextField
@@ -391,6 +407,7 @@ const Item = () => {
               name={`emails${i}`}
               label={`Email`}
               variant="outlined"
+              margin="normal"
               error={state.controls.emails.touched[i] && !state.controls.emails.valid[i]}
               value={state.controls.emails.value[i]}
               onChange={e => handler('emails', e.target.value, i)}
@@ -410,13 +427,14 @@ const Item = () => {
       </div>
       <div>
         <SelectRef
+          error={state.controls.addedBy.touched && !state.controls.addedBy.valid}
           onSelect={(value) => handler('addedBy', value)}
           value={state.controls.addedBy.value}
           options={state.controls.addedBy.options}
           label="addedBy"
         />
-      </div>
-    </div>
+      </div> */}
+    </>
   )
 }
 
