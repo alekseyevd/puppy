@@ -71,8 +71,8 @@ const Item = () => {
         touched: false
       },
       birthdate: {
-        value: null,
         type: 'date',
+        value: null,
         label: 'Дата рождения',
         valid: true,
         touched: false,
@@ -265,7 +265,7 @@ const Item = () => {
         <Button variant="contained" disabled={!state.valid} onClick={saveHandler.bind(null, true)}>Сохранить и закрыть</Button>
         <Button variant="contained" onClick={close}>Закрыть</Button>
       </Toolbar>
-      <Form form={state.controls} changeHandler={handler} />
+      <Form form={state.controls} changeHandler={handler} remove={remove}/>
       {/* <div>
         <TextField
           required

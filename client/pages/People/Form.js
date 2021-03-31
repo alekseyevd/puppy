@@ -12,8 +12,14 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core'
+import DateFnsUtils from '@date-io/date-fns'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
-const Form = ({form, changeHandler}) => {
+const Form = ({form, changeHandler, remove}) => {
   return Object.keys(form).map((key, i) => {
     const { type, value, label, valid, touched, radio } = form[key]
     switch (type) {
@@ -50,6 +56,60 @@ const Form = ({form, changeHandler}) => {
               }
             </RadioGroup>
           </FormControl>
+        )
+
+      case 'date':
+        return (
+          <div key={key+i}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} >
+              <KeyboardDatePicker
+                disableToolbar
+                inputVariant="outlined"
+                format="dd.MM.yyyy"
+                margin="normal"
+                label={label}
+                name={key}
+                maxDate={new Date('3000-12-12')}
+                minDate={new Date(-1, 0)}
+                error={touched && !valid}
+                value={value}
+                onChange={value => changeHandler(key, value)}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </div>
+        )
+
+      case '[text]':
+        return (
+          <div style={{display: 'flex', alignItems: 'center'}} key={key+i}>
+            {value.map((_, j) => {
+              return (
+                <TextField
+                  key={key+j+i}
+                  name={key+j}
+                  label={label}
+                  variant="outlined"
+                  margin="normal"
+                  error={touched[j] && !valid[j]}
+                  value={value[j]}
+                  onChange={e => changeHandler(key, e.target.value, j)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment onClick={_ => remove(key, j)}>
+                        <IconButton>
+                          <HighlightOffIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )
+            })}
+            <Button onClick={_ => changeHandler(key, '', value.length)}>добавить еще</Button>
+          </div>
         )
 
       default:
