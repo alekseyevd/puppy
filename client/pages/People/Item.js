@@ -26,6 +26,7 @@ import validate from '../../services/validation'
 import format from '../../services/validation/formatting'
 import { useHttp } from '../../services/http'
 import Form from './Form';
+import Control from '../../components/ui/inputs';
 
 const Item = () => {
   const { request, isLoading } = useHttp()
@@ -265,7 +266,17 @@ const Item = () => {
         <Button variant="contained" disabled={!state.valid} onClick={saveHandler.bind(null, true)}>Сохранить и закрыть</Button>
         <Button variant="contained" onClick={close}>Закрыть</Button>
       </Toolbar>
-      <Form form={state.controls} changeHandler={handler} remove={remove}/>
+      {/* <Form form={state.controls} changeHandler={handler} remove={remove}/> */}
+      {
+        Object.keys(state.controls).map(name => {
+          const props = state.controls[name]
+          return (
+            <div key={name}>
+              <Control name={name} {...props} onChange={handler}/>
+            </div>
+          )
+        })
+      }
       {/* <div>
         <TextField
           required
