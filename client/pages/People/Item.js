@@ -108,11 +108,13 @@ const Item = () => {
       },
       passport: {
         number: {
+          type: 'text',
           value: '',
           valid: true,
           touched: false
         },
         issuedDate: {
+          type: 'date',
           value: null,
           valid: true,
           touched: false,
@@ -121,6 +123,7 @@ const Item = () => {
           }
         },
         issuedBy: {
+          type: 'text',
           value: '',
           valid: true,
           touched: false

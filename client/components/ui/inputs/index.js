@@ -19,12 +19,17 @@ const types = {
 }
 
 const Control = (props) => {
-  // if (!props.type) {
-  //   const
-  //   return (
-  //     Object.keys()
-  //   )
-  // }
+  if (!props.type) {
+    const name = props.name
+    const c = Object.keys(props).filter(prop => prop !== 'name').map(prop => {
+      return {
+        name: prop,
+        ...props[prop],
+        onChange: (n, value) => props.onChange(`${name}.${n}`, value)
+      }
+    })
+    console.log(c);
+  }
 
   const component = types[props.type]
 
