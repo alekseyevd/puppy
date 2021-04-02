@@ -17,6 +17,7 @@ const validators = {
   match(value, regex) {
     const r = new RegExp(regex)
     const match = value.match(r);
+    if (!match) return false
     return match && value === match[0];
   },
 

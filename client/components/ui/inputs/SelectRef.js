@@ -8,9 +8,9 @@ import {
   MenuItem
 } from '@material-ui/core'
 import { useState, useRef, useEffect } from 'react'
-import { useHttp } from '../../services/http'
+import { useHttp } from '../../../services/http'
 
-export default function SelectRef({onSelect, value, options, label, error}) {
+export default function SelectRef({onChange, name, value, options, label, error, touched, valid}) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('')
   const [list, setList] = useState([]);
@@ -36,17 +36,17 @@ export default function SelectRef({onSelect, value, options, label, error}) {
       setList(list)
       if (val) {
         const el = list.find(el => el[options.inputValue] === val)
-        onSelect(el || {})
+        onChange(name, el || {})
       } else {
-        onSelect(null)
+        onChange(name, null)
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  const select = (e, el) => {
-    onSelect(el)
+  const select = (e, value) => {
+    onChange(name, value)
     handleClose(e)
   }
 
@@ -61,7 +61,7 @@ export default function SelectRef({onSelect, value, options, label, error}) {
     <>
       <TextField
         ref={anchorRef}
-        error={error}
+        error={!valid && touched}
         label={label}
         value={input}
         variant="outlined"
@@ -75,9 +75,9 @@ export default function SelectRef({onSelect, value, options, label, error}) {
             <MenuList /* autoFocusItem={open} */ id="menu-list-grow">
               {
                 list.length
-                  ? list.map(el => {
+                  ? list.map(value => {
                     return (
-                      <MenuItem key={el._id} onClick={e => select(e, el)}>{el[options.inputValue]}</MenuItem>
+                      <MenuItem key={value._id} onClick={e => select(e, value)}>{value[options.inputValue]}</MenuItem>
                     )
                   })
                   : <MenuItem>Не найдено</MenuItem>

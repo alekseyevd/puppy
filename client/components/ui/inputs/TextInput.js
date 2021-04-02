@@ -3,7 +3,7 @@ import {
   TextField,
 } from '@material-ui/core'
 
-const TextInput = ({required, name, label, valid, touched, value, onChange}) => {
+const TextInput = ({required, name, label, valid, touched, value, onChange, index, inputProps}) => {
   return <TextField
     required={required}
     name={name}
@@ -12,7 +12,8 @@ const TextInput = ({required, name, label, valid, touched, value, onChange}) => 
     margin="normal"
     error={!valid && touched}
     value={value}
-    onChange={e => onChange(name, e.target.value)}
+    onChange={e => onChange(name, e.target.value, index)}
+    InputProps={inputProps || null}
   />
 }
 

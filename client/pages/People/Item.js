@@ -13,7 +13,7 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core'
-import SelectRef from './SelectRef'
+import SelectRef from '../../components/ui/inputs/SelectRef'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -82,7 +82,8 @@ const Item = () => {
         }
       },
       phones: {
-        type: '[text]',
+        type: 'text',
+        multiple: true,
         label: 'Телефон',
         multi: true,
         format: 'phone',
@@ -94,7 +95,8 @@ const Item = () => {
         }
       },
       emails: {
-        type: '[text]',
+        type: 'text',
+        multiple: true,
         label: 'Email',
         multi: true,
         value: [''],
@@ -177,7 +179,7 @@ const Item = () => {
       field.shift()
       controls[key] = nestedtChangeHandler(controls[key], field.join('.'), value)
     } else {
-      if (index === null) {
+      if (index === null || index === undefined) {
         controls[key].touched = true
         controls[key].value = format(value, controls[key].format)
         controls[key].valid = validate(controls[key].value, controls[key].validation)
@@ -194,8 +196,9 @@ const Item = () => {
   const handler = (name, value, index = null) => {
     let controls = JSON.parse(JSON.stringify(state.controls))
     controls = nestedtChangeHandler(controls, name, value, index)
+    const valid = validateForm(controls)
     setState({
-      valid: validateForm(controls),
+      valid,
       controls
     })
   }
@@ -272,7 +275,7 @@ const Item = () => {
           const props = state.controls[name]
           return (
             <div key={name}>
-              <Control name={name} {...props} onChange={handler}/>
+              <Control name={name} {...props} onChange={handler} onRemove={remove}/>
             </div>
           )
         })
