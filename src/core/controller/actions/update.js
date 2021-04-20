@@ -5,7 +5,7 @@ module.exports = async function update(req, res, next) {
     const Model = this.model
 
     const filter = { id: req.params.id }
-  
+
     // to do validate fields and create new entity
     if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
       const selection = req.permissions.fields
@@ -16,7 +16,7 @@ module.exports = async function update(req, res, next) {
     }
 
     if (req.permissions && req.permissions.own) {
-      filter.user_id =  req.user.user_id
+      filter.user_id = req.user.user_id
     }
 
     const result = await Model.updateOne(filter, req.body)

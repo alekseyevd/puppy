@@ -85,7 +85,6 @@ const Item = () => {
         type: 'text',
         multiple: true,
         label: 'Телефон',
-        multi: true,
         format: 'phone',
         value: [''],
         valid: [true],
@@ -98,7 +97,6 @@ const Item = () => {
         type: 'text',
         multiple: true,
         label: 'Email',
-        multi: true,
         value: [''],
         valid: [true],
         touched: [false],
@@ -175,12 +173,12 @@ const Item = () => {
     }
   }
 
-  const nestedtChangeHandler = (controls, name, value, index = null) => {
+  const nestedChangeHandler = (controls, name, value, index = null) => {
     const field = name.split('.')
     const key = field[0]
     if (field.length > 1) {
       field.shift()
-      controls[key] = nestedtChangeHandler(controls[key], field.join('.'), value)
+      controls[key] = nestedChangeHandler(controls[key], field.join('.'), value)
     } else {
       if (index === null || index === undefined) {
         controls[key].touched = true
@@ -198,7 +196,7 @@ const Item = () => {
 
   const handler = (name, value, index = null) => {
     let controls = JSON.parse(JSON.stringify(state.controls))
-    controls = nestedtChangeHandler(controls, name, value, index)
+    controls = nestedChangeHandler(controls, name, value, index)
     const valid = validateForm(controls)
     setState({
       valid,

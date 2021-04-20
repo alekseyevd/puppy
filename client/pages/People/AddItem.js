@@ -26,6 +26,7 @@ import { validateForm } from '../../services/formValidate'
 import validate from '../../services/validation'
 import format from '../../services/validation/formatting'
 import { useHttp } from '../../services/http'
+import Control from '../../components/ui/inputs'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,8 +47,9 @@ const AddItem = ({close, addItemToState}) => {
 
   const [state, setState] = useState({
     valid: false,
-    formControls: {
+    controls: {
       name: {
+        type: 'text',
         value: '',
         label: 'Имя',
         valid: false,
@@ -57,6 +59,7 @@ const AddItem = ({close, addItemToState}) => {
         }
       },
       surname: {
+        type: 'text',
         value: '',
         label: 'Фамилия',
         valid: false,
@@ -66,20 +69,23 @@ const AddItem = ({close, addItemToState}) => {
         }
       },
       patronymic: {
+        type: 'text',
         value: '',
         label: 'Отчество',
         valid: true,
         touched: false
       },
       gender: {
-        value: '',
+        type: 'radio',
+        radio: ['Женcкий', 'Мужской'],
+        value: null,
         label: 'Пол',
         valid: true,
         touched: false
       },
       birthdate: {
-        value: null,
         type: 'date',
+        value: null,
         label: 'Дата рождения',
         valid: true,
         touched: false,
@@ -89,8 +95,8 @@ const AddItem = ({close, addItemToState}) => {
       },
       phones: {
         type: 'text',
+        multiple: true,
         label: 'Телефон',
-        multi: true,
         format: 'phone',
         value: [''],
         valid: [true],
@@ -101,8 +107,8 @@ const AddItem = ({close, addItemToState}) => {
       },
       emails: {
         type: 'text',
+        multiple: true,
         label: 'Email',
-        multi: true,
         value: [''],
         valid: [true],
         touched: [false],
@@ -111,36 +117,36 @@ const AddItem = ({close, addItemToState}) => {
         }
       },
       passport: {
-        valid: true,
-        formControls: {
-          number: {
-            value: '',
-            valid: true,
-            touched: false
-          },
-          issuedDate: {
-            value: null,
-            valid: true,
-            touched: false,
-            validation: {
-              date: true
-            }
-          },
-          issuedBy: {
-            value: '',
-            valid: true,
-            touched: false
-          },
+        number: {
+          type: 'text',
+          value: '',
+          valid: true,
+          touched: false
         },
-      }
+        issuedDate: {
+          type: 'date',
+          value: null,
+          valid: true,
+          touched: false,
+          validation: {
+            date: true
+          }
+        },
+        issuedBy: {
+          type: 'text',
+          value: '',
+          valid: true,
+          touched: false
+        },
+      },
     }
   })
 
   const toResponseData = (obj) => {
     const data = Object.keys(obj)
         .reduce((acc, key) => {
-          acc[key] = obj[key].formControls
-            ? toResponseData(obj[key].formControls)
+          acc[key] = obj[key].controls
+            ? toResponseData(obj[key].controls)
             : obj[key].value
           return acc
         }, {})
@@ -148,7 +154,7 @@ const AddItem = ({close, addItemToState}) => {
   }
 
   const saveHandler = async () => {
-    const data = toResponseData(state.formControls)
+    const data = toResponseData(state.controls)
     try {
       const res = await request({
         url: '/api/people',
@@ -163,52 +169,51 @@ const AddItem = ({close, addItemToState}) => {
     }
   }
 
-  const nestedtChangeHandler = (obj, name, value, index = null) => {
-    const formControls = obj.formControls
+  const nestedChangeHandler = (controls, name, value, index = null) => {
     const field = name.split('.')
     const key = field[0]
     if (field.length > 1) {
       field.shift()
-      formControls[key] = nestedtChangeHandler(formControls[key], field.join('.'), value)
+      controls[key] = nestedChangeHandler(controls[key], field.join('.'), value)
     } else {
-      if (index === null) {
-        formControls[key].touched = true
-        formControls[key].value = formControls[key].format
-          ? format[formControls[key].format](value)
-          : value
-        formControls[key].valid = validate(formControls[key].value, formControls[key].validation)
+      if (index === null || index === undefined) {
+        controls[key].touched = true
+        controls[key].value = format(value, controls[key].format)
+        controls[key].valid = validate(controls[key].value, controls[key].validation)
       } else {
-        formControls[key].touched[index] = true
-        formControls[key].value[index] = formControls[key].format
-          ? format[formControls[key].format](value)
-          : value
-        formControls[key].valid[index] = validate(formControls[key].value[index], formControls[key].validation)
+        controls[key].touched[index] = true
+        controls[key].value[index] = format(value, controls[key].format)
+        controls[key].valid[index] = validate(controls[key].value[index], controls[key].validation)
       }
     }
 
-    obj.valid = validateForm(formControls)
-    return obj
+    return controls
   }
 
   const handler = (name, value, index = null) => {
-    let obj = JSON.parse(JSON.stringify(state))
-    obj = nestedtChangeHandler(obj, name, value, index)
-    setState(obj)
+    let controls = JSON.parse(JSON.stringify(state.controls))
+    controls = nestedChangeHandler(controls, name, value, index)
+    const valid = validateForm(controls)
+    setState({
+      valid,
+      controls
+    })
   }
 
   const remove = (name, index) => {
-    const obj = JSON.parse(JSON.stringify(state))
-    obj.formControls[name].value.splice(index, 1)
-    obj.formControls[name].valid.splice(index, 1)
-    obj.formControls[name].touched.splice(index, 1)
-    if (obj.formControls[name].value.length === 0) {
-      obj.formControls[name].value[0] = ''
-      obj.formControls[name].valid[0] = validate(obj.formControls[name].value, obj.formControls[name].validation)
-      obj.formControls[name].touched[0] = true
+    const controls = JSON.parse(JSON.stringify(state.controls))
+    controls[name].value.splice(index, 1)
+    controls[name].valid.splice(index, 1)
+    controls[name].touched.splice(index, 1)
+    if (controls[name].value.length === 0) {
+      controls[name].value[0] = ''
+      controls[name].valid[0] = true
+      controls[name].touched[0] = true
     }
-
-    obj.valid = validateForm(obj.formControls)
-    setState(obj)
+    setState({
+      valid: validateForm(controls),
+      controls
+    })
   }
 
   return (
@@ -219,7 +224,17 @@ const AddItem = ({close, addItemToState}) => {
           To subscribe to this website, please enter your email address here. We will send updates
           occasionally.
         </DialogContentText> */}
-        <div>
+        {
+          Object.keys(state.controls).map(name => {
+            const props = state.controls[name]
+            return (
+              <div key={name}>
+                <Control name={name} {...props} onChange={handler} onRemove={remove}/>
+              </div>
+            )
+          })
+        }
+        {/* <div>
           <TextField
             required
             fullWidth
@@ -371,7 +386,7 @@ const AddItem = ({close, addItemToState}) => {
             )
           })}
           <Button onClick={_ => handler('emails', '', state.formControls.emails.value.length)}>добавить еще</Button>
-        </div>
+        </div> */}
       </DialogContent>
       <DialogActions>
         <Button onClick={() => confirm('Вы уверены?') ? close() : null} variant="contained">
