@@ -1,149 +1,23 @@
 /* eslint-disable no-unused-vars */
 import { useParams, useHistory } from 'react-router-dom'
 import {
-  makeStyles,
   Toolbar,
-  TextField,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Button,
-  InputAdornment,
-  IconButton
 } from '@material-ui/core'
-import SelectRef from '../../components/ui/inputs/SelectRef'
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
 import { useState, useEffect } from 'react'
 import { validateForm } from '../../services/formValidate'
 import validate from '../../services/validation'
 import format from '../../services/validation/formatting'
 import { useHttp } from '../../services/http'
-import Form from './Form';
-import Control from '../../components/ui/inputs';
+import Control from '../../components/ui/inputs'
+import formControls from './formControls'
 
 const Item = () => {
   const { request, isLoading } = useHttp()
   const id = useParams().id
   const history = useHistory()
 
-  const [state, setState] = useState({
-    valid: false,
-    controls: {
-      name: {
-        type: 'text',
-        value: '',
-        label: 'Имя',
-        valid: false,
-        touched: false,
-        validation: {
-          required: true
-        }
-      },
-      surname: {
-        type: 'text',
-        value: '',
-        label: 'Фамилия',
-        valid: false,
-        touched: false,
-        validation: {
-          required: true
-        }
-      },
-      patronymic: {
-        type: 'text',
-        value: '',
-        label: 'Отчество',
-        valid: true,
-        touched: false
-      },
-      gender: {
-        type: 'radio',
-        radio: ['Женcкий', 'Мужской'],
-        value: null,
-        label: 'Пол',
-        valid: true,
-        touched: false
-      },
-      birthdate: {
-        type: 'date',
-        value: null,
-        label: 'Дата рождения',
-        valid: true,
-        touched: false,
-        validation: {
-          date: true
-        }
-      },
-      phones: {
-        type: 'text',
-        multiple: true,
-        label: 'Телефон',
-        format: 'phone',
-        value: [''],
-        valid: [true],
-        touched: [false],
-        validation: {
-          match: '[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}'
-        }
-      },
-      emails: {
-        type: 'text',
-        multiple: true,
-        label: 'Email',
-        value: [''],
-        valid: [true],
-        touched: [false],
-        validation: {
-          email: true
-        }
-      },
-      passport: {
-        number: {
-          type: 'text',
-          value: '',
-          valid: true,
-          touched: false
-        },
-        issuedDate: {
-          type: 'date',
-          value: null,
-          valid: true,
-          touched: false,
-          validation: {
-            date: true
-          }
-        },
-        issuedBy: {
-          type: 'text',
-          value: '',
-          valid: true,
-          touched: false
-        },
-      },
-      addedBy: {
-        value: null,
-        type: 'ref',
-        touched: false,
-        valid: true,
-        options: {
-          ref: 'users',
-          inputValue: 'login',
-        },
-        validation: {
-          hasProperty: '_id'
-        }
-        // inputValue: () => (this.value !== null ? this.value.login : '' ),
-      }
-    }
-  })
-
+  const [state, setState] = useState(formControls)
   const [isReady, setReady] = useState(false)
 
   const toResponseData = (controls) => {
@@ -197,9 +71,8 @@ const Item = () => {
   const handler = (name, value, index = null) => {
     let controls = JSON.parse(JSON.stringify(state.controls))
     controls = nestedChangeHandler(controls, name, value, index)
-    const valid = validateForm(controls)
     setState({
-      valid,
+      valid: validateForm(controls),
       controls
     })
   }
@@ -224,24 +97,25 @@ const Item = () => {
     history.push('/people')
   }
 
-  const toStateData = (obj, controls) => {
+  const toStateData = (data, stateControls) => {
     // to-do use types control.type === 'date
+    const controls = JSON.parse(JSON.stringify(stateControls))
     Object.keys(controls).forEach(key => {
-      if (!Object.prototype.hasOwnProperty.call(controls[key], 'value') && obj[key]) {
-        controls[key] = toStateData(obj[key], controls[key])
-      } else if (controls[key].type !== 'ref' && obj[key]) {
+      if (!Object.prototype.hasOwnProperty.call(controls[key], 'value') && data[key]) {
+        controls[key] = toStateData(data[key], controls[key])
+      } else if (controls[key].type !== 'ref' && data[key]) {
         const isArray = Array.isArray(controls[key].value)
         controls[key].value = isArray
-          ? [...obj[key]]
-          : obj[key]
+          ? [...data[key]]
+          : data[key]
         controls[key].valid = isArray
-          ? obj[key].map(val => validate(val, controls[key].validation))
-          : validate(obj[key], controls[key].validation)
+          ? data[key].map(val => validate(val, controls[key].validation))
+          : validate(data[key], controls[key].validation)
         controls[key].touched = isArray
-          ? obj[key].map(_ => true)
+          ? data[key].map(_ => true)
           : true
-      } else if (controls[key].type === 'ref' && obj[key]) {
-        controls[key].value = obj[key]
+      } else if (controls[key].type === 'ref' && data[key]) {
+        controls[key].value = data[key]
       }
     })
     return controls
@@ -250,10 +124,7 @@ const Item = () => {
   useEffect(async () => {
     try {
       const response = await request(`/api/people/${id}`)
-
-      let controls = JSON.parse(JSON.stringify(state.controls))
-      controls = toStateData(response.data.data, controls)
-
+      const controls = toStateData(response.data.data, state.controls)
       setState({ ...state, controls})
       setReady(true)
     } catch (error) {
@@ -281,174 +152,6 @@ const Item = () => {
           )
         })
       }
-      {/* <div>
-        <TextField
-          required
-          name="name"
-          label="Имя"
-          variant="outlined"
-          margin="normal"
-          error={state.controls.name.touched && !state.controls.name.valid}
-          value={state.controls.name.value}
-          onChange={e => handler('name', e.target.value)}
-        />
-      </div>
-      <div>
-        <TextField
-          required
-          name="surname"
-          label="Фамилия"
-          variant="outlined"
-          margin="normal"
-          error={state.controls.surname.touched && !state.controls.surname.valid}
-          value={state.controls.surname.value}
-          onChange={e => handler('surname', e.target.value)}
-        />
-      </div>
-      <div>
-        <TextField
-          required
-          name="patronymic"
-          label="Отчество"
-          variant="outlined"
-          margin="normal"
-          error={state.controls.patronymic.touched && !state.controls.patronymic.valid}
-          value={state.controls.patronymic.value}
-          onChange={e => handler('patronymic', e.target.value)}
-        />
-      </div>
-      <div>
-        <FormControl component="fieldset" margin="normal">
-          <FormLabel component="legend">Пол</FormLabel>
-          <RadioGroup aria-label="gender" name="gender1" value={state.controls.gender.value} onChange={e => handler('gender', e.target.value)}>
-            <FormControlLabel value="female" control={<Radio color="primary"/>} label="Женщина" />
-            <FormControlLabel value="male" control={<Radio color="primary"/>} label="Мужчина" />
-          </RadioGroup>
-        </FormControl>
-      </div>
-      <div>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            inputVariant="outlined"
-            format="dd.MM.yyyy"
-            margin="normal"
-            id="date-picker-inline"
-            label="Дата рождения"
-            name="birthdate"
-            maxDate={new Date('3000-12-12')}
-            minDate={new Date(-1, 0)}
-            error={state.controls.birthdate.touched && !state.controls.birthdate.valid}
-            value={state.controls.birthdate.value}
-            onChange={value => handler('birthdate', value)}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />
-        </MuiPickersUtilsProvider>
-      </div>
-      <div>
-        <FormControl component="fieldset" margin="normal">
-          <FormLabel component="legend">Паспорт</FormLabel>
-          <TextField
-            name="passportno"
-            label="Номер"
-            variant="outlined"
-            margin="normal"
-            error={state.controls.passport.number.touched && !state.controls.passport.number.valid}
-            value={state.controls.passport.number.value}
-            onChange={e => handler('passport.number', e.target.value)}
-          />
-          <TextField
-            name="issuedby"
-            label="Кем выдан"
-            variant="outlined"
-            margin="normal"
-            error={state.controls.passport.issuedBy.touched && !state.controls.passport.issuedBy.valid}
-            value={state.controls.passport.issuedBy.value}
-            onChange={e => handler('passport.issuedBy', e.target.value)}
-          />
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              disableToolbar
-              inputVariant="outlined"
-              format="dd.MM.yyyy"
-              margin="normal"
-              label="Дата выдачи"
-              name="issued"
-              maxDate={new Date('3000-12-12')}
-              minDate={new Date(-1, 0)}
-              error={state.controls.passport.issuedDate.touched && !state.controls.passport.issuedDate.valid}
-              value={state.controls.passport.issuedDate.value}
-              onChange={value => handler('passport.issuedDate', value)}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-            />
-          </MuiPickersUtilsProvider>
-        </FormControl>
-      </div>
-      <div style={{display: 'flex', alignItems: 'center'}}>
-        {state.controls.phones.value.map((_, i) => {
-          return (
-            <TextField
-              key={`phone_${i}`}
-              name={`phone_${i}`}
-              label={`Телефон`}
-              variant="outlined"
-              margin="normal"
-              error={state.controls.phones.touched[i] && !state.controls.phones.valid[i]}
-              value={state.controls.phones.value[i]}
-              onChange={e => handler('phones', e.target.value, i)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment onClick={_ => remove('phones', i)}>
-                    <IconButton>
-                      <HighlightOffIcon />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
-          )
-        })}
-        <Button onClick={_ => handler('phones', '', state.controls.phones.value.length)}>добавить еще</Button>
-      </div>
-      <div style={{display: 'flex', alignItems: 'center'}}>
-        {state.controls.emails.value.map((_, i) => {
-          return (
-            <TextField
-              key={`emails${i}`}
-              name={`emails${i}`}
-              label={`Email`}
-              variant="outlined"
-              margin="normal"
-              error={state.controls.emails.touched[i] && !state.controls.emails.valid[i]}
-              value={state.controls.emails.value[i]}
-              onChange={e => handler('emails', e.target.value, i)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment onClick={_ => remove('emails', i)}>
-                    <IconButton>
-                      <HighlightOffIcon />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
-          )
-        })}
-        <Button onClick={_ => handler('emails', '', state.controls.emails.value.length)}>добавить еще</Button>
-      </div>
-      <div>
-        <SelectRef
-          error={state.controls.addedBy.touched && !state.controls.addedBy.valid}
-          onSelect={(value) => handler('addedBy', value)}
-          value={state.controls.addedBy.value}
-          options={state.controls.addedBy.options}
-          label="addedBy"
-        />
-      </div> */}
     </>
   )
 }
