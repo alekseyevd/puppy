@@ -27,7 +27,7 @@ export default function PeopleTablePage() {
   const { request, isLoading } = useHttp()
 
   const [data, setData] = useState([])
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [open, setOpen] = useState(false)
 
   const handleClickOpen = () => {
@@ -39,35 +39,35 @@ export default function PeopleTablePage() {
   }
 
   const handleSelectAll = (event) => {
-    let newUserCustomerIds;
+    let newSelectedIds;
 
     if (event.target.checked) {
-      newUserCustomerIds = data.map(row => row.id);
+      newSelectedIds = data.map(row => row.id);
     } else {
-      newUserCustomerIds = [];
+      newSelectedIds = [];
     }
 
-    setSelectedUserIds(newUserCustomerIds);
+    setSelectedIds(newSelectedIds);
   }
 
   const handleSelectOne = (event, id) => {
     event.stopPropagation()
-    const selectedIndex = selectedUserIds.indexOf(id);
-    let newSelectedUserIds = [];
+    const selectedIndex = selectedIds.indexOf(id);
+    let newSelectedIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedUserIds = newSelectedUserIds.concat(selectedUserIds, id);
+      newSelectedIds = newSelectedIds.concat(selectedIds, id);
     } else if (selectedIndex === 0) {
-      newSelectedUserIds = newSelectedUserIds.concat(selectedUserIds.slice(1));
-    } else if (selectedIndex === selectedUserIds.length - 1) {
-      newSelectedUserIds = newSelectedUserIds.concat(selectedUserIds.slice(0, -1));
+      newSelectedIds = newSelectedIds.concat(selectedIds.slice(1));
+    } else if (selectedIndex === selectedIds.length - 1) {
+      newSelectedIds = newSelectedIds.concat(selectedIds.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedUserIds = newSelectedUserIds.concat(
-          selectedUserIds.slice(0, selectedIndex),
-          selectedUserIds.slice(selectedIndex + 1)
+      newSelectedIds = newSelectedIds.concat(
+          selectedIds.slice(0, selectedIndex),
+          selectedIds.slice(selectedIndex + 1)
       )
     }
-    setSelectedUserIds(newSelectedUserIds)
+    setSelectedIds(newSelectedIds)
   };
 
   const addItemToState = (row) => {
@@ -89,10 +89,10 @@ export default function PeopleTablePage() {
       // console.log(response)
       const newData = JSON.parse(JSON.stringify(data))
           .filter(user => user.id !== id)
-      const newSelectedUserIds = JSON.parse(JSON.stringify(selectedUserIds))
+      const newSelectedIds = JSON.parse(JSON.stringify(selectedIds))
           .filter(selectedId => selectedId !== id)
       setData(newData)
-      setSelectedUserIds(newSelectedUserIds)
+      setSelectedIds(newSelectedIds)
     } catch (error) {
       console.log(error.response);
     }
@@ -134,8 +134,8 @@ export default function PeopleTablePage() {
                     color="primary"
                     onChange={handleSelectAll}
                     indeterminate={
-                      selectedUserIds.length > 0
-                      && selectedUserIds.length < data.length
+                      selectedIds.length > 0
+                      && selectedIds.length < data.length
                     }
                   />
                 </TableCell>
@@ -154,14 +154,14 @@ export default function PeopleTablePage() {
                   hover
                   key={row.id}
                   onClick={() => history.push(`/people/${row.id}`)}
-                  selected={selectedUserIds.indexOf(row.id) !== -1}
+                  selected={selectedIds.indexOf(row.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
                       value="true"
                       color="primary"
                       onClick={e => handleSelectOne(e, row.id)}
-                      checked={selectedUserIds.indexOf(row.id) !== -1}
+                      checked={selectedIds.indexOf(row.id) !== -1}
                     />
                   </TableCell>
                   <TableCell>
