@@ -19,6 +19,7 @@ import { useHistory } from 'react-router-dom'
 import { useHttp } from '../../services/http'
 import { useEffect, useState } from 'react'
 import AddItem from './AddItem'
+import tableConfig from './tableConfig'
 
 
 export default function PeopleTablePage() {
@@ -139,12 +140,15 @@ export default function PeopleTablePage() {
                     }
                   />
                 </TableCell>
-                <TableCell align="left">
-                  Имя
-                </TableCell>
-                <TableCell>
-                  Фамилия
-                </TableCell>
+                {
+                  tableConfig.map(th => {
+                    return (
+                      <TableCell key={th.field}>
+                        {th.header}
+                      </TableCell>
+                    )
+                  })
+                }
                 <TableCell/>
               </TableRow>
             </TableHead>
@@ -164,17 +168,15 @@ export default function PeopleTablePage() {
                       checked={selectedIds.indexOf(row.id) !== -1}
                     />
                   </TableCell>
-                  <TableCell>
-                    <Typography
-                      color="textPrimary"
-                      variant="body1"
-                    >
-                      {row.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    {row.surname}
-                  </TableCell>
+                  {
+                    tableConfig.map(th => {
+                      return (
+                        <TableCell key={row.id+th.field}>
+                          {row[th.field]}
+                        </TableCell>
+                      )
+                    })
+                  }
                   <TableCell style={{textAlign: 'right'}}>
                     <IconButton size="small" onClick={(e) => moveTo(e, row.id, 'archive')}>
                       <Icon fontSize="small">archive</Icon>
