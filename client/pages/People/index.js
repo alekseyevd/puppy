@@ -109,5 +109,5 @@ export default function PeopleTablePage() {
         <AddItem close={handleClose} addItemToState={addItemToState} />
       </Dialog>
     </>
-  );
+  )
 }

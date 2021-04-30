@@ -2,14 +2,16 @@
 import DateFnsUtils from '@date-io/date-fns'
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
+  KeyboardDatePicker
 } from '@material-ui/pickers'
 
 const DateInput = ({label, name, touched, valid, value, onChange}) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} >
       <KeyboardDatePicker
+        clearable="true"
         disableToolbar
+        showTodayButton
         variant="inline"
         inputVariant="outlined"
         format="dd.MM.yyyy"

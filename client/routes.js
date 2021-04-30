@@ -2,10 +2,11 @@
 import { Redirect, Navigate, Route, Switch } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import loginPage from './pages/Login'
-import DataTable from './pages/Table'
-import Item from './pages/Item'
-import People from './pages/People'
-import PersonItem from './pages/People/Item'
+import PeopleTableFields from './pages/People/tableConfig'
+import PeopleControls from './pages/People/controls'
+import config from './config'
+import Documents from './pages/Documents'
+import Document from './pages/Documents/Document'
 
 export default function(isAuthenticated = false) {
   if (!isAuthenticated) {
@@ -22,19 +23,19 @@ export default function(isAuthenticated = false) {
     <MainLayout>
       <Switch>
         <Route path="/" exact>
-          <DataTable />
+          <Documents entity="users" fields={config.users.columns} controls={config.users.controls}/>
         </Route>
         <Route path="/users" exact>
-          <DataTable />
+          <Documents entity="users" fields={config.users.columns} controls={config.users.controls}/>
         </Route>
         <Route path="/users/:id" exact>
-          <Item></Item>
+          <Document entity="people" controls={config.users.controls}/>
         </Route>
         <Route path="/people" exact>
-          <People />
+          <Documents entity="people" fields={config.people.columns} controls={config.people.controls}/>
         </Route>
         <Route path="/people/:id" exact>
-          <PersonItem></PersonItem>
+          <Document entity="people" controls={config.people.controls}/>
         </Route>
       </Switch>
     </MainLayout>
