@@ -39,12 +39,11 @@ const Documents = ({ entity, fields, controls }) => {
   useEffect(async () => {
     try {
       const response = await request(`/api/${entity}`)
-      console.log(response);
       setData(response.data.data)
     } catch (error) {
       console.log(error)
     }
-  }, [])
+  }, [entity])
 
   return (
     <>

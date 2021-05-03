@@ -11,7 +11,6 @@ const DateInput = ({label, name, touched, valid, value, onChange}) => {
       <KeyboardDatePicker
         clearable="true"
         disableToolbar
-        showTodayButton
         variant="inline"
         inputVariant="outlined"
         format="dd.MM.yyyy"

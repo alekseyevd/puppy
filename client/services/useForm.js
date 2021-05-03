@@ -102,7 +102,6 @@ export const useForm = (params) => {
 
   const toStateData = (data) => {
     const controls = nestedStateData(data, state.controls)
-    console.log(controls);
     setState({ ...state, controls})
   }
 
