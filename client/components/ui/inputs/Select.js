@@ -8,7 +8,7 @@ import {
 const SelectInput = ({required, name, label, valid, touched, value, onChange, options}) => {
   return (
     <FormControl variant="outlined">
-      <InputLabel htmlFor="outlined-age-native-simple">Роль</InputLabel>
+      <InputLabel htmlFor="outlined-age-native-simple">{label}</InputLabel>
       <Select
         native
         required={required}
@@ -16,9 +16,9 @@ const SelectInput = ({required, name, label, valid, touched, value, onChange, op
         value={value}
         onChange={e => onChange(name, e.target.value)}
         label={label}
-        inputProps={{
-          name,
-        }}
+        // inputProps={{
+        //   name,
+        // }}
       >
         <option aria-label="None" value="" />
         {
