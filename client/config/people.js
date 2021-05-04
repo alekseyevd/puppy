@@ -33,7 +33,10 @@ const schema = {
     },
     gender: {
       type: 'radio',
-      radio: ['Женcкий', 'Мужской'],
+      options: [
+        { value: 'male', label: 'Мужской' },
+        { value: 'female', label: 'Женский' },
+      ],
       value: null,
       label: 'Пол',
       valid: true,

@@ -39,6 +39,7 @@ const Item = ({ entity, controls }) => {
   useEffect(async () => {
     try {
       const response = await request(`/api/${entity}/${id}`)
+      console.log(response);
       form.toStateData(response.data.data)
       setReady(true)
     } catch (error) {

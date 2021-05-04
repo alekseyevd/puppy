@@ -25,7 +25,15 @@ const schema = {
     },
     role: {
       value: '',
-      type: 'select',
+      type: 'list',
+      options: [
+        {
+          value: 'admin', label: 'Администратор'
+        },
+        {
+          value: 'user', label: 'Пользователь'
+        },
+      ],
       label: 'Роль',
       valid: true,
       touched: true,
@@ -35,6 +43,7 @@ const schema = {
     },
     phone: {
       value: '',
+      type: 'text',
       label: 'Телефон',
       valid: true,
       touched: true,
@@ -45,6 +54,7 @@ const schema = {
     },
     email: {
       value: '',
+      type: 'text',
       label: 'Email',
       valid: true,
       touched: true,

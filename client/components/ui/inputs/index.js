@@ -6,15 +6,19 @@ import TextInput from './TextInput'
 import {
   Button,
   InputAdornment,
-  IconButton
+  IconButton,
 } from '@material-ui/core'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import SelectRef from './SelectRef'
+import PasswordInput from './PasswordInput'
+import Select from './Select'
 
 const types = {
   text: TextInput,
+  password: PasswordInput,
   radio: RadioInput,
   date: DateInput,
+  list: Select,
   ref: SelectRef
 }
 

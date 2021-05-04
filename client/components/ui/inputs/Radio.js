@@ -7,18 +7,18 @@ import {
   Radio,
 } from '@material-ui/core'
 
-const RadioInput = ({label, name, value, onChange, radio }) => {
+const RadioInput = ({label, name, value, onChange, options }) => {
   return (
     <FormControl component="fieldset" margin="normal">
       <FormLabel component="legend">{label}</FormLabel>
       <RadioGroup aria-label={name} name={name} value={value} onChange={e => onChange(name, e.target.value)}>
         {
-          radio.map((v, i) =>
+          options.map((o, i) =>
             <FormControlLabel
-              key={v+i}
-              value={v}
+              key={o+i}
+              value={typeof o === 'string' ? o : o.value}
               control={<Radio color="primary"/>}
-              label={v}
+              label={typeof o === 'string' ? o : o.label}
             />
           )
         }
