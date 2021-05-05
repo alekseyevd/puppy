@@ -7,8 +7,6 @@ import {
   TableCell,
   Checkbox,
   TableBody,
-  IconButton,
-  Icon
 } from '@material-ui/core'
 
 const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
@@ -71,7 +69,6 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
               )
             })
           }
-          <TableCell/>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -99,14 +96,14 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
                 )
               })
             }
-            <TableCell style={{textAlign: 'right'}}>
+            {/* <TableCell style={{textAlign: 'right'}}>
               <IconButton size="small" onClick={(e) => moveTo(e, row.id, 'archive')}>
                 <Icon fontSize="small">archive</Icon>
               </IconButton>
               <IconButton size="small" onClick={(e) => moveTo(e, row.id, 'trash')}>
                 <Icon fontSize="small">delete</Icon>
               </IconButton>
-            </TableCell>
+            </TableCell> */}
           </TableRow>
         ))}
       </TableBody>

@@ -49,16 +49,32 @@ const Documents = ({ entity, fields, controls }) => {
   return (
     <>
       <Container maxWidth={false} >
-        <Typography>{entity}</Typography>
+        <Typography>
+          {entity}
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={handleOpenAddForm}
+        >
+          Новая запись
+        </Button>
         <Toolbar>
-          <div>Всего документов: {data.length}</div>
+          <div>
+            { selectedIds.length ? `Выбрано документов: ${selectedIds.length}` : `Всего документов: ${data.length}` }
+          </div>
           <Button
             variant="contained"
             color="primary"
-            size="large"
-            onClick={handleOpenAddForm}
           >
-            Добавить
+            Удалить
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+          >
+            В архив
           </Button>
         </Toolbar>
         <Card>

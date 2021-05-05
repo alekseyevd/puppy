@@ -45,7 +45,7 @@ const AddItem = ({close, addItemToState, controls}) => {
 
   return (
     <>
-      <DialogTitle id="form-dialog-title">Новый физ лицо</DialogTitle>
+      <DialogTitle id="form-dialog-title">Новая запись</DialogTitle>
       <DialogContent className={styles.root}>
         {/* <DialogContentText>
           To subscribe to this website, please enter your email address here. We will send updates
