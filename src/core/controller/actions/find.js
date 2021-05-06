@@ -12,19 +12,16 @@ module.exports = async function (req, res, next) {
     //   throw createError(400, 'query param \'filter\' is not valid json string.')
 
     const search = { ...req.query }
+    search.status = req.query.status || 1
 
     delete search.limit
     delete search.page
 
     Object.keys(search).forEach(key => {
-      search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
+      if (key !== 'status') {
+        search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
+      }
     })
-
-    // return res.json(req.query)
-
-    // const filter = req.query.filter
-    //     ? JSON.parse(req.query.filter)
-    //     : {}
 
     if (req.permissions && req.permissions.own) {
       search.user_id = req.user.user_id

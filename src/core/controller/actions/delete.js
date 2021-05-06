@@ -14,12 +14,15 @@ module.exports = async function deleteOne(req, res, next) {
 
     if (result.n === 0) throw createError(404, 'not found')
 
-    if (result.nModified  === 0) {
+    if (result.nModified === 0) {
       await Model.deleteOne(filter)
     }
 
     res.json({
       result: true
+    })
+    res.json({
+      result: req.body
     })
   } catch (error) {
     return next(error)

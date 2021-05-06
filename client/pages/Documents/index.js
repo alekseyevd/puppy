@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useHttp } from '../../services/http'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Card,
   Container,
@@ -15,6 +15,8 @@ import DataTable from '../../components/ui/dataTable'
 
 const Documents = ({ entity, fields, controls }) => {
   const history = useHistory()
+  // const params = useLocation()
+  // console.log(params);
 
   const { request, isLoading } = useHttp()
 
@@ -36,15 +38,33 @@ const Documents = ({ entity, fields, controls }) => {
     setData(cloned)
   }
 
-  useEffect(async () => {
+  const handleClickDelete = async () => {
+    // console.log(selectedIds)
+    try {
+      const res = await request({
+        url: `/api/${entity}/totrash`,
+        method: 'PUT',
+        data: selectedIds
+      })
+      await updateData()
+      setSelectedIds([])
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const updateData = useCallback(async () => {
     try {
       const response = await request(`/api/${entity}`)
-      console.log(response.data.data);
       setData(response.data.data)
     } catch (error) {
       console.log(error)
     }
   }, [entity])
+
+  useEffect(() => {
+    updateData()
+  }, [updateData])
 
   return (
     <>
@@ -64,23 +84,29 @@ const Documents = ({ entity, fields, controls }) => {
           <div>
             { selectedIds.length ? `Выбрано документов: ${selectedIds.length}` : `Всего документов: ${data.length}` }
           </div>
-          <Button
-            variant="contained"
-            color="primary"
-          >
-            Удалить
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-          >
-            В архив
-          </Button>
+          { selectedIds.length > 0 &&
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleClickDelete}
+              >
+                Удалить
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+              >
+                В архив
+              </Button>
+            </>
+          }
         </Toolbar>
         <Card>
           <DataTable
             columns={fields}
             data={data}
+            selected={selectedIds}
             onRowClick={(id) => history.push(`/${entity}/${id}`)}
             onSelect={setSelectedIds}
           />

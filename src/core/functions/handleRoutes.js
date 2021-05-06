@@ -9,9 +9,9 @@ module.exports = (app, type) => {
   const dirs = fs.readdirSync(apiPath, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => {
-        return { 
+        return {
           name: dirent.name,
-          path: path.resolve(apiPath, dirent.name) 
+          path: path.resolve(apiPath, dirent.name)
         }
       })
 
@@ -22,7 +22,7 @@ module.exports = (app, type) => {
 
   dirs.forEach(dir => {
     // to do check uf json files exist
-    const { path, name } = dir 
+    const { path, name } = dir
     const router = Router()
     const localController = require(`${path}/Controller`)
 
@@ -37,27 +37,27 @@ module.exports = (app, type) => {
     if (type !== 'custom') {
       const schema = require(`${path}/schema`)
       const model = createModel(type, name, schema)
-  
+
       buffer = fs.readFileSync(`${path}/templates/pdf/templates.json`)
-      let pdfTemplates = JSON.parse(buffer)
-  
+      const pdfTemplates = JSON.parse(buffer)
+
       const pdf = pdfTemplates.reduce((acc, template) => {
         template.fileName = `${path}/templates/pdf/${template.fileName}`
         acc[template.id] = template
         return acc
       }, {})
-  
+
       buffer = fs.readFileSync(`${path}/templates/email/templates.json`)
-      let emailTemplates = JSON.parse(buffer)
-  
+      const emailTemplates = JSON.parse(buffer)
+
       const email = emailTemplates.reduce((acc, template) => {
         template.fileName = `${path}/templates/email/${template.fileName}`
         acc[template.id] = template
         return acc
       }, {})
-  
-      //to-do register model in Puppy.models[name] = model
-      //to do Object.defineProperty
+
+      // to-do register model in Puppy.models[name] = model
+      // to do Object.defineProperty
       Puppy.models[name] = model
       Puppy.templates[name] = { pdf, email }
     }
@@ -65,7 +65,7 @@ module.exports = (app, type) => {
 
     const controller = new Controller(localController, type !== 'custom' ? name : null)
 
-    //to-do add validators
+    // to-do add validators
     routes.forEach(r => {
       router[r.method](r.path, isAuthenticated, isAllowed(r.action), controller[r.action])
     })

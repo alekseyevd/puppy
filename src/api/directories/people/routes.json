@@ -20,6 +20,11 @@
     "action": "update"
   },
   {
+    "method": "put",
+    "path": "/totrash",
+    "action": "moveToTrash"
+  },
+  {
     "method": "delete",
     "path": "/:id",
     "action": "deleteOne"

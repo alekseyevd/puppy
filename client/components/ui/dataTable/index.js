@@ -9,8 +9,8 @@ import {
   TableBody,
 } from '@material-ui/core'
 
-const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
-  const [selectedIds, setSelectedIds] = useState([])
+const DataTable = ({ columns, data, limit, onRowClick, onSelect, selected }) => {
+  // const [selectedIds, setSelectedIds] = useState([])
 
   const handleSelectAll = (event) => {
     let newSelectedIds
@@ -19,28 +19,28 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
     } else {
       newSelectedIds = []
     }
-    setSelectedIds(newSelectedIds)
+    // setSelectedIds(newSelectedIds)
     onSelect(newSelectedIds)
   }
 
   const handleSelectOne = (event, id) => {
     event.stopPropagation()
-    const selectedIndex = selectedIds.indexOf(id);
+    const selectedIndex = selected.indexOf(id);
     let newSelectedIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedIds = newSelectedIds.concat(selectedIds, id);
+      newSelectedIds = newSelectedIds.concat(selected, id);
     } else if (selectedIndex === 0) {
-      newSelectedIds = newSelectedIds.concat(selectedIds.slice(1));
-    } else if (selectedIndex === selectedIds.length - 1) {
-      newSelectedIds = newSelectedIds.concat(selectedIds.slice(0, -1));
+      newSelectedIds = newSelectedIds.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelectedIds = newSelectedIds.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelectedIds = newSelectedIds.concat(
-          selectedIds.slice(0, selectedIndex),
-          selectedIds.slice(selectedIndex + 1)
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1)
       )
     }
-    setSelectedIds(newSelectedIds)
+    // setSelectedIds(newSelectedIds)
     onSelect(newSelectedIds)
   }
 
@@ -55,8 +55,12 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
               color="primary"
               onChange={handleSelectAll}
               indeterminate={
-                selectedIds.length > 0
-                && selectedIds.length < data.length
+                selected.length > 0
+                && selected.length < data.length
+              }
+              checked={
+                selected.length > 0
+                && selected.length === data.length
               }
             />
           </TableCell>
@@ -77,14 +81,14 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect }) => {
             hover
             key={row.id}
             onClick={() => onRowClick(row.id)}
-            selected={selectedIds.indexOf(row.id) !== -1}
+            selected={selected.indexOf(row.id) !== -1}
           >
             <TableCell padding="checkbox">
               <Checkbox
                 value="true"
                 color="primary"
                 onClick={e => handleSelectOne(e, row.id)}
-                checked={selectedIds.indexOf(row.id) !== -1}
+                checked={selected.indexOf(row.id) !== -1}
               />
             </TableCell>
             {
