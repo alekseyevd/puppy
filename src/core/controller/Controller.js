@@ -7,6 +7,7 @@ const deleteOne = require('./actions/delete')
 const print = require('./actions/print')
 const email = require('./actions/email')
 const Puppy = require('../Puppy')
+const moveTo = require('./actions/moveTo')
 
 // module.exports = {
 //   find,
@@ -29,6 +30,7 @@ class Controller {
       this.create = create.bind(this)
       this.update = update.bind(this)
       this.moveToTrash = moveToTrash.bind(this)
+      this.moveTo = moveTo.bind(this)
       this.deleteOne = deleteOne.bind(this)
       this.print = print.bind(this)
       this.email = email.bind(this)

@@ -5,6 +5,7 @@
     "findOne": true,
     "update": true,
     "moveToTrash": true,
+    "moveTo": true,
     "deleteOne": true,
     "print": {
       "templates": [1]

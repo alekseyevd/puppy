@@ -29,13 +29,15 @@ export default function(isAuthenticated = false) {
           <Documents entity="users" fields={config.users.columns} controls={config.users.controls}/>
         </Route>
         <Route path="/users/:id" exact>
-          <Document entity="users" controls={config.users.controls}/>
+          {/* <Document entity="users" controls={config.users.controls}/> */}
+          <Documents entity="users" fields={config.users.columns} controls={config.users.controls}/>
         </Route>
         <Route path="/people" exact>
           <Documents entity="people" fields={config.people.columns} controls={config.people.controls}/>
         </Route>
         <Route path="/people/:id" exact>
-          <Document entity="people" controls={config.people.controls}/>
+          {/* <Document entity="people" controls={config.people.controls}/> */}
+          <Documents entity="people" fields={config.people.columns} controls={config.people.controls}/>
         </Route>
       </Switch>
     </MainLayout>

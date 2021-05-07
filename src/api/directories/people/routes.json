@@ -25,6 +25,11 @@
     "action": "moveToTrash"
   },
   {
+    "method": "put",
+    "path": "/moveto/:where",
+    "action": "moveTo"
+  },
+  {
     "method": "delete",
     "path": "/:id",
     "action": "deleteOne"
