@@ -10,6 +10,7 @@ import {
   Button,
   Dialog
 } from '@material-ui/core'
+import TablePagination from '@material-ui/core/TablePagination';
 import Document from './Document'
 import AddItem from './Add'
 import DataTable from '../../components/ui/dataTable'
@@ -135,6 +136,14 @@ const Documents = ({ entity, fields, controls }) => {
           <Link to={`/${entity}`}>Активные</Link>
           <Link to={`/${entity}/trash`}>Удаленные</Link>
           <Link to={`/${entity}/archive`}>В архиве</Link>
+          <TablePagination
+            component="div"
+            count={100}
+            page={0}
+            // onChangePage={handleChangePage}
+            rowsPerPage={10}
+            // onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
       <Dialog open={open} disableBackdropClick aria-labelledby="form-dialog-title">
