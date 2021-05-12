@@ -31,6 +31,9 @@ const Documents = ({ entity, fields, controls }) => {
   const [data, setData] = useState([])
   const [selectedIds, setSelectedIds] = useState([]);
   const [open, setOpen] = useState(false)
+  const [page, setPage] = useState(0)
+  const [limit, setlimit] = useState(5)
+  const [count, setCount] = useState(0)
 
   const handleOpenAddForm = () => {
     setOpen(true);
@@ -45,6 +48,14 @@ const Documents = ({ entity, fields, controls }) => {
     cloned.unshift(row)
     setData(cloned)
   }
+
+  const handleChangePage = async (_, newPage) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setlimit(event.target.value)
+  };
 
   const moveTo = async (where) => {
     try {
@@ -62,13 +73,14 @@ const Documents = ({ entity, fields, controls }) => {
 
   const updateData = useCallback(async () => {
     try {
-      const response = await request(`/api/${entity}?status=${status}`)
+      const response = await request(`/api/${entity}?status=${status}&limit=${limit}&page=${page}`)
       setData(response.data.data)
-      console.log(response.data.data);
+      setCount(+response.headers['pagination-count'] || 0)
+      console.log(response)
     } catch (error) {
       console.log(error)
     }
-  }, [entity, id])
+  }, [entity, id, limit, page])
 
   useEffect(() => {
     updateData()
@@ -133,18 +145,19 @@ const Documents = ({ entity, fields, controls }) => {
             onRowClick={(id) => history.push(`/${entity}/${id}`)}
             onSelect={setSelectedIds}
           />
-          <Link to={`/${entity}`}>Активные</Link>
-          <Link to={`/${entity}/trash`}>Удаленные</Link>
-          <Link to={`/${entity}/archive`}>В архиве</Link>
           <TablePagination
             component="div"
-            count={100}
-            page={0}
-            // onChangePage={handleChangePage}
-            rowsPerPage={10}
-            // onChangeRowsPerPage={handleChangeRowsPerPage}
+            count={count}
+            page={page}
+            onChangePage={handleChangePage}
+            rowsPerPage={limit}
+            rowsPerPageOptions={[5, 15, 30]}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Card>
+        <Link to={`/${entity}`}>Активные</Link>
+        <Link to={`/${entity}/trash`}>Удаленные</Link>
+        <Link to={`/${entity}/archive`}>В архиве</Link>
       </Container>
       <Dialog open={open} disableBackdropClick aria-labelledby="form-dialog-title">
         <AddItem close={handleCloseAddForm} addItemToState={addItemToState} controls={controls}/>
