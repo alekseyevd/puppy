@@ -50,11 +50,13 @@ const Documents = ({ entity, fields, controls }) => {
   }
 
   const handleChangePage = async (_, newPage) => {
-    setPage(newPage)
+    // setPage(newPage)
+    updateData({ limit, page: newPage})
   }
 
   const handleChangeRowsPerPage = (event) => {
-    setlimit(event.target.value)
+    // setlimit(event.target.value)
+    updateData({ limit: event.target.value, page})
   };
 
   const moveTo = async (where) => {
@@ -71,16 +73,20 @@ const Documents = ({ entity, fields, controls }) => {
     }
   }
 
-  const updateData = useCallback(async () => {
+  const updateData = useCallback(async (params = {}) => {
+    const itemsPerPage = params.limit || limit
+    const page = params.page || 0
     try {
-      const response = await request(`/api/${entity}?status=${status}&limit=${limit}&page=${page}`)
+      const response = await request(`/api/${entity}?status=${status}&limit=${itemsPerPage}&page=${page}`)
       setData(response.data.data)
       setCount(+response.headers['pagination-count'] || 0)
+      setlimit(itemsPerPage)
+      setPage(page)
       console.log(response)
     } catch (error) {
       console.log(error)
     }
-  }, [entity, id, limit, page])
+  }, [entity, status])
 
   useEffect(() => {
     updateData()
@@ -102,7 +108,7 @@ const Documents = ({ entity, fields, controls }) => {
         </Button>
         <Toolbar>
           <div>
-            { selectedIds.length ? `Выбрано документов: ${selectedIds.length}` : `Всего документов: ${data.length}` }
+            { selectedIds.length ? `Выбрано документов: ${selectedIds.length}` : `Всего документов: ${count}` }
           </div>
           { selectedIds.length > 0 &&
             <>
