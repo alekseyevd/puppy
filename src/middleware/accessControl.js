@@ -13,7 +13,7 @@ module.exports = (permissions) => {
         if (typeof permissions[role][action] === 'object') {
           req.permissions = permissions[role][action]
 
-          //to-do validate req.query and req.body
+          // to-do validate req.query and req.body
 
           if (action === 'print' && !permissions[role][action].templates.includes(+req.query.template_id))
             throw createHttpError(403, 'forbidden')
@@ -22,7 +22,6 @@ module.exports = (permissions) => {
           if (action === 'email' && !permissions[role][action].templates.includes(+req.body.template_id))
             throw createHttpError(403, 'forbidden')
         }
-      
         next()
       }
     }

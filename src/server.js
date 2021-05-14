@@ -2,7 +2,7 @@ const app = require('./core/app')
 const mongoose = require('mongoose')
 const { PORT, MONGO_URI } = require('./config')
 const singleton = require('./core/services/pdf/puppeteer')
-//const insertTestUsers = require('../tests/helpers/insertUsers')
+// const insertTestUsers = require('../tests/helpers/insertUsers')
 
 async function startServer() {
   try {
@@ -12,7 +12,7 @@ async function startServer() {
       useCreateIndex: true
     })
 
-    //await insertTestUsers()
+    // await insertTestUsers()
     await singleton.init()
 
     app.listen(PORT, () => {

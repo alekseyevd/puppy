@@ -1,9 +1,9 @@
 const { Types } = require('mongoose')
 
 module.exports = {
-  name: {type: String},
-  surname: {type: String},
-  patronymic: {type: String},
+  name: {type: String, fastSearch: true},
+  surname: {type: String, fastSearch: true},
+  patronymic: {type: String, fastSearch: true},
   gender: {type: String},
   birthdate: {type: Date},
   emails: [String],
@@ -16,6 +16,7 @@ module.exports = {
   },
   work_in: {
     type: Types.ObjectId,
-    ref: 'Company'
+    ref: 'Company',
+    populate: true
   }
 }

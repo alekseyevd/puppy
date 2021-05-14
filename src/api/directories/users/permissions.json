@@ -1,0 +1,17 @@
+{
+  "admin": {
+    "create": true,
+    "find": { "fields": ["-password"] },
+    "findOne": { "fields": ["-password"] },
+    "update": true,
+    "moveToTrash": true,
+    "moveTo": true,
+    "deleteOne": true,
+    "print": {
+      "templates": [1]
+    },
+    "email": {
+      "templates": [1]
+    }
+  }
+}

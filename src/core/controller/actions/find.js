@@ -1,7 +1,7 @@
-const createError = require('http-errors')
+// const createError = require('http-errors')
 const { PAGINATION_LIMIT } = require('../../../config')
 
-module.exports = async function (req, res, next) {
+module.exports = async function(req, res, next) {
   // todo beforeFind
   if (this.beforeFind) this.beforeFind()
 
@@ -17,11 +17,11 @@ module.exports = async function (req, res, next) {
     delete search.limit
     delete search.page
 
-    Object.keys(search).forEach(key => {
-      if (key !== 'status') {
-        search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
-      }
-    })
+    // Object.keys(search).forEach(key => {
+    //   if (key !== 'status') {
+    //     search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
+    //   }
+    // })
 
     if (req.permissions && req.permissions.own) {
       search.user_id = req.user.user_id
@@ -42,7 +42,7 @@ module.exports = async function (req, res, next) {
       skip = page * limit
     }
 
-    const entities = await Model.find(search)
+    const entities = await Model.search(search)
         .select(selection)
         .skip(skip)
         .limit(limit)

@@ -4,9 +4,9 @@ module.exports = {
   //   res.json({
   //     result: 888
   //   })
-  // }
+  // },
+
   beforeFind() {
     console.log('beforeFind');
   },
-
 }

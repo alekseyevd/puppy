@@ -21,9 +21,9 @@ module.exports = (app, type) => {
 
 
   dirs.forEach(dir => {
-    // to do check uf json files exist
+    // to do check if json files exist
     const { path, name } = dir
-    const router = Router()
+    const router = new Router()
     const localController = require(`${path}/Controller`)
 
     let buffer = fs.readFileSync(`${path}/permissions.json`)

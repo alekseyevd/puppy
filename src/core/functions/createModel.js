@@ -14,7 +14,8 @@ module.exports = function(type, name, params) {
     },
     addedBy: {
       type: Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      populate: true
     }
   }
 
@@ -40,7 +41,7 @@ module.exports = function(type, name, params) {
   const populate = () => {
     const refs = Object.keys(props)
         .filter(key => {
-          return props[key].ref !== undefined
+          return props[key].ref !== undefined && props[key].populate === true
         })
     return function(next) {
       refs.forEach(ref => {
@@ -51,6 +52,27 @@ module.exports = function(type, name, params) {
   }
 
   schema.pre(/^find/, populate())
+
+  const textSearchfields = Object.keys(props)
+      .filter(key => props[key].fastSearch)
+
+  if (textSearchfields.length > 0) {
+    schema.index(textSearchfields.reduce((acc, key) => (acc[key] = 'text', acc), {}))
+
+    schema.static('search', function(q) {
+      // to-do q.search.split(' ')
+      if (q.search) {
+        // q.$or = [
+        //   { login: new RegExp(q.search, 'i') },
+        //   { email: new RegExp(q.search, 'i')}
+        // ]
+        q.$or = textSearchfields.map(key => ({[key]: new RegExp(q.search, 'i')}))
+        delete q.search
+      }
+
+      return this.find(q)
+    });
+  }
 
   return model(name, schema)
 }

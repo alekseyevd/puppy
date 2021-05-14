@@ -2,7 +2,6 @@ import { useState, useCallback, useContext } from 'react'
 import { isExpired } from './jwt'
 import { Context } from '../core/context'
 import axios from 'axios'
-// import axios from 'axios'
 
 export const useHttp = () => {
   const [isLoading, setLoading] = useState(false)
@@ -15,23 +14,21 @@ export const useHttp = () => {
 
       let jwtoken = token
       if (jwtoken && isExpired(jwtoken)) {
-        axios({
-          method: 'post',
-          url: '/api/auth/refresh',
-          data: { refreshToken },
-          headers: { Authorization: `Bearer ${jwtoken}`}
-        }).then(response => {
+        try {
+          const response = await axios({
+            method: 'post',
+            url: '/api/auth/refresh',
+            data: { refreshToken },
+            headers: { Authorization: `Bearer ${jwtoken}`}
+          })
           jwtoken = response.data.jwtoken
           login(response.data)
-        }).catch(error => {
-          if (error.response.status !== 500) {
-            logout()
-          }
+        } catch (error) {
+          logout()
           throw error
-        })
+        }
       }
 
-      // to-do move to callback, becouse it will be executed right await after request to refresh
       const instance = jwtoken
         ? axios.create({
           headers: { Authorization: `Bearer ${jwtoken}` }

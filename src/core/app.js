@@ -21,16 +21,14 @@ app.get('/app/*', (req, res, next) => {
 })
 
 app.use('/api/auth', require('./services/auth/router'))
+// app.use('/api/users', isAuthenticated, isAdmin, require('./services/users/router'))
 
 handleRoutes(app, 'directories')
 handleRoutes(app, 'documents')
 handleRoutes(app, 'custom')
 
-// app.use('/api/users', isAuthenticated, isAdmin, require('./services/users/router'))
-app.use('/api/users', require('./services/users/router'))
-
 app.use(function(req, res) {
-  res.status(404).send('Sorry cant find that!');
+  res.status(404).send('Sorry, can\'t find that!');
 })
 app.use(errorHandler)
 
