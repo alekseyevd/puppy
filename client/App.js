@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useAuth } from './services/auth'
-import styles from './app.css'
+// mport styles from './app.css'
 import './styles.css'
 import { Context } from './core/context'
 import useRoutes from './routes'

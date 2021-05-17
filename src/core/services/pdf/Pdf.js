@@ -1,9 +1,7 @@
-const { compile } = require("handlebars");
-const Handlebars = require("handlebars")
+const Handlebars = require('handlebars')
 const puppeteer = require('../pdf/puppeteer')
 
 module.exports = async (template, data) => {
-
   const compileTemplate = Handlebars.compile(template)
   const html = compileTemplate(data)
 
@@ -17,9 +15,7 @@ module.exports = async (template, data) => {
     format: 'A4'
   })
 
-
-
-  //await browser.close()
+  // await browser.close()
 
   return pdfBuffer
 }

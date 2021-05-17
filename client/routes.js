@@ -2,11 +2,9 @@
 import { Redirect, Navigate, Route, Switch } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import loginPage from './pages/Login'
-import PeopleTableFields from './pages/People/tableConfig'
-import PeopleControls from './pages/People/controls'
 import config from './config'
 import Documents from './pages/Documents'
-import Document from './pages/Documents/Document'
+// import Document from './pages/Documents/Document'
 
 export default function(isAuthenticated = false) {
   if (!isAuthenticated) {
@@ -24,6 +22,13 @@ export default function(isAuthenticated = false) {
       <Switch>
         <Route path="/" exact>
           <Documents entity="users" fields={config.users.columns} controls={config.users.controls}/>
+        </Route>
+        <Route path="/roles" exact>
+          <Documents entity="roles" fields={config.roles.columns} controls={config.roles.controls}/>
+        </Route>
+        <Route path="/roles/:id" exact>
+          {/* <Document entity="users" controls={config.users.controls}/> */}
+          <Documents entity="roles" fields={config.roles.columns} controls={config.roles.controls}/>
         </Route>
         <Route path="/users" exact>
           <Documents entity="users" fields={config.users.columns} controls={config.users.controls}/>

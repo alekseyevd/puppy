@@ -60,6 +60,11 @@ const MainLayout = ({children}) => {
                 <GroupIcon />
               </ListItemIcon>
             </NavItem>
+            <NavItem text={'Роли'} to={'roles'}>
+              <ListItemIcon>
+                <GroupIcon />
+              </ListItemIcon>
+            </NavItem>
           </List>
         </div>
       </Drawer>

@@ -1,8 +1,9 @@
 const { Router } = require('express')
-const User = require('../users/Model')
 const { compareSync } = require('bcryptjs')
 const AuthServise = require('./authService')
 const createError = require('http-errors')
+const Puppy = require('../../Puppy')
+const util = require('util')
 
 const router = new Router()
 
@@ -15,15 +16,19 @@ const router = new Router()
 router.post('/login', async (req, res, next) => {
   const { login, password } = req.body
 
+  const Model = Puppy.models.users
+
   // to-do validate fields
   try {
-    const user = await User.findOne({ login })
+    const user = await Model.findOne({ login })
+
+    console.log(util.inspect(user, {showHidden: false, depth: null}));
 
     if (!user || !compareSync(password, user.password)) {
       return next(createError(403, 'Invalid login or password'))
     }
 
-    const tokens = await AuthServise.issueTokens({ user_id: user._id, role: user.role })
+    const tokens = await AuthServise.issueTokens({ user_id: user._id, role: user.role.name })
     res.json({
       result: true,
       ...tokens

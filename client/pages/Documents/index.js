@@ -166,7 +166,7 @@ const Documents = ({ entity, fields, controls }) => {
         <Link to={`/${entity}/archive`}>В архиве</Link>
       </Container>
       <Dialog open={open} disableBackdropClick aria-labelledby="form-dialog-title">
-        <AddItem close={handleCloseAddForm} addItemToState={addItemToState} controls={controls}/>
+        <AddItem entity={entity} close={handleCloseAddForm} addItemToState={addItemToState} controls={controls}/>
       </Dialog>
     </>
   )

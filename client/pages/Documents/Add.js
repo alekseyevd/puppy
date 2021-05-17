@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddItem = ({close, addItemToState, controls}) => {
+const AddItem = ({entity, close, addItemToState, controls}) => {
   const styles = useStyles()
   const { request, isLoading } = useHttp()
 
@@ -31,7 +31,7 @@ const AddItem = ({close, addItemToState, controls}) => {
     onSubmit: async (data) => {
       try {
         const res = await request({
-          url: '/api/people',
+          url: `/api/${entity}`,
           method: 'POST',
           data
         })

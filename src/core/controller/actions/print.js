@@ -1,10 +1,9 @@
 const createError = require('http-errors')
-const Handlebars = require("handlebars")
+const Handlebars = require('handlebars')
 const fs = require('fs')
-//var pdf = require('html-pdf');
 const createPdf = require('../../services/pdf/Pdf')
 
-module.exports = async function (req, res, next) {
+module.exports = async function(req, res, next) {
   try {
     const Model = this.model
 
@@ -24,11 +23,10 @@ module.exports = async function (req, res, next) {
     const compileDocumentName = Handlebars.compile(documentName)
 
     const buffer = await createPdf(template, data.toObject())
-    
+
     res.setHeader('content-type', 'application/pdf');
     res.setHeader('Content-disposition', `filename="${encodeURI(compileDocumentName(data.toObject()))}.pdf`)
     res.send(Buffer.from(buffer));
-
   } catch (error) {
     next(error)
   }

@@ -3,7 +3,7 @@ const { Types } = require('mongoose')
 module.exports = {
   inCharge: {
     type: Types.ObjectId,
-    ref: 'User'
+    ref: 'users'
   },
   sum: Number,
   tax: Number,

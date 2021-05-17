@@ -14,8 +14,9 @@ module.exports = function(type, name, params) {
     },
     addedBy: {
       type: Types.ObjectId,
-      ref: 'User',
-      populate: true
+      ref: 'users',
+      populate: true,
+      autopopulate: { maxDepth: 2, select: '-password' }
     }
   }
 
@@ -38,41 +39,45 @@ module.exports = function(type, name, params) {
     timestamps: true
   })
 
-  const populate = () => {
-    const refs = Object.keys(props)
-        .filter(key => {
-          return props[key].ref !== undefined && props[key].populate === true
-        })
-    return function(next) {
-      refs.forEach(ref => {
-        this.populate(ref, '-password')
-      })
-      next()
-    }
-  }
+  // const populate = () => {
+  //   const refs = Object.keys(props)
+  //       .filter(key => {
+  //         return props[key].ref !== undefined && props[key].populate === true
+  //       })
+  //   return function(next) {
+  //     // refs.forEach(ref => {
+  //     //   this.populate(ref, '-password')
+  //     // })
+  //     this.populate(refs)
+  //     next()
+  //   }
+  // }
 
-  schema.pre(/^find/, populate())
+  // const pre = populate()
+  // schema.pre(['findOne', 'find'], pre)
+
+  schema.plugin(require('mongoose-autopopulate'));
 
   const textSearchfields = Object.keys(props)
       .filter(key => props[key].fastSearch)
 
   if (textSearchfields.length > 0) {
     schema.index(textSearchfields.reduce((acc, key) => (acc[key] = 'text', acc), {}))
-
-    schema.static('search', function(q) {
-      // to-do q.search.split(' ')
-      if (q.search) {
-        // q.$or = [
-        //   { login: new RegExp(q.search, 'i') },
-        //   { email: new RegExp(q.search, 'i')}
-        // ]
-        q.$or = textSearchfields.map(key => ({[key]: new RegExp(q.search, 'i')}))
-        delete q.search
-      }
-
-      return this.find(q)
-    });
   }
+
+  schema.static('search', function(q) {
+    // to-do q.search.split(' ')
+    if (q.search) {
+      // q.$or = [
+      //   { login: new RegExp(q.search, 'i') },
+      //   { email: new RegExp(q.search, 'i')}
+      // ]
+      q.$or = textSearchfields.map(key => ({[key]: new RegExp(q.search, 'i')}))
+      delete q.search
+    }
+
+    return this.find(q)
+  });
 
   return model(name, schema)
 }

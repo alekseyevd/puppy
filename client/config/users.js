@@ -1,7 +1,7 @@
 const schema = {
   columns: [
     { field: 'login', header: 'Логин' },
-    { field: 'role', header: 'Роль' }
+    // { field: 'role', header: 'Роль' }
   ],
   controls: {
     login: {
