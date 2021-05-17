@@ -1,7 +1,7 @@
 const schema = {
   columns: [
     { field: 'login', header: 'Логин' },
-    // { field: 'role', header: 'Роль' }
+    { field: 'role', header: 'Роль' }
   ],
   controls: {
     login: {
@@ -24,22 +24,34 @@ const schema = {
       touched: true
     },
     role: {
-      value: '',
-      type: 'list',
-      options: [
-        {
-          value: 'admin', label: 'Администратор'
-        },
-        {
-          value: 'user', label: 'Пользователь'
-        },
-      ],
-      label: 'Роль',
+      // value: '',
+      // type: 'list',
+      // options: [
+      //   {
+      //     value: 'admin', label: 'Администратор'
+      //   },
+      //   {
+      //     value: 'user', label: 'Пользователь'
+      //   },
+      // ],
+      // label: 'Роль',
+      // valid: true,
+      // touched: true,
+      // validation: {
+      //   required: true
+      // }
+      value: null,
+      type: 'ref',
+      touched: false,
       valid: true,
-      touched: true,
+      options: {
+        ref: 'roles',
+        inputValue: 'name',
+      },
       validation: {
-        required: true
+        hasProperty: '_id'
       }
+
     },
     phone: {
       value: '',

@@ -93,11 +93,19 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect, selected }) => 
             </TableCell>
             {
               columns.map(th => {
-                return (
-                  <TableCell key={row.id+th.field}>
-                    {row[th.field]}
-                  </TableCell>
-                )
+                if (typeof row[th.field] === 'object') {
+                  return (
+                    <TableCell key={row.id+th.field}>
+                      {row[th.field].toString()}
+                    </TableCell>
+                  )
+                } else {
+                  return (
+                    <TableCell key={row.id+th.field}>
+                      {row[th.field]}
+                    </TableCell>
+                  )
+                }
               })
             }
             {/* <TableCell style={{textAlign: 'right'}}>
