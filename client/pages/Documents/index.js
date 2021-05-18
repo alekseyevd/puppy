@@ -14,13 +14,14 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Document from './Document'
 import AddItem from './Add'
 import DataTable from '../../components/ui/dataTable'
+import config from '../../config'
 
-const Documents = ({ entity, fields, controls }) => {
+const Documents = ({ entity }) => {
   const history = useHistory()
   const { id } = useParams()
 
   if (id && id !== 'trash' && id !== 'archive') {
-    return <Document entity={entity} controls={controls} />
+    return <Document entity={entity} controls={config[entity].controls} />
   }
 
   const status = id === 'trash' ? 3 : id === 'archive' ? 2 : 1
@@ -28,12 +29,20 @@ const Documents = ({ entity, fields, controls }) => {
 
   const { request, isLoading } = useHttp()
 
-  const [data, setData] = useState([])
+  // const [data, setData] = useState([])
   const [selectedIds, setSelectedIds] = useState([]);
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(0)
   const [limit, setlimit] = useState(5)
   const [count, setCount] = useState(0)
+  // const [fields, setFields] = useState([])
+  // const [controls, setControls] = useState({})
+
+  const [pageState, setPageState] = useState({
+    data: [],
+    fields: [],
+    columns: {}
+  })
 
   const handleOpenAddForm = () => {
     setOpen(true);
@@ -44,9 +53,9 @@ const Documents = ({ entity, fields, controls }) => {
   }
 
   const addItemToState = (row) => {
-    const cloned = JSON.parse(JSON.stringify(data))
-    cloned.unshift(row)
-    setData(cloned)
+    const cloned = JSON.parse(JSON.stringify(pageState))
+    cloned.data.unshift(row)
+    setPageState(cloned)
   }
 
   const handleChangePage = async (_, newPage) => {
@@ -78,10 +87,17 @@ const Documents = ({ entity, fields, controls }) => {
     const page = params.page || 0
     try {
       const response = await request(`/api/${entity}?status=${status}&limit=${itemsPerPage}&page=${page}`)
-      setData(response.data.data)
+      // setData(response.data.data)
       setCount(+response.headers['pagination-count'] || 0)
       setlimit(itemsPerPage)
       setPage(page)
+      // setControls(config[entity].controls)
+      // setFields(config[entity].columns)
+      setPageState({
+        data: response.data.data,
+        fields: config[entity].columns,
+        controls: config[entity].controls
+      })
       console.log(response)
     } catch (error) {
       console.log(error)
@@ -147,9 +163,9 @@ const Documents = ({ entity, fields, controls }) => {
         </Toolbar>
         <Card>
           <DataTable
-            columns={fields}
-            controls={controls}
-            data={data}
+            columns={pageState.fields}
+            controls={pageState.controls}
+            data={pageState.data}
             selected={selectedIds}
             onRowClick={(id) => history.push(`/${entity}/${id}`)}
             onSelect={setSelectedIds}
@@ -169,7 +185,7 @@ const Documents = ({ entity, fields, controls }) => {
         <Link to={`/${entity}/archive`}>В архиве</Link>
       </Container>
       <Dialog open={open} maxWidth="md" disableBackdropClick aria-labelledby="form-dialog-title">
-        <AddItem entity={entity} close={handleCloseAddForm} addItemToState={addItemToState} controls={controls}/>
+        <AddItem entity={entity} close={handleCloseAddForm} addItemToState={addItemToState} controls={config[entity].controls}/>
       </Dialog>
     </>
   )
