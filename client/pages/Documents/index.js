@@ -92,6 +92,8 @@ const Documents = ({ entity, fields, controls }) => {
     updateData()
   }, [updateData])
 
+  if (isLoading) return <div>loading</div>
+
   return (
     <>
       <Container maxWidth={false} >
@@ -146,6 +148,7 @@ const Documents = ({ entity, fields, controls }) => {
         <Card>
           <DataTable
             columns={fields}
+            controls={controls}
             data={data}
             selected={selectedIds}
             onRowClick={(id) => history.push(`/${entity}/${id}`)}
@@ -165,7 +168,7 @@ const Documents = ({ entity, fields, controls }) => {
         <Link to={`/${entity}/trash`}>Удаленные</Link>
         <Link to={`/${entity}/archive`}>В архиве</Link>
       </Container>
-      <Dialog open={open} disableBackdropClick aria-labelledby="form-dialog-title">
+      <Dialog open={open} maxWidth="md" disableBackdropClick aria-labelledby="form-dialog-title">
         <AddItem entity={entity} close={handleCloseAddForm} addItemToState={addItemToState} controls={controls}/>
       </Dialog>
     </>

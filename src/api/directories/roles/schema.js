@@ -1,4 +1,4 @@
 module.exports = {
-  name: {type: String},
-  description: {type: String},
+  name: {type: String, fastSearch: true},
+  description: {type: String, fastSearch: true},
 }

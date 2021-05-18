@@ -42,6 +42,6 @@ export const useHttp = () => {
       setLoading(false)
       throw error
     }
-  }, [])
+  }, [token, refreshToken])
   return { request, isLoading }
 }

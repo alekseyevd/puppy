@@ -103,6 +103,7 @@ const schema = {
     },
     addedBy: {
       value: null,
+      label: 'Кто добавил',
       type: 'ref',
       touched: false,
       valid: true,
@@ -111,7 +112,7 @@ const schema = {
         inputValue: 'login',
       },
       validation: {
-        hasProperty: '_id'
+        hasProperty: '_id',
       }
     }
   }

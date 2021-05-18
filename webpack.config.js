@@ -24,7 +24,8 @@ const jsLoaders = () => {
         ],
         // plugins: ['@babel/plugin-proposal-class-properties']
       }
-    }
+    },
+    'source-map-loader',
   ]
 
   if (isDev) {
@@ -91,7 +92,8 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
+        enforce: 'pre',
         use: jsLoaders()
       },
       {

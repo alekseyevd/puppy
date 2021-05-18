@@ -57,6 +57,10 @@ export default function SelectRef({onChange, name, value, options, label, error,
     }
   }, [value])
 
+  useEffect(() => {
+    search('')
+  }, [])
+
   return (
     <>
       <TextField

@@ -5,6 +5,7 @@ import styles from './login.module.css'
 import Container from '@material-ui/core/Container'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Alert from '@material-ui/lab/Alert'
 import { useHttp } from '../../services/http'
 import { Context } from '../../core/context'
 import { useHistory } from 'react-router-dom'
@@ -37,6 +38,8 @@ export default function() {
       }
     }
   })
+
+  const [error, setError] = useState('')
 
   const { request } = useHttp()
   const { login } = useContext(Context)
@@ -78,12 +81,14 @@ export default function() {
     } catch (error) {
       console.log('login page', error.response);
       // to-do show error message
+      setError(error.response.data.message)
     }
   }
 
   return (
     <Container component="main" maxWidth="xs">
       <div className={styles.container}>
+        { error && <Alert severity="error">{error}</Alert> }
         <form onSubmit={submitHandler}>
           <TextField
             error={state.formControls.login.touched && !state.formControls.login.valid}

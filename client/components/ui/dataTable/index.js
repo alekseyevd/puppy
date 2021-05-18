@@ -9,7 +9,7 @@ import {
   TableBody,
 } from '@material-ui/core'
 
-const DataTable = ({ columns, data, limit, onRowClick, onSelect, selected }) => {
+const DataTable = ({ columns, controls, data, limit, onRowClick, onSelect, selected }) => {
   // const [selectedIds, setSelectedIds] = useState([])
 
   const handleSelectAll = (event) => {
@@ -93,19 +93,15 @@ const DataTable = ({ columns, data, limit, onRowClick, onSelect, selected }) => 
             </TableCell>
             {
               columns.map(th => {
-                if (typeof row[th.field] === 'object') {
-                  return (
-                    <TableCell key={row.id+th.field}>
-                      {row[th.field].toString()}
-                    </TableCell>
-                  )
-                } else {
-                  return (
-                    <TableCell key={row.id+th.field}>
-                      {row[th.field]}
-                    </TableCell>
-                  )
-                }
+                return (
+                  <TableCell key={row.id+th.field}>
+                    {
+                      controls[th.field].type === 'ref'
+                        ? row[th.field][controls[th.field].options.inputValue]
+                        : row[th.field]
+                    }
+                  </TableCell>
+                )
               })
             }
             {/* <TableCell style={{textAlign: 'right'}}>

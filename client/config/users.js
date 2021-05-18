@@ -24,23 +24,8 @@ const schema = {
       touched: true
     },
     role: {
-      // value: '',
-      // type: 'list',
-      // options: [
-      //   {
-      //     value: 'admin', label: 'Администратор'
-      //   },
-      //   {
-      //     value: 'user', label: 'Пользователь'
-      //   },
-      // ],
-      // label: 'Роль',
-      // valid: true,
-      // touched: true,
-      // validation: {
-      //   required: true
-      // }
       value: null,
+      label: 'Роль',
       type: 'ref',
       touched: false,
       valid: true,

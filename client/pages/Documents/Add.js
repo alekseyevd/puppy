@@ -12,6 +12,7 @@ import { useForm } from '../../services/useForm'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    'width': '600px',
     '& .MuiTextField-root': {
       marginTop: '10px',
     },

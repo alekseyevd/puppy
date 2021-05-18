@@ -23,16 +23,11 @@ module.exports = {
     type: Types.ObjectId,
     ref: 'people',
   },
-  // role: {
-  //   type: String,
-  //   required: true,
-  //   default: 'admin'
-  // },
   role: {
     type: Types.ObjectId,
-    // required: true,
+    required: true,
     ref: 'roles',
     populate: true,
-    autopopulate: { maxDepth: 1, select: 'name -_id' }
+    autopopulate: { maxDepth: 1 }
   }
 }

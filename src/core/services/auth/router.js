@@ -22,8 +22,6 @@ router.post('/login', async (req, res, next) => {
   try {
     const user = await Model.findOne({ login })
 
-    console.log(util.inspect(user, {showHidden: false, depth: null}));
-
     if (!user || !compareSync(password, user.password)) {
       return next(createError(403, 'Invalid login or password'))
     }

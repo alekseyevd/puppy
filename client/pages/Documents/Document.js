@@ -45,7 +45,7 @@ const Item = ({ entity, controls }) => {
     } catch (error) {
       console.log(error);
     }
-  }, [request, entity, controls])
+  }, [entity, controls])
 
   if (isLoading || !isReady) return <div>Loading...</div>
 

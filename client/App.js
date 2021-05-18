@@ -6,7 +6,7 @@ import { Context } from './core/context'
 import useRoutes from './routes'
 
 const App = () => {
-  const {token, login, logout, user, ready} = useAuth()
+  const {token, refreshToken, login, logout, user, ready} = useAuth()
   // console.log('user', user);
   const isAuthenticated = !!user
 
@@ -15,7 +15,7 @@ const App = () => {
   const routing = useRoutes(isAuthenticated)
 
   return (
-    <Context.Provider value={{ token, user, login, logout }}>
+    <Context.Provider value={{ token, refreshToken, user, login, logout }}>
       {routing}
     </Context.Provider>
 
