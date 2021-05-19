@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { useHttp } from '../../services/http'
 import Control from '../../components/ui/inputs'
 import { useForm } from '../../services/useForm'
+import Alert from '@material-ui/lab/Alert'
 
 const Item = ({ entity, controls }) => {
   const { request, isLoading } = useHttp()
@@ -15,6 +16,7 @@ const Item = ({ entity, controls }) => {
   const history = useHistory()
 
   const [isReady, setReady] = useState(false)
+  const [error, setError] = useState('')
 
   const form = useForm({
     initial: controls,
@@ -28,6 +30,7 @@ const Item = ({ entity, controls }) => {
         if (closeHandler) closeHandler()
       } catch (error) {
         console.log(error)
+        setError(error.response.data.message)
       }
     }
   })
@@ -56,6 +59,7 @@ const Item = ({ entity, controls }) => {
         <Button variant="contained" disabled={!form.state.valid} onClick={() => form.handleSubmit(null, close)}>Сохранить и закрыть</Button>
         <Button variant="contained" onClick={close}>Закрыть</Button>
       </Toolbar>
+      { error && <Alert severity="error">{error}</Alert> }
       {
         Object.keys(form.state.controls).map(name => {
           const props = form.state.controls[name]

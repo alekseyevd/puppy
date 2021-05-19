@@ -53,11 +53,10 @@ export const useForm = (params) => {
   const handleChange = (name, value, index = null) => {
     let controls = JSON.parse(JSON.stringify(state.controls))
     controls = nestedChangeHandler(controls, name, value, index)
-    console.log(controls);
-    // setState({
-    //   valid: validateForm(controls),
-    //   controls
-    // })
+    setState({
+      valid: validateForm(controls),
+      controls
+    })
   }
 
   const handleRemove = (name, index) => {
