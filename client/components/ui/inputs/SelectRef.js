@@ -36,7 +36,7 @@ export default function SelectRef({onChange, name, value, options, label, error,
       setList(list)
       if (val) {
         const el = list.find(el => el[options.inputValue] === val)
-        onChange(name, el || null)
+        onChange(name, el || {})
       } else {
         onChange(name, null)
       }

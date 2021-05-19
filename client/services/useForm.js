@@ -53,10 +53,11 @@ export const useForm = (params) => {
   const handleChange = (name, value, index = null) => {
     let controls = JSON.parse(JSON.stringify(state.controls))
     controls = nestedChangeHandler(controls, name, value, index)
-    setState({
-      valid: validateForm(controls),
-      controls
-    })
+    console.log(controls);
+    // setState({
+    //   valid: validateForm(controls),
+    //   controls
+    // })
   }
 
   const handleRemove = (name, index) => {
@@ -81,11 +82,11 @@ export const useForm = (params) => {
     Object.keys(controls).forEach(key => {
       if (!Object.prototype.hasOwnProperty.call(controls[key], 'value') && data[key]) {
         controls[key] = nestedStateData(data[key], controls[key])
-      } else if (controls[key].type !== 'ref' && data[key]) {
+      } else if (controls[key].type !== 'ref') {
         const isArray = Array.isArray(controls[key].value)
         controls[key].value = isArray
           ? [...data[key]]
-          : data[key]
+          : data[key] || ''
         controls[key].valid = isArray
           ? data[key].map(val => validate(val, controls[key].validation))
           : validate(data[key], controls[key].validation)
@@ -94,6 +95,7 @@ export const useForm = (params) => {
           : true
       } else if (controls[key].type === 'ref' && data[key]) {
         controls[key].value = data[key]
+        controls[key].valid = validate(data[key], controls[key].validation)
       }
     })
 

@@ -32,6 +32,7 @@ const validators = {
 
   hasProperty(value, options) {
     if (typeof value !== 'object' || value === null) return false
+
     return Object.prototype.hasOwnProperty.call(value, options)
   }
 }

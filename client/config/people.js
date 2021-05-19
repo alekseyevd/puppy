@@ -112,6 +112,7 @@ const schema = {
         inputValue: 'login',
       },
       validation: {
+        // required: true,
         hasProperty: '_id',
       }
     }
