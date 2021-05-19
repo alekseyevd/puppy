@@ -24,4 +24,33 @@ module.exports = {
       next(error)
     }
   },
+
+  async create(req, res, next) {
+    const { login, password } = req.body
+    const Model = this.model
+
+    try {
+      if (login.trim() === '') return next(createHttpError(400, 'login cant be empty'))
+      if (password.trim() === '') return next(createHttpError(400, 'password cant be empty'))
+
+      const user = await Model.findOne({ login })
+      if (user) return next(createHttpError(409, 'User alredy exist'))
+
+      const hashedPassword = hashSync(password, 10)
+
+      const newUser = new Model({
+        ...req.body,
+        password: hashedPassword
+      })
+
+      const data = await newUser.save()
+
+      res.json({
+        result: true,
+        data
+      })
+    } catch (error) {
+      return next(createHttpError(500, error.message))
+    }
+  },
 }

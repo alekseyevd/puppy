@@ -5,10 +5,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  DialogContentText
 } from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert'
 import { useHttp } from '../../services/http'
 import Control from '../../components/ui/inputs'
 import { useForm } from '../../services/useForm'
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 const AddItem = ({entity, close, addItemToState, controls}) => {
   const styles = useStyles()
   const { request, isLoading } = useHttp()
+  const [error, setError] = useState('')
 
   const form = useForm({
     initial: controls,
@@ -39,7 +43,8 @@ const AddItem = ({entity, close, addItemToState, controls}) => {
         addItemToState(res.data.data)
         close()
       } catch (error) {
-        console.log(error);
+        console.log(error.response);
+        setError(error.response.data.message)
       }
     }
   })
@@ -48,20 +53,21 @@ const AddItem = ({entity, close, addItemToState, controls}) => {
     <>
       <DialogTitle id="form-dialog-title">Новая запись</DialogTitle>
       <DialogContent className={styles.root}>
-        {/* <DialogContentText>
-          To subscribe to this website, please enter your email address here. We will send updates
-          occasionally.
-        </DialogContentText> */}
-        {
-          Object.keys(form.state.controls).map(name => {
-            const props = form.state.controls[name]
-            return (
-              <div key={name}>
-                <Control name={name} {...props} onChange={form.handleChange} onRemove={form.handleRemove} />
-              </div>
-            )
-          })
-        }
+        { error && <DialogContentText>
+          <Alert severity="error">{error}</Alert>
+        </DialogContentText> }
+        <div>
+          {
+            Object.keys(form.state.controls).map(name => {
+              const props = form.state.controls[name]
+              return (
+                <div key={name}>
+                  <Control name={name} {...props} onChange={form.handleChange} onRemove={form.handleRemove} />
+                </div>
+              )
+            })
+          }
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => confirm('Вы уверены?') ? close() : null} variant="contained">

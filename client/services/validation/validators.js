@@ -1,6 +1,10 @@
 const validators = {
   required(value) {
-    return value.trim() !== ''
+    if (typeof value === 'string') return value.trim() !== ''
+
+    if (value === null || value === undefined) return false
+
+    return true
   },
 
   empty(value) {
@@ -27,6 +31,7 @@ const validators = {
   },
 
   hasProperty(value, options) {
+    if (typeof value !== 'object' || value === null) return false
     return Object.prototype.hasOwnProperty.call(value, options)
   }
 }

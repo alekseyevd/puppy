@@ -9,8 +9,8 @@ const schema = {
       type: 'text',
       label: 'Логин',
       errorMessage: 'Введите логин',
-      valid: true,
-      touched: true,
+      valid: false,
+      touched: false,
       validation: {
         required: true
       }
@@ -19,21 +19,24 @@ const schema = {
       value: '',
       type: 'password',
       label: 'Пароль',
-      errorMessage: 'Введите пароль',
-      valid: true,
-      touched: true
+      valid: false,
+      touched: false,
+      validation: {
+        required: true
+      }
     },
     role: {
       value: null,
       label: 'Роль',
       type: 'ref',
       touched: false,
-      valid: true,
+      valid: false,
       options: {
         ref: 'roles',
         inputValue: 'name',
       },
       validation: {
+        required: true,
         hasProperty: '_id'
       }
 
@@ -42,8 +45,8 @@ const schema = {
       value: '',
       type: 'text',
       label: 'Телефон',
-      valid: true,
-      touched: true,
+      valid: false,
+      touched: false,
       format: 'phone',
       validation: {
         match: '[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}'
@@ -53,8 +56,8 @@ const schema = {
       value: '',
       type: 'text',
       label: 'Email',
-      valid: true,
-      touched: true,
+      valid: false,
+      touched: false,
       validation: {
         email: true
       }

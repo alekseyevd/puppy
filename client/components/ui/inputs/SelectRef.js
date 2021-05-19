@@ -36,7 +36,7 @@ export default function SelectRef({onChange, name, value, options, label, error,
       setList(list)
       if (val) {
         const el = list.find(el => el[options.inputValue] === val)
-        onChange(name, el || {})
+        onChange(name, el || null)
       } else {
         onChange(name, null)
       }
@@ -57,6 +57,11 @@ export default function SelectRef({onChange, name, value, options, label, error,
     }
   }, [value])
 
+  const clickHandler = () => {
+    setOpen(true)
+    search(input)
+  }
+
   // useEffect(() => {
   //   search('')
   // }, [])
@@ -70,7 +75,7 @@ export default function SelectRef({onChange, name, value, options, label, error,
         value={input}
         variant="outlined"
         margin="normal"
-        onClick={_ => setOpen(true)}
+        onClick={clickHandler}
         onChange={e => search(e.target.value)}
       />
       <Popper open={open} style={{zIndex: 1000}} anchorEl={anchorRef.current} placement="bottom-start" disablePortal>
