@@ -3,7 +3,7 @@
     "create": true,
     "find": { "fields": ["-password"] },
     "findOne": { "fields": ["-password"] },
-    "update": true,
+    "update": { "fields": ["login", "email", "phone", "person", "role"] },
     "moveToTrash": true,
     "moveTo": true,
     "deleteOne": true,

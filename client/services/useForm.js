@@ -85,7 +85,7 @@ export const useForm = (params) => {
         const isArray = Array.isArray(controls[key].value)
         controls[key].value = isArray
           ? [...data[key]]
-          : data[key] || ''
+          : data[key] || null
         controls[key].valid = isArray
           ? data[key].map(val => validate(val, controls[key].validation))
           : validate(data[key], controls[key].validation)

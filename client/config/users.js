@@ -15,16 +15,16 @@ const schema = {
         required: true
       }
     },
-    password: {
-      value: '',
-      type: 'password',
-      label: 'Пароль',
-      valid: false,
-      touched: false,
-      validation: {
-        required: true
-      }
-    },
+    // password: {
+    //   value: '',
+    //   type: 'password',
+    //   label: 'Пароль',
+    //   valid: false,
+    //   touched: false,
+    //   validation: {
+    //     required: true
+    //   }
+    // },
     role: {
       value: null,
       label: 'Роль',

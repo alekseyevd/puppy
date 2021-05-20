@@ -1,4 +1,3 @@
-const { rejects } = require('assert')
 const fs = require('fs')
 const Handlebars = require("handlebars")
 const createError = require('http-errors')

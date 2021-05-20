@@ -7,10 +7,16 @@ module.exports = {
     try {
       const id = req.params.id
 
+      if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
+        const selection = req.permissions.fields
+        const postFields = Object.keys(req.body)
+        const disallowed = postFields.filter(field => !selection.includes(field))
+        if (disallowed.length > 0) {
+          throw createHttpError(403, `Fields '${disallowed.join(', ')}' are forbidden to be updated for current role.`)
+        }
+      }
+
       const data = req.body
-      if (data.password) {
-        req.body.password = hashSync(data.password, 10)
-      } else delete data.password
 
       const result = await Model.updateOne({ id }, data)
 

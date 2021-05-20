@@ -10,6 +10,7 @@ import {
   Button,
   Dialog
 } from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert'
 import TablePagination from '@material-ui/core/TablePagination';
 import Document from './Document'
 import AddItem from './Add'
@@ -35,6 +36,7 @@ const Documents = ({ entity }) => {
   const [page, setPage] = useState(0)
   const [limit, setlimit] = useState(5)
   const [count, setCount] = useState(0)
+  const [error, setError] = useState('')
   // const [fields, setFields] = useState([])
   // const [controls, setControls] = useState({})
 
@@ -101,6 +103,7 @@ const Documents = ({ entity }) => {
       console.log(response)
     } catch (error) {
       console.log(error)
+      setError(error.response.data.message)
     }
   }, [entity, status])
 
@@ -161,6 +164,7 @@ const Documents = ({ entity }) => {
             </>
           }
         </Toolbar>
+        { error && <Alert severity="error">{error}</Alert> }
         <Card>
           <DataTable
             columns={pageState.fields}
