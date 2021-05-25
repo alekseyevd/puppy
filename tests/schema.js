@@ -5,9 +5,13 @@ const schema = {
   properties: {
     name: {
       type: "string",
-      pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}"
+      pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}",
+      $index: true,
     },
-    surname: {type: "string"},
+    surname: {
+      type: "string",
+      $unique: true
+    },
     patronymic: {type: "string"},
     gender: {
       type: "string",
@@ -44,7 +48,7 @@ const schema = {
     },
     workIn: {
       type: "string",
-      ref: "company",
+      $ref: "company",
     },
   },
   required: ["name", "surname"],
@@ -127,6 +131,22 @@ const validate = (obj, schema, property = 'root') => {
   }
 
   return validate.errors.length === 0
+}
+
+function toMomgooseSchema(jsonSchema) {
+  const properties = jsonSchema.properties
+  Object.keys(properties).reduce((acc, prop) => {
+    const type = properties[prop].type
+    switch (type) {
+      case 'string':
+        acc[prop] = { type: String }
+        break;
+
+      default:
+        break;
+    }
+    return acc
+  }, {})
 }
 
 const object = {
