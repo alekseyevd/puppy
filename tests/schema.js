@@ -1,12 +1,15 @@
 /* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
+const { Types } = require('mongoose')
+
 const schema = {
-  type: "object",
   properties: {
     name: {
       type: "string",
       pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}",
+      required: true,
       $index: true,
+      $fastSearch: true
     },
     surname: {
       type: "string",
@@ -51,108 +54,63 @@ const schema = {
       $ref: "company",
     },
   },
-  required: ["name", "surname"],
-}
-
-const validate = (obj, schema, property = 'root') => {
-  if (!validate.errors) validate.errors = []
-  let type = typeof obj
-  if (obj === null) type = 'null'
-  if (Array.isArray(obj)) type = 'array'
-  if (type === 'number' && Number.isInteger(obj)) type = 'integer'
-
-  if (schema.type !== type) {
-    validate.errors.push(`invalid type in property '${property}'. Expect ${schema.type} instead of ${type} ${obj}`)
-  }
-
-  switch (type) {
-    case 'object':
-      Object.keys(schema.properties).forEach(key => {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          validate(obj[key], schema.properties[key], key)
-        } else if (Array.isArray(schema.required) && schema.required.includes(key)) {
-          validate.errors.push(`property '${key}' is requried in ${property}`)
-        }
-      })
-
-      break;
-
-    case 'string':
-      if (Array.isArray(schema.enum) && !schema.enum.includes(obj)) {
-        validate.errors.push(`value of property ${property} is not one of enum [${schema.enum.join(', ')}]`)
-        break
-      }
-
-      if (schema.pattern && typeof schema.pattern === 'string') {
-        const regexp = new RegExp(schema.pattern)
-        const match = obj.match(regexp) || []
-        if (obj !== match[0]) validate.errors.push(`Value of property '${property}' doesn't match pattern '${schema.pattern}'`)
-      }
-
-      if (schema.maxLength && typeof schema.maxLength === 'number' && obj.length > schema.maxLength) {
-        validate.errors.push(`Maxlength of property '${property}' must be not more than ${schema.maxLength}`)
-      } else if (schema.minLength && typeof schema.minLength === 'number' && obj.length < schema.minLength) {
-        validate.errors.push(`Minlength of property '${property}' must be not less than ${schema.minLength}`)
-      }
-
-      break
-
-    case 'number':
-      if (Array.isArray(schema.enum) && !schema.enum.includes(obj)) {
-        validate.errors.push(`value of '${property}' is not one of enum [${schema.enum.join(', ')}]`)
-        break
-      }
-
-      if (schema.minimum && typeof schema.minimum === 'number' && obj < schema.minimum) {
-        validate.errors.push(`value of '${property}' must be not less than ${schema.minimum}`)
-      } else if (schema.maximum && typeof schema.maximum === 'number' && obj > schema.maximum) {
-        validate.errors.push(`value of '${property}' must be not more than ${schema.maximum}`)
-      } else if (schema.multipleOf && typeof schema.multipleOf === 'number' && Number.isInteger(obj / schema.multipleOf)) {
-        validate.errors.push(`value of property '${property} is not multiple of ${schema.multipleOf}`)
-      }
-
-      break
-
-    case 'array':
-      if (schema.maxItems && typeof schema.maxItems === 'number' && obj.length > schema.maxItems) {
-        validate.errors.push(`Maxlength of array '${property}' must be not more than ${schema.maxItems}`);
-      } else if (schema.minItems && typeof schema.minItems === 'number' && obj.length < schema.minItems) {
-        validate.errors.push(`Maxlength of array '${property}' must be not less than ${schema.minItems}`);
-      } else if (schema.items) {
-        obj.forEach(el => {
-          validate(el, schema.items, property)
-        })
-      }
-
-      break
-
-    default:
-      break;
-  }
-
-  return validate.errors.length === 0
 }
 
 function toMomgooseSchema(jsonSchema) {
   const properties = jsonSchema.properties
-  Object.keys(properties).reduce((acc, prop) => {
-    const type = properties[prop].type
+  Object.keys(properties).reduce((schema, prop) => {
+    const field = properties[prop]
+    const type = field.type
     switch (type) {
       case 'string':
-        acc[prop] = { type: String }
-        break;
+        schema[prop] = { type: String }
+        if (field.$fastSearch) schema[prop].unique = true
+        if (field.enum) schema[prop].enum = field.enum
+        if (field.maxLength) schema[prop].maxLength = field.maxLength
+        if (field.minLength) schema[prop].minLength = field.minLength
+        if (field.pattern) schema[prop].match = new RegExp(field.pattern)
+        break
+
+      case 'number':
+        schema[prop] = { type: Number }
+        if (field.maximum) schema[prop].max = field.maximum
+        if (field.minimum) schema[prop].min = field.minimum
+        if (field.enum) schema[prop].enum = field.enum
+        break
+
+      case 'date':
+        schema[prop] = { type: Date }
+        if (field.maxDate) schema[prop].max = field.maxDate
+        if (field.minDate) schema[prop].min = field.minDate
+        break
+
+      case 'array':
+        if (field.items.type === 'string') {
+          schema[prop] = [String]
+        } else if (field.items.type === 'number') {
+          schema[prop] = [Number]
+        } // to-do if object
+        break
+
+      case 'boolean':
+        schema[prop] = { type: Boolean }
+        break
+
+      case 'ref':
+        schema[prop] = { type: Types.ObjectId }
+        schema[prop].ref = field.$ref
+        schema[prop].autopopulate = { maxDepth: 1 }
+        break
 
       default:
         break;
     }
-    return acc
+
+    if (field.$index) schema[prop].index = true
+    if (field.$unique) schema[prop].unique = true
+    if (field.required) schema[prop].required = true
+    if (field.default) schema[prop].default = field.default
+
+    return schema
   }, {})
 }
-
-const object = {
-  name: '7 921 938 49 92',
-  emails: ['dfg', 'dfg', '5']
-}
-const res = validate(object, schema)
-console.log(res);
-console.log(validate.errors);
