@@ -102,6 +102,17 @@ function toMomgooseSchema(jsonSchema) {
         schema[prop].autopopulate = { maxDepth: 1 }
         break
 
+      case 'user':
+        schema[prop] = { type: Types.ObjectId }
+        schema[prop].ref = 'users'
+        schema[prop].autopopulate = { maxDepth: 1 }
+        break
+
+      case 'file':
+      case 'image':
+        schema[prop] = { type: String }
+        break
+
       default:
         break;
     }
