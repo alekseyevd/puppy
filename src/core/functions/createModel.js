@@ -1,5 +1,6 @@
 const { Schema, model, Types } = require('mongoose')
 const { v4: uuid } = require('uuid')
+const toMongooseSchema = require('./toMongooseSchema')
 
 module.exports = function(type, name, params) {
   const initial = {
@@ -34,7 +35,7 @@ module.exports = function(type, name, params) {
     initial.number = { type: String }
   }
 
-  const props = Object.assign(params, initial)
+  const props = Object.assign(toMongooseSchema(params), initial)
   const schema = new Schema(props, {
     timestamps: true
   })

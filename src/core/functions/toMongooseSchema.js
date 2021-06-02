@@ -1,60 +1,4 @@
-/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-const { Schema, model, Types } = require('mongoose')
-
-const schema = {
-  type: "document",
-  properties: {
-    name: {
-      type: "string",
-      pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}",
-      required: true,
-      $index: true,
-      $fastSearch: true
-    },
-    surname: {
-      type: "string",
-      $unique: true
-    },
-    patronymic: {type: "string"},
-    gender: {
-      type: "string",
-      enum: ["male", "female"]
-    },
-    emails: {
-      type: "array",
-      items: {
-        type: "string",
-        format: "email"
-      },
-      maxItems: 3,
-      minItems: 1
-    },
-    phones: {
-      type: "array",
-      items: {
-        type: "string",
-        format: "phone",
-        // pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}"
-      }
-    },
-    address: {type: "string"},
-    passport: {
-      type: "document",
-      properties: {
-        number: {type: "string"},
-        issuedDate: {
-          type: "date",
-        },
-        issuedBy: {type: "string"},
-      }
-    },
-    workIn: {
-      type: "ref",
-      $ref: "company",
-    },
-  },
-}
+const { Types } = require('mongoose')
 
 function toMomgooseSchema(schema) {
   let field
@@ -69,7 +13,7 @@ function toMomgooseSchema(schema) {
 
     case 'string':
       field = { type: String }
-      if (schema.$fastSearch) field.unique = true
+      if (schema.fastSearch) field.unique = true
       if (schema.enum) field.enum = schema.enum
       if (schema.maxLength) field.maxLength = schema.maxLength
       if (schema.minLength) field.minLength = schema.minLength
@@ -121,6 +65,4 @@ function toMomgooseSchema(schema) {
   return field
 }
 
-const mongooseSchema = toMomgooseSchema(schema)
-const sch = new Schema(mongooseSchema)
-console.log(sch)
+module.exports = toMomgooseSchema

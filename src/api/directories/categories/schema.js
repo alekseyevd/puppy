@@ -1,4 +1,7 @@
 module.exports = {
-  name: {type: String},
-  desc: {type: String},
+  type: 'document',
+  properties: {
+    name: {type: 'string'},
+    desc: {type: 'string'},
+  }
 }

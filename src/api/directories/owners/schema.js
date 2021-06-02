@@ -1,12 +1,13 @@
-const { Types } = require('mongoose')
-
 module.exports = {
-  company: {
-    type: Types.ObjectId,
-    ref: 'companies'
-  },
-  prefix: String,
-  tax: String,
-  signs: String,
-  logo: String
+  type: 'document',
+  properties: {
+    company: {
+      type: 'ref',
+      $ref: 'companies'
+    },
+    prefix: {type: 'string'},
+    tax: {type: 'string'},
+    signs: {type: 'string'},
+    logo: {type: 'string'},
+  }
 }

@@ -1,9 +1,10 @@
-const { Types } = require('mongoose')
-
 module.exports = {
-  name: {type: String},
-  category: {
-    type: Types.ObjectId,
-    ref: 'categories'
+  type: 'document',
+  properties: {
+    name: {type: 'string'},
+    category: {
+      type: 'ref',
+      $ref: 'categories'
+    }
   }
 }

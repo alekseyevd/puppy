@@ -1,4 +1,7 @@
 module.exports = {
-  name: {type: String, fastSearch: true},
-  description: {type: String, fastSearch: true},
+  type: 'document',
+  properties: {
+    name: {type: 'string', fastSearch: true},
+    description: {type: 'string', fastSearch: true},
+  }
 }

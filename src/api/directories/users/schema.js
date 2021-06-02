@@ -1,33 +1,35 @@
 const { Types } = require('mongoose')
 
 module.exports = {
-  login: {
-    type: String,
-    required: true,
-    unique: true,
-    fastSearch: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    index: true,
-    fastSearch: true
-  },
-  phone: {
-    type: String,
-  },
-  person: {
-    type: Types.ObjectId,
-    ref: 'people',
-  },
-  role: {
-    type: Types.ObjectId,
-    required: true,
-    ref: 'roles',
-    populate: true,
-    autopopulate: { maxDepth: 1 }
+  type: 'document',
+  properties: {
+    login: {
+      type: 'string',
+      required: true,
+      unique: true,
+      fastSearch: true
+    },
+    password: {
+      type: 'string',
+      required: true
+    },
+    email: {
+      type: 'string',
+      index: true,
+      fastSearch: true
+    },
+    phone: {
+      type: 'string',
+    },
+    person: {
+      type: 'ref',
+      $ref: 'people',
+    },
+    role: {
+      type: 'ref',
+      required: true,
+      $ref: 'roles',
+      autopopulate: { maxDepth: 1 }
+    }
   }
 }
