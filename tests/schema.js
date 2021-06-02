@@ -3,57 +3,40 @@
 const { Schema, model, Types } = require('mongoose')
 
 const schema = {
-  type: "document",
+  type: 'document',
   properties: {
-    name: {
-      type: "string",
-      pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}",
-      required: true,
-      $index: true,
-      $fastSearch: true
+    inCharge: {
+      type: 'ref',
+      $ref: 'users'
     },
-    surname: {
-      type: "string",
-      $unique: true
-    },
-    patronymic: {type: "string"},
-    gender: {
-      type: "string",
-      enum: ["male", "female"]
-    },
-    emails: {
-      type: "array",
+    sum: {type: 'number'},
+    tax: {type: 'number'},
+    sumWithTax: {type: 'number'},
+    products: {
+      type: 'array',
       items: {
-        type: "string",
-        format: "email"
-      },
-      maxItems: 3,
-      minItems: 1
-    },
-    phones: {
-      type: "array",
-      items: {
-        type: "string",
-        format: "phone",
-        // pattern: "[0-9]{1} [0-9]{3} [0-9]{3} [0-9]{2} [0-9]{2}"
+        type: 'document',
+        properties: {
+          id: {
+            type: 'ref',
+            $ref: 'products'
+          },
+          desc: { type: 'string' },
+          unit: {
+            type: 'ref',
+            $ref: 'units'
+          },
+          quantity: {type: 'number'},
+          cost: {type: 'number'},
+          taxRate: {type: 'number'},
+          taxAmount: {type: 'number'},
+          amount: {type: 'number'},
+          amountWithTax: {type: 'number'},
+          weight: {type: 'number'},
+        }
       }
-    },
-    address: {type: "string"},
-    passport: {
-      type: "document",
-      properties: {
-        number: {type: "string"},
-        issuedDate: {
-          type: "date",
-        },
-        issuedBy: {type: "string"},
-      }
-    },
-    workIn: {
-      type: "ref",
-      $ref: "company",
-    },
-  },
+    }
+  }
 }
 
 function toMomgooseSchema(schema) {
@@ -123,4 +106,4 @@ function toMomgooseSchema(schema) {
 
 const mongooseSchema = toMomgooseSchema(schema)
 const sch = new Schema(mongooseSchema)
-console.log(sch)
+console.log(mongooseSchema)

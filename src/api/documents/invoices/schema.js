@@ -11,22 +11,25 @@ module.exports = {
     products: {
       type: 'array',
       items: {
-        id: {
-          type: 'ref',
-          $ref: 'products'
-        },
-        desc: { type: 'string' },
-        unit: {
-          type: 'ref',
-          $ref: 'units'
-        },
-        quantity: {type: 'number'},
-        cost: {type: 'number'},
-        taxRate: {type: 'number'},
-        taxAmount: {type: 'number'},
-        amount: {type: 'number'},
-        amountWithTax: {type: 'number'},
-        weight: {type: 'number'},
+        type: 'document',
+        properties: {
+          id: {
+            type: 'ref',
+            $ref: 'products'
+          },
+          desc: { type: 'string' },
+          unit: {
+            type: 'ref',
+            $ref: 'units'
+          },
+          quantity: {type: 'number'},
+          cost: {type: 'number'},
+          taxRate: {type: 'number'},
+          taxAmount: {type: 'number'},
+          amount: {type: 'number'},
+          amountWithTax: {type: 'number'},
+          weight: {type: 'number'},
+        }
       }
     }
   }
