@@ -57,28 +57,8 @@ module.exports = function(type, name, params) {
   // const pre = populate()
   // schema.pre(['findOne', 'find'], pre)
 
-  schema.plugin(require('mongoose-autopopulate'));
-
-  const textSearchfields = Object.keys(props)
-      .filter(key => props[key].fastSearch)
-
-  if (textSearchfields.length > 0) {
-    schema.index(textSearchfields.reduce((acc, key) => (acc[key] = 'text', acc), {}))
-  }
-
-  schema.static('search', function(q) {
-    // to-do q.search.split(' ')
-    if (q.search) {
-      // q.$or = [
-      //   { login: new RegExp(q.search, 'i') },
-      //   { email: new RegExp(q.search, 'i')}
-      // ]
-      q.$or = textSearchfields.map(key => ({[key]: new RegExp(q.search, 'i')}))
-      delete q.search
-    }
-
-    return this.find(q)
-  });
+  schema.plugin(require('mongoose-autopopulate'))
+  schema.plugin(require('./mongooseSearchPlugin'))
 
   return model(name, schema)
 }

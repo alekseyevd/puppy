@@ -13,7 +13,8 @@ function toMomgooseSchema(schema) {
 
     case 'string':
       field = { type: String }
-      if (schema.fastSearch) field.unique = true
+      if (schema.unique) field.unique = true
+      if (schema.fastSearch) field.fastSearch = true
       if (schema.enum) field.enum = schema.enum
       if (schema.maxLength) field.maxLength = schema.maxLength
       if (schema.minLength) field.minLength = schema.minLength
