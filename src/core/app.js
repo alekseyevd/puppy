@@ -1,10 +1,10 @@
 const express = require('express')
 const cors = require('cors')
 const errorHandler = require('../middleware/errorHandler')
-const isAuthenticated = require('../middleware/authenticate')
-const isAdmin = require('../middleware/isAdmin')
 const handleRoutes = require('./functions/handleRoutes')
 const path = require('path')
+const fs = require('fs')
+const Puppy = require('./Puppy')
 
 const app = express()
 
@@ -26,6 +26,9 @@ app.get('/app/*', (req, res, next) => {
 handleRoutes(app, 'directories')
 handleRoutes(app, 'documents')
 handleRoutes(app, 'custom')
+
+const schemas = JSON.stringify(Puppy.schemas)
+fs.writeFileSync('client/schemas.json', schemas)
 
 app.use('/api/auth', require('./services/auth/router'))
 

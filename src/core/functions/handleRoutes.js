@@ -60,6 +60,7 @@ module.exports = (app, type) => {
       // to do Object.defineProperty
       Puppy.models[name] = model
       Puppy.templates[name] = { pdf, email }
+      Puppy.schemas[name] = {...schema, permissions: {...permissions}}
     }
 
 
