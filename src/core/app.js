@@ -27,7 +27,7 @@ handleRoutes(app, 'directories')
 handleRoutes(app, 'documents')
 handleRoutes(app, 'custom')
 
-const schemas = JSON.stringify(Puppy.schemas)
+const schemas = JSON.stringify(Puppy.schemas, null, 4)
 fs.writeFileSync('client/schemas.json', schemas)
 
 app.use('/api/auth', require('./services/auth/router'))

@@ -5,7 +5,16 @@ class Api {
     // this.schemas = schemas
     Object.keys(schemas).forEach(entity => {
       this[entity] = {
-        find: () => console.log(entity)
+        find: async () => {
+          try {
+            const response = await fetch(`/api/${entity}`)
+            const data = await response.json()
+            if (!data.result) throw new Error(data.message)
+            return data
+          } catch (error) {
+            return error.message
+          }
+        }
       }
     })
   }

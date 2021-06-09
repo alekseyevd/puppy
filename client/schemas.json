@@ -1,1 +1,428 @@
-{"categories":{"type":"document","properties":{"name":{"type":"string"},"desc":{"type":"string"}},"permissions":{"admin":{"create":true,"find":{"own":true,"fields":["-name"]},"findOne":true,"update":true,"deleteOne":true}}},"companies":{"type":"document","properties":{"name":{"type":"string"},"full_name":{"type":"string"},"short_name":{"type":"string"},"type":{"type":"string"},"inn":{"type":"number"},"kpp":{"type":"number"},"ogrn":{"type":"number"},"ogrn_date":{"type":"date"},"management":{"type":"document","properties":{"name":{"type":"string"},"post":{"type":"string"}}},"address":{"type":"string"},"bank":{"type":"document","properties":{"name":{"type":"string"},"account":{"type":"number"},"kor":{"type":"number"},"bik":{"type":"number"}}}},"permissions":{"admin":{"create":true,"find":true,"findOne":true,"update":true,"deleteOne":true}}},"owners":{"type":"document","properties":{"company":{"type":"ref","$ref":"companies"},"prefix":{"type":"string"},"tax":{"type":"string"},"signs":{"type":"string"},"logo":{"type":"string"}},"permissions":{"admin":{"create":true,"find":true,"findOne":true,"update":true,"deleteOne":true}}},"people":{"type":"document","properties":{"name":{"type":"string","fastSearch":true},"surname":{"type":"string","fastSearch":true},"patronymic":{"type":"string","fastSearch":true},"gender":{"type":"string"},"birthdate":{"type":"date"},"emails":{"type":"array","items":{"type":"string"}},"phones":{"type":"array","items":{"type":"string"}},"address":{"type":"string"},"passport":{"type":"document","properties":{"number":{"type":"string"},"issuedDate":{"type":"date"},"issuedBy":{"type":"string"}}},"work_in":{"type":"ref","$ref":"companies","populate":true}},"permissions":{"admin":{"create":true,"find":true,"findOne":true,"update":true,"moveToTrash":true,"moveTo":true,"deleteOne":true,"print":{"templates":[1]},"email":{"templates":[1]}}}},"products":{"type":"document","properties":{"name":{"type":"string"},"category":{"type":"ref","$ref":"categories"}},"permissions":{"admin":{"create":true,"find":{"own":true,"fields":["-name"]},"findOne":true,"update":true,"deleteOne":true}}},"roles":{"type":"document","properties":{"name":{"type":"string","fastSearch":true},"description":{"type":"string","fastSearch":true}},"permissions":{"admin":{"create":true,"find":true,"findOne":true,"update":true,"moveToTrash":true,"moveTo":true,"deleteOne":true}}},"units":{"type":"document","properties":{"name":{"type":"string"},"code":{"type":"number"}},"permissions":{"admin":{"create":true,"find":{"own":true,"fields":["-name"]},"findOne":true,"update":true,"deleteOne":true}}},"users":{"type":"document","properties":{"login":{"type":"string","required":true,"unique":true,"fastSearch":true},"password":{"type":"string","required":true},"email":{"type":"string","index":true,"fastSearch":true},"phone":{"type":"string"},"person":{"type":"ref","$ref":"people"},"role":{"type":"ref","required":true,"$ref":"roles","autopopulate":{"maxDepth":1}}},"permissions":{"admin":{"create":true,"find":{"fields":["-password"]},"findOne":{"fields":["-password"]},"update":{"fields":["login","email","phone","person","role"]},"moveToTrash":true,"moveTo":true,"deleteOne":true,"print":{"templates":[1]},"email":{"templates":[1]}}}},"invoices":{"type":"document","properties":{"inCharge":{"type":"ref","$ref":"users"},"sum":{"type":"number"},"tax":{"type":"number"},"sumWithTax":{"type":"number"},"products":{"type":"array","items":{"type":"document","properties":{"id":{"type":"ref","$ref":"products"},"desc":{"type":"string"},"unit":{"type":"ref","$ref":"units"},"quantity":{"type":"number"},"cost":{"type":"number"},"taxRate":{"type":"number"},"taxAmount":{"type":"number"},"amount":{"type":"number"},"amountWithTax":{"type":"number"},"weight":{"type":"number"}}}}},"permissions":{"admin":{"create":true,"find":true,"findOne":true,"update":true,"deleteOne":true,"print":{"templates":[1]},"email":{"templates":[1]}}}}}
+{
+    "categories": {
+        "type": "document",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "desc": {
+                "type": "string"
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": {
+                    "own": true,
+                    "fields": [
+                        "-name"
+                    ]
+                },
+                "findOne": true,
+                "update": true,
+                "deleteOne": true
+            }
+        }
+    },
+    "companies": {
+        "type": "document",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "full_name": {
+                "type": "string"
+            },
+            "short_name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            },
+            "inn": {
+                "type": "number"
+            },
+            "kpp": {
+                "type": "number"
+            },
+            "ogrn": {
+                "type": "number"
+            },
+            "ogrn_date": {
+                "type": "date"
+            },
+            "management": {
+                "type": "document",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "post": {
+                        "type": "string"
+                    }
+                }
+            },
+            "address": {
+                "type": "string"
+            },
+            "bank": {
+                "type": "document",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "account": {
+                        "type": "number"
+                    },
+                    "kor": {
+                        "type": "number"
+                    },
+                    "bik": {
+                        "type": "number"
+                    }
+                }
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": true,
+                "findOne": true,
+                "update": true,
+                "deleteOne": true
+            }
+        }
+    },
+    "owners": {
+        "type": "document",
+        "properties": {
+            "company": {
+                "type": "ref",
+                "$ref": "companies"
+            },
+            "prefix": {
+                "type": "string"
+            },
+            "tax": {
+                "type": "string"
+            },
+            "signs": {
+                "type": "string"
+            },
+            "logo": {
+                "type": "string"
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": true,
+                "findOne": true,
+                "update": true,
+                "deleteOne": true
+            }
+        }
+    },
+    "people": {
+        "type": "document",
+        "properties": {
+            "name": {
+                "type": "string",
+                "fastSearch": true
+            },
+            "surname": {
+                "type": "string",
+                "fastSearch": true
+            },
+            "patronymic": {
+                "type": "string",
+                "fastSearch": true
+            },
+            "gender": {
+                "type": "string"
+            },
+            "birthdate": {
+                "type": "date"
+            },
+            "emails": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "phones": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "address": {
+                "type": "string"
+            },
+            "passport": {
+                "type": "document",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    },
+                    "issuedDate": {
+                        "type": "date"
+                    },
+                    "issuedBy": {
+                        "type": "string"
+                    }
+                }
+            },
+            "work_in": {
+                "type": "ref",
+                "$ref": "companies",
+                "populate": true
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": true,
+                "findOne": true,
+                "update": true,
+                "moveToTrash": true,
+                "moveTo": true,
+                "deleteOne": true,
+                "print": {
+                    "templates": [
+                        1
+                    ]
+                },
+                "email": {
+                    "templates": [
+                        1
+                    ]
+                }
+            }
+        }
+    },
+    "products": {
+        "type": "document",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "category": {
+                "type": "ref",
+                "$ref": "categories"
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": {
+                    "own": true,
+                    "fields": [
+                        "-name"
+                    ]
+                },
+                "findOne": true,
+                "update": true,
+                "deleteOne": true
+            }
+        }
+    },
+    "roles": {
+        "type": "document",
+        "properties": {
+            "name": {
+                "type": "string",
+                "fastSearch": true
+            },
+            "description": {
+                "type": "string",
+                "fastSearch": true
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": true,
+                "findOne": true,
+                "update": true,
+                "moveToTrash": true,
+                "moveTo": true,
+                "deleteOne": true
+            }
+        }
+    },
+    "units": {
+        "type": "document",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "code": {
+                "type": "number"
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": {
+                    "own": true,
+                    "fields": [
+                        "-name"
+                    ]
+                },
+                "findOne": true,
+                "update": true,
+                "deleteOne": true
+            }
+        }
+    },
+    "users": {
+        "type": "document",
+        "properties": {
+            "login": {
+                "type": "string",
+                "required": true,
+                "unique": true,
+                "fastSearch": true
+            },
+            "password": {
+                "type": "string",
+                "required": true
+            },
+            "email": {
+                "type": "string",
+                "index": true,
+                "fastSearch": true
+            },
+            "phone": {
+                "type": "string"
+            },
+            "person": {
+                "type": "ref",
+                "$ref": "people"
+            },
+            "role": {
+                "type": "ref",
+                "required": true,
+                "$ref": "roles",
+                "autopopulate": {
+                    "maxDepth": 1
+                }
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": {
+                    "fields": [
+                        "-password"
+                    ]
+                },
+                "findOne": {
+                    "fields": [
+                        "-password"
+                    ]
+                },
+                "update": {
+                    "fields": [
+                        "login",
+                        "email",
+                        "phone",
+                        "person",
+                        "role"
+                    ]
+                },
+                "moveToTrash": true,
+                "moveTo": true,
+                "deleteOne": true,
+                "print": {
+                    "templates": [
+                        1
+                    ]
+                },
+                "email": {
+                    "templates": [
+                        1
+                    ]
+                }
+            }
+        }
+    },
+    "invoices": {
+        "type": "document",
+        "properties": {
+            "inCharge": {
+                "type": "ref",
+                "$ref": "users"
+            },
+            "sum": {
+                "type": "number"
+            },
+            "tax": {
+                "type": "number"
+            },
+            "sumWithTax": {
+                "type": "number"
+            },
+            "products": {
+                "type": "array",
+                "items": {
+                    "type": "document",
+                    "properties": {
+                        "id": {
+                            "type": "ref",
+                            "$ref": "products"
+                        },
+                        "desc": {
+                            "type": "string"
+                        },
+                        "unit": {
+                            "type": "ref",
+                            "$ref": "units"
+                        },
+                        "quantity": {
+                            "type": "number"
+                        },
+                        "cost": {
+                            "type": "number"
+                        },
+                        "taxRate": {
+                            "type": "number"
+                        },
+                        "taxAmount": {
+                            "type": "number"
+                        },
+                        "amount": {
+                            "type": "number"
+                        },
+                        "amountWithTax": {
+                            "type": "number"
+                        },
+                        "weight": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "permissions": {
+            "admin": {
+                "create": true,
+                "find": true,
+                "findOne": true,
+                "update": true,
+                "deleteOne": true,
+                "print": {
+                    "templates": [
+                        1
+                    ]
+                },
+                "email": {
+                    "templates": [
+                        1
+                    ]
+                }
+            }
+        }
+    }
+}
