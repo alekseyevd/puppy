@@ -24,6 +24,7 @@ class Controller {
     if (entity) {
       this.model = Puppy.models[entity]
       this.templates = Puppy.templates[entity]
+      this.schema = Puppy.schemas[entity]
 
       this.find = find.bind(this)
       this.findOne = findOne.bind(this)
@@ -39,6 +40,31 @@ class Controller {
     Object.keys(params).forEach(key => {
       this[key] = params[key].bind(this)
     })
+  }
+
+  handleSelectionByRole(role) {
+    return typeof this.schema.permissions[role].find === 'object'
+      ? this.schema.permissions[role].find.fields
+      : []
+  }
+
+  handleFilterFromRequest(req) {
+    // to-do validate req.query with schema
+    const role = req.user.role
+
+    const search = Object.keys(this.schema.properties)
+        .filter(field => this.schema.properties[field].filter && req.query[field])
+        .reduce((acc, field) => {
+          acc[field] = req.query[field]
+          return acc
+        }, {})
+
+    search.status = req.query.status || 1
+
+    if (this.schema.permissions[role].find === 'object' && this.schema.permissions[role].find.own) {
+      search.user_id = req.user.user_id
+    }
+    return search
   }
 }
 

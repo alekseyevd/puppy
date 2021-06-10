@@ -1,9 +1,9 @@
 module.exports = {
   type: 'document',
   properties: {
-    name: {type: 'string', fastSearch: true},
-    surname: {type: 'string', fastSearch: true},
-    patronymic: {type: 'string', fastSearch: true},
+    name: {type: 'string', fastSearch: true, filter: true},
+    surname: {type: 'string', fastSearch: true, filter: true},
+    patronymic: {type: 'string', fastSearch: true, filter: true},
     gender: {type: 'string'},
     birthdate: {type: 'date'},
     emails: {

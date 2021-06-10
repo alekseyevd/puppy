@@ -7,32 +7,14 @@ module.exports = async function(req, res, next) {
 
   try {
     const Model = this.model
+    const role = req.user.role
 
-    // if (req.query.filter && !isJsonValid(req.query.filter))
-    //   throw createError(400, 'query param \'filter\' is not valid json string.')
+    // to-do validate req.query with schema
 
-    const search = { ...req.query }
-    search.status = req.query.status || 1
+    const selection = this.handleSelectionByRole(role)
+    const filter = this.handleFilterFromRequest(req)
 
-    delete search.limit
-    delete search.page
-
-    // Object.keys(search).forEach(key => {
-    //   if (key !== 'status') {
-    //     search[key] = { $regex: '.*' + search[key] + '.*', $options: 'i' }
-    //   }
-    // })
-
-    if (req.permissions && req.permissions.own) {
-      search.user_id = req.user.user_id
-    }
-
-    let selection = []
-    if (req.permissions && req.permissions.fields && Array.isArray(req.permissions.fields)) {
-      selection = req.permissions.fields
-    }
-
-    const count = await Model.countDocuments(search)
+    const count = await Model.countDocuments(filter)
     const limit = Math.abs(Number.parseInt(req.query.limit) || PAGINATION_LIMIT)
     let page = Math.abs(Number.parseInt(req.query.page) || 0)
 
@@ -42,7 +24,7 @@ module.exports = async function(req, res, next) {
       skip = page * limit
     }
 
-    const entities = await Model.search(search)
+    const entities = await Model.search(filter)
         .select(selection)
         .skip(skip)
         .limit(limit)

@@ -128,15 +128,18 @@
         "properties": {
             "name": {
                 "type": "string",
-                "fastSearch": true
+                "fastSearch": true,
+                "filter": true
             },
             "surname": {
                 "type": "string",
-                "fastSearch": true
+                "fastSearch": true,
+                "filter": true
             },
             "patronymic": {
                 "type": "string",
-                "fastSearch": true
+                "fastSearch": true,
+                "filter": true
             },
             "gender": {
                 "type": "string"

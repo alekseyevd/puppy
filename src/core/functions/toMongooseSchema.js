@@ -63,6 +63,7 @@ function toMomgooseSchema(schema) {
       break;
   }
 
+  if (schema.filter) field.index = true
   return field
 }
 
