@@ -18,5 +18,6 @@ ReactDOM.render(
 )
 
 window.api = api
+api.users.find({status: 1})
 
 // console.log(api)
