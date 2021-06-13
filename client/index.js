@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import ErrorBoundary from './services/ErrorBoundary'
 import { BrowserRouter } from 'react-router-dom'
-import api from './api'
+import api from './services/api/Api'
 
 ReactDOM.render(
     <React.StrictMode>
