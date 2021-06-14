@@ -1,5 +1,5 @@
 export default class Model {
-  constructor(entity) {
+  constructor(entity, baseUrl, headers) {
     this.entity = entity
   }
 

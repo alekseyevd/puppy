@@ -1,5 +1,4 @@
-export default function createActions(entity) {
-  // eslint-disable-next-line no-invalid-this
+export default function CreateActions(entity) {
   const _this = this
   return {
     async find(filter) {

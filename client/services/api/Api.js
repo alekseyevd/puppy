@@ -1,5 +1,7 @@
 import schemas from '../../schemas.json'
+// import Model from './Model'
 // import createActions from './createActions'
+import Model from './Model'
 
 class Api {
   constructor(config) {
@@ -18,19 +20,21 @@ class Api {
 
     // this.schemas = schemas
     Object.keys(config.schemas).forEach(entity => {
-      this[entity] = this.createActions(entity)
+      // this[entity] = createActions.call(this, entity)
+      this[entity] = new Model(entity)
     })
   }
 
   createActions(entity) {
+    const _this = this
     return {
       async find(filter = {}) {
         try {
           // if (!this.token) throw new Error('invalid token')
           // to-do check permissions
-          const response = await this.fetch({
-            url: `${this.baseUrl}/${entity}`,
-            headers: this.headers,
+          const response = await _this.fetch({
+            url: `${_this.baseUrl}/${entity}`,
+            headers: _this.headers,
             data: filter
           })
           if (!response.result) throw new Error(response.message)
