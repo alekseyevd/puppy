@@ -3,10 +3,18 @@ const { JWT_SECRET } = require('../config')
 const createError = require('http-errors')
 
 module.exports = (req, res, next) => {
-  const auth_headers = req.headers.authorization
-  if (!auth_headers) throw createError(401, 'not authorized')
+  const authHeaders = req.headers.authorization
+  if (!authHeaders) {
+    const user = {
+      user_id: undefined,
+      role: 'anonymous'
+    }
+    req.user = user
+    return next()
+  }
+  // if (!authHeaders) throw createError(401, 'not authorized')
 
-  const jwtoken = auth_headers.split(' ')[1] // "Bearer Token"
+  const jwtoken = authHeaders.split(' ')[1] // "Bearer Token"
   if (!jwtoken) throw createError(401, 'not authorized')
 
   try {

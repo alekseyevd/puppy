@@ -6,8 +6,7 @@ export default function CreateActions(entity) {
         // if (!this.token) throw new Error('invalid token')
         // to-do check permissions
         const response = await _this.fetch({
-          url: `${_this.baseUrl}/${entity}`,
-          headers: _this.headers,
+          url: `/${entity}`,
           data: filter
         })
         if (!response.result) throw new Error(response.message)
@@ -19,9 +18,8 @@ export default function CreateActions(entity) {
 
     async findOne(id) {
       try {
-        const response = await this.fetch({
-          url: `${this.baseUrl}/${entity}/${id}`,
-          headers: this.headers,
+        const response = await _this.fetch({
+          url: `/${entity}/${id}`,
         })
         if (!response.result) throw new Error(response.message)
         return response
@@ -32,10 +30,9 @@ export default function CreateActions(entity) {
 
     async create(data) {
       try {
-        const response = await this.fetch({
-          url: `${this.baseUrl}/${entity}`,
+        const response = await _this.fetch({
+          url: `/${entity}`,
           method: 'POST',
-          headers: this.headers,
           data
         })
         if (!response.result) throw new Error(response.message)
@@ -47,10 +44,9 @@ export default function CreateActions(entity) {
 
     async update(id, data) {
       try {
-        const response = await this.fetch({
-          url: `${this.baseUrl}/${entity}/${id}`,
+        const response = await _this.fetch({
+          url: `/${entity}/${id}`,
           method: 'PUT',
-          headers: this.headers,
           data
         })
         if (!response.result) throw new Error(response.message)
@@ -62,10 +58,8 @@ export default function CreateActions(entity) {
 
     async delete(id) {
       try {
-        const response = await this.fetch({
-          url: `${this.baseUrl}/${entity}/${id}`,
-          method: 'PUT',
-          headers: this.headers,
+        const response = await _this.fetch({
+          url: `/${entity}/${id}`,
         })
         if (!response.result) throw new Error(response.message)
         return response

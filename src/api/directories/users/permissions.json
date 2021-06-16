@@ -13,5 +13,8 @@
     "email": {
       "templates": [1]
     }
+  },
+  "anonymous": {
+    "find": true
   }
 }

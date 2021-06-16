@@ -1,5 +1,5 @@
 export default class Model {
-  constructor(entity, baseUrl, headers) {
+  constructor(entity) {
     this.entity = entity
   }
 
@@ -8,8 +8,7 @@ export default class Model {
       // if (!this.token) throw new Error('invalid token')
       // to-do check permissions
       const response = await this.fetch({
-        url: `${this.baseUrl}/${this.entity}`,
-        headers: this.headers,
+        url: `/${this.entity}`,
         data: filter
       })
       if (!response.result) throw new Error(response.message)

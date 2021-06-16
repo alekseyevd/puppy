@@ -15,12 +15,14 @@ module.exports = (permissions) => {
 
           // to-do validate req.query and req.body
 
-          if (action === 'print' && !permissions[role][action].templates.includes(+req.query.template_id))
+          if (action === 'print' && !permissions[role][action].templates.includes(+req.query.template_id)) {
             throw createHttpError(403, 'forbidden')
+          }
 
           // to do action email
-          if (action === 'email' && !permissions[role][action].templates.includes(+req.body.template_id))
+          if (action === 'email' && !permissions[role][action].templates.includes(+req.body.template_id)) {
             throw createHttpError(403, 'forbidden')
+          }
         }
         next()
       }

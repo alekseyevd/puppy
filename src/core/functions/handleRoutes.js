@@ -68,7 +68,7 @@ module.exports = (app, type) => {
 
     // to-do add validators
     routes.forEach(r => {
-      router[r.method](r.path, /* isAuthenticated, isAllowed(r.action),*/ controller[r.action])
+      router[r.method](r.path, isAuthenticated, isAllowed(r.action), controller[r.action])
     })
 
     app.use(`/api/${type !== 'custom' ? name : 'custom/'+name }`, router)
